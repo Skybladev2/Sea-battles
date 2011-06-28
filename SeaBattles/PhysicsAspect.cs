@@ -52,6 +52,7 @@ namespace SeaBattles
         public PhysicsAspect(object owner, Vector2 position, Vector2 facing, float velocity) : this(owner, position, facing)
         {
             //this.v
+
         }
 
         #region IMessageHandler Members
