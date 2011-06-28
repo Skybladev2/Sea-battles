@@ -69,6 +69,10 @@ namespace SeaBattles
             //только корабль игрока подписывается на приём пользовательского ввода
             MessageDispatcher.RegisterHandler(typeof(ButtonDown), ship);
             MessageDispatcher.RegisterHandler(typeof(SetPosition), ship);
+            MessageDispatcher.RegisterHandler(typeof(SetSpeed), ship);
+            // нужно для определения координат и скорости корабля в момент выстрела
+            // в данном случае owner-ом является ship
+            MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), ship);
             //MessageDispatcher.RegisterHandler(typeof(SetPosition), anotherShip);
             MessageDispatcher.RegisterHandler(typeof(TraceText), this);
         }

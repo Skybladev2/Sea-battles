@@ -14,6 +14,7 @@ namespace SeaBattles
     internal class Ship : IMessageHandler
     {
         private PhysicsAspect physics;
+        private VehicleWithGearboxAspect mechanics;
         private GraphicsAspect graphics;
         private Weapon leftCannon;
         private Weapon rightCannon;
@@ -21,6 +22,12 @@ namespace SeaBattles
 
         //private Dictionary<Type, IMessageHandler> handlersMap = new Dictionary<Type, IMessageHandler>();
         private Dictionary<Type, LinkedList<IMessageHandler>> handlersMap = new Dictionary<Type, LinkedList<IMessageHandler>>();
+
+        internal VehicleWithGearboxAspect Mechanics
+        {
+            get { return mechanics; }
+            //set { mechanics = value; }
+        }
 
         internal GraphicsAspect Graphics
         {
@@ -48,9 +55,14 @@ namespace SeaBattles
             shipVerts.Add(new Vector3(0.1f + position.X, -0.3f + position.Y, -1));
             shipVerts.Add(new Vector3(-0.1f + position.X, -0.3f + position.Y, -1));
 
+            mechanics = new VehicleWithGearboxAspect(this);
             physics = new PhysicsAspect(this);
             graphics = new GraphicsAspect(shipVerts);
-            AddHandlerToMap(typeof(ButtonDown), physics);
+
+            // подписываем транспортное средство на приём пользовательского ввода
+            // оно будет обновлять физику
+            AddHandlerToMap(typeof(ButtonDown), mechanics);
+            // подписываем графику на обновление координат
             AddHandlerToMap(typeof(SetPosition), graphics);
 
             rearCannon = new Weapon(this, Side.Rear);
@@ -62,7 +74,12 @@ namespace SeaBattles
             AddHandlerToMap(typeof(ButtonDown), rightCannon);
             AddHandlerToMap(typeof(ButtonDown), rearCannon);
 
-            MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), physics);
+            // физика принимает команду на изменение скорости корабля
+            AddHandlerToMap(typeof(SetSpeed), physics);
+            AddHandlerToMap(typeof(GetOwnerPosition), physics);
+
+            // нарушение принципа Entity - Property отсюда http://flohofwoe.blogspot.com/2007/11/nebula3s-application-layer-provides.html
+            //MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), physics);
         }
 
         private void AddHandlerToMap(Type type, IMessageHandler handler)

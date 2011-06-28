@@ -48,6 +48,7 @@
     <Compile Include="Messages\InformPosition.cs" />
     <Compile Include="Messages\GetOwnerPosition.cs" />
     <Compile Include="Messages\Shoot.cs" />
+    <Compile Include="Messages\SetSpeed.cs" />
     <Compile Include="ShootAspect.cs" />
     <Compile Include="Messages\ButtonDown.cs" />
     <Compile Include="Messages\ButtonUp.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Messages\TraceText.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="Side.cs" />
+    <Compile Include="VehicleWithGearboxAspect.cs" />
     <Compile Include="VirtualKeys.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

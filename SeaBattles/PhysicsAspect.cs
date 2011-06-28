@@ -13,21 +13,32 @@ namespace SeaBattles
     {
         private object owner;
         private Dictionary<Type, HandlerMethodDelegate> handlers = new Dictionary<Type, HandlerMethodDelegate>();
+
         private Vector2 position = new Vector2(0, 0);
         private float angle = 0;
-        private float rotationSpeed = 100;
-        private float speedMultiplier = 0.1f;
-        //private Vector2 velocity = new Vector2(0, 1);
+
+        /// <summary>
+        /// Глобальный коэффициент, влияющий на скорость поворота всех объектов в игре.
+        /// По идее, должен задаваться извне.
+        /// </summary>
+        private readonly float rotationSpeed = 100;
+        /// <summary>
+        /// Глобальный коэффициент, влияющий на скорость движения всех объектов в игре.
+        /// По идее, должен задаваться извне.
+        /// </summary>
+        private readonly float speedMultiplier = 0.1f;
+
+        /// <summary>
+        /// Скорость текущего объекта (вектор направления всегда единичный)
+        /// </summary>
+        private float speed = 0;
         private Vector2 facing = new Vector2(0, 1);
-        private float[] gears = new float[] { 0, 1, 2, 3 };
-        // индекс передачи в массиве gears
-        private int currentGear = 0;
 
         internal Vector2 Velocity
         {
             get
             {
-                Vector2 temp = Vector2.Multiply(facing, gears[currentGear] * speedMultiplier);
+                Vector2 temp = Vector2.Multiply(facing, speed * speedMultiplier);
                 // поворот вектора
                 float newX = temp.X * (float)Math.Cos(angle / 180 * Math.PI) - temp.Y * (float)Math.Sin(angle / 180 * Math.PI);
                 float newY = temp.X * (float)Math.Sin(angle / 180 * Math.PI) + temp.Y * (float)Math.Cos(angle / 180 * Math.PI);
@@ -38,8 +49,8 @@ namespace SeaBattles
         public PhysicsAspect(object owner)
         {
             this.owner = owner;
-            handlers.Add(typeof(ButtonDown), HandleButtonDown);
-            handlers.Add(typeof(GetOwnerPosition), HandleButtonDown);
+            handlers.Add(typeof(SetSpeed), HandleSetSpeed);
+            handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
         }
 
         public PhysicsAspect(object owner, Vector2 position, Vector2 facing)
@@ -49,7 +60,7 @@ namespace SeaBattles
             this.facing = facing;
         }
 
-        public PhysicsAspect(object owner, Vector2 position, Vector2 facing, float velocity) : this(owner, position, facing)
+        public PhysicsAspect(object owner, Vector2 position, Vector2 facing, float speed) : this(owner, position, facing)
         {
             //this.v
 
@@ -65,6 +76,14 @@ namespace SeaBattles
 
         #endregion
 
+        private void HandleSetSpeed(object message)
+        {
+            SetSpeed setSpeed = (SetSpeed)message;
+            this.speed = setSpeed.Speed;
+
+            MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
+        }
+
         private void HandleGetPosition(object message)
         {
             GetOwnerPosition getPosition = (GetOwnerPosition)message;
@@ -72,86 +91,6 @@ namespace SeaBattles
            // аспект, запрашивающий положение родителя, должен принадлежать тому же родителю, что и физика
             if (getPosition.Target.Equals(this.owner))
                 MessageDispatcher.Post(new InformPosition(getPosition.Caller, this.owner, this.Velocity, this.position));
-        }
-
-        private void HandleButtonDown(object message)
-        {
-            ButtonDown butttonDown = (ButtonDown)message;
-            InputVirtualKey key = butttonDown.Button;
-
-            switch (key)
-            {
-                case InputVirtualKey.Unknown:
-                    break;
-                case InputVirtualKey.AxisLeft:
-                    break;
-                case InputVirtualKey.AxisRight:
-                    break;
-                case InputVirtualKey.AxisUp:
-                    IncreaseSpeed();
-                    break;
-                case InputVirtualKey.AxisDown:
-                    DecreaseSpeed();
-                    break;
-                case InputVirtualKey.Action1:
-                    //ShootLeft();
-                    break;
-                case InputVirtualKey.Action2:
-                    //ShootLeft();
-                    break;
-                case InputVirtualKey.Action3:
-                    //ShootRight();
-                    break;
-                case InputVirtualKey.Action4:
-                    break;
-                case InputVirtualKey.Action5:
-                    break;
-                case InputVirtualKey.Action6:
-                    break;
-                case InputVirtualKey.Action7:
-                    break;
-                case InputVirtualKey.Action8:
-                    break;
-                case InputVirtualKey.Action9:
-                    break;
-                case InputVirtualKey.Action10:
-                    break;
-                case InputVirtualKey.Action11:
-                    break;
-                case InputVirtualKey.Action12:
-                    break;
-                case InputVirtualKey.Action13:
-                    break;
-                case InputVirtualKey.Action14:
-                    break;
-                case InputVirtualKey.Action15:
-                    break;
-                case InputVirtualKey.Action16:
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void DecreaseSpeed()
-        {
-            if (currentGear > 0)
-                currentGear--;
-
-            MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
-
-            //velocity.Normalize(); // не очень кошерно, так как могут быть артефакты с рывками движения
-            //this.velocity = Vector2.Multiply(velocity, gears[currentGear]);
-        }
-
-        private void IncreaseSpeed()
-        {
-            if (currentGear < gears.Length - 1)
-                currentGear++;
-
-            MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
-            //velocity.Normalize(); // не очень кошерно, так как могут быть артефакты с рывками движения
-            //this.velocity = Vector2.Multiply(velocity, gears[currentGear]);
         }
 
         internal void UpdateRotation(InputVirtualKey inputVirtualKey, double dt)

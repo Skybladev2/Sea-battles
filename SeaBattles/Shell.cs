@@ -16,7 +16,7 @@ namespace SeaBattles
         private PhysicsAspect physics = null;
         private float radius = 1;
 
-        public Shell(Vector2 position, Vector2 direction, float startVelocity)
+        public Shell(Vector2 position, Vector2 direction, float startSpeed)
         {
             List<Vector3> vertices = new List<Vector3> (8);
 
@@ -42,7 +42,7 @@ namespace SeaBattles
             vertices.Add(new Vector3(position.X + -2 / unitradius, position.Y + 1 / unitradius, 0));
             graphics = new GraphicsAspect(vertices);
 
-            physics = new PhysicsAspect(this, position, direction, startVelocity);
+            physics = new PhysicsAspect(this, position, direction, startSpeed);
         }
     }
 }
