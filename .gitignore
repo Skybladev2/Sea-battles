@@ -1,0 +1,5 @@
+
+*.docstates
+*.suo
+/SeaBattles/obj
+/SeaBattles/bin
