@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SeaBattles
 {
-    internal interface IMessageHandler
+    public interface IMessageHandler
     {
         void ProcessMessage(object message);
     }

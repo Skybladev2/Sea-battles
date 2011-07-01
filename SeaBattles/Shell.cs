@@ -16,7 +16,7 @@ namespace SeaBattles
         private PhysicsAspect physics = null;
         private float radius = 1;
 
-        public Shell(Vector2 position, Vector2 direction, float startSpeed)
+        public Shell(Vector3 position, Vector3 cannonFacing, Vector3 cannonVelocity, float startSpeed)
         {
             List<Vector3> vertices = new List<Vector3> (8);
 
@@ -40,9 +40,13 @@ namespace SeaBattles
             vertices.Add(new Vector3(-position.X + 2 / unitradius, position.Y + -1 / unitradius, 0));
 
             vertices.Add(new Vector3(position.X + -2 / unitradius, position.Y + 1 / unitradius, 0));
-            graphics = new GraphicsAspect(vertices);
+            graphics = new GraphicsAspect(this, vertices);
 
-            physics = new PhysicsAspect(this, position, direction, startSpeed);
+            // вычисляем вектор полёта снаряда - сумма импульса выстрела и собственной скорости оружия
+            cannonFacing.NormalizeFast();
+            Vector3 shootVelocity = cannonFacing * startSpeed + cannonVelocity;
+
+            physics = new PhysicsAspect(this, position.Xy, shootVelocity.Xy, startSpeed);
         }
     }
 }

@@ -73,6 +73,8 @@ namespace SeaBattles
             // нужно для определения координат и скорости корабля в момент выстрела
             // в данном случае owner-ом является ship
             MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), ship);
+            MessageDispatcher.RegisterHandler(typeof(InformPosition), ship);
+            MessageDispatcher.RegisterHandler(typeof(Shoot), ship);
             //MessageDispatcher.RegisterHandler(typeof(SetPosition), anotherShip);
             MessageDispatcher.RegisterHandler(typeof(TraceText), this);
         }

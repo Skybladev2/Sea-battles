@@ -23,47 +23,59 @@ namespace SeaBattles.Messages
         /// </summary>
         private object informedObject = null;
 
+        private Vector2 velocity;
+        private Vector2 position;
+        private Vector2 prevPosition;
+        private float lastDT;
+
         public object InformedObject
         {
             get { return informedObject; }
-            //set { informedObject = value; }
         }
-
-        private Vector2 velocity;
-        private Vector2 position;
-        //private float angle;
 
         public object Target
         {
             get { return target; }
-            //set { target = value; }
         }
-
-        //public float Angle
-        //{
-        //    get { return angle; }
-        //    //set { angle = value; }
-        //}
 
         public Vector2 Position
         {
             get { return position; }
-            //set { position = value; }
         }
 
         public Vector2 Velocity
         {
             get { return velocity; }
-            //set { velocity = value; }
         }
 
-        public InformPosition(object target, object informedObject, Vector2 velocity, Vector2 position /*, float angle*/)
+        public Vector2 PrevPosition
+        {
+            get
+            {
+                return this.prevPosition;
+            }
+        }
+
+        public float LastDT
+        {
+            get
+            {
+                return this.lastDT;
+            }
+        }
+
+        public InformPosition(object target,
+                            object informedObject,
+                            Vector2 velocity,
+                            Vector2 position,
+                            Vector2 prevPosition,
+                            float lastDT)
         {
             this.target = target;
             this.informedObject = informedObject;
             this.velocity = velocity;
             this.position = position;
-            //this.angle = angle;
+            this.lastDT = lastDT; 
         }
     }
 }

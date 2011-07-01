@@ -9,13 +9,30 @@ namespace SeaBattles.Messages
 {
     internal class Shoot
     {
-        public Vector3 direction;
-        public Vector3 from;
+        private Vector3 direction;
+        private Vector3 from;
+        private Vector3 shooterVelocity;
 
-        public Shoot(Vector3 from, Vector3 direction)
+        public Vector3 Direction
+        {
+            get { return direction; }
+        }
+
+        public Vector3 From
+        {
+            get { return from; }
+        }
+
+        public Vector3 ShooterVelocity
+        {
+            get { return shooterVelocity; }
+        }
+
+        public Shoot(Vector3 from, Vector3 direction, Vector3 shooterVelocity)
         {
             this.from = from; 
             this.direction= direction;
+            this.shooterVelocity = shooterVelocity; 
         }
     }
 }
