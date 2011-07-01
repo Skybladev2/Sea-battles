@@ -21,6 +21,22 @@ namespace SeaBattles
         public Aspect(object owner)
         {
             this.owner = owner;
+            RegisterSelf();
+        }
+
+        public virtual void Destroy()
+        {
+            UnregisterSelf();
+        }
+
+        protected void RegisterSelf()
+        {
+            AspectLists.AddAspect(this);
+        }
+
+        protected void UnregisterSelf()
+        {
+            AspectLists.RemoveAspect(this);
         }
 
         protected void AddHandlerToMap(Type type, IMessageHandler handler)

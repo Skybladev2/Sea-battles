@@ -30,7 +30,8 @@ namespace SeaBattles
         Random rand = new Random();
 
         private InputLayer input = null;
-        private List<GraphicsAspect> graphicsAspects = new List<GraphicsAspect>();
+        //---------------------------------
+        //private List<GraphicsAspect> graphicsAspects = new List<GraphicsAspect>();
         private Ship ship = null;
         private Ship anotherShip = null;
         private Dictionary<Type, HandlerMethodDelegate> handlers = new Dictionary<Type, HandlerMethodDelegate>();
@@ -53,18 +54,11 @@ namespace SeaBattles
             handlers.Add(typeof(TraceText), new HandlerMethodDelegate(WriteTitle));
             input = new InputLayer(this);
 
-            //shipVerts.Add(new Vector3(0, 0, -1.1f)); // низ
-            //shipVerts.Add(new Vector3(0, 0.1f, -1.09f)); // снизу вверх
-            //shipVerts.Add(new Vector3(-0.02f, 0.08f, -1.08f)); // сверху в левый угол стрелки
-            //shipVerts.Add(new Vector3(0.02f, 0.08f, -1.07f)); // из левого угла стрелки в правый
-            //shipVerts.Add(new Vector3(0, 0.1f, -1.06f)); // из правого угла стрелки вверх
-
             ship = new Ship(new PointF(0, 0));
             //anotherShip = new Ship(new PointF(0.5f, 0));
 
-            //ship.Graphics = new GraphicsAspect(shipVerts);
-            graphicsAspects.Add(ship.Graphics);
-            //graphicsAspects.Add(anotherShip.Graphics);
+            //---------------------------------------------------
+            //graphicsAspects.Add(ship.Graphics);
 
             //только корабль игрока подписывается на приём пользовательского ввода
             MessageDispatcher.RegisterHandler(typeof(ButtonDown), ship);
@@ -240,7 +234,8 @@ namespace SeaBattles
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.LineWidth(4);
 
-            foreach (GraphicsAspect g in graphicsAspects)
+            //foreach (GraphicsAspect g in graphicsAspects)
+            foreach (GraphicsAspect g in AspectLists.GetAspects(typeof(GraphicsAspect)))
             {
                 GL.PushMatrix();
                 GL.LoadIdentity();
