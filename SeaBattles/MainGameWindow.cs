@@ -232,11 +232,11 @@ namespace SeaBattles
             GL.LoadIdentity();
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            GL.LineWidth(4);
+            //GL.LineWidth(4);
 
-            //foreach (GraphicsAspect g in graphicsAspects)
             foreach (GraphicsAspect g in AspectLists.GetAspects(typeof(GraphicsAspect)))
             {
+                GL.LineWidth(g.lineWidth);
                 GL.PushMatrix();
                 GL.LoadIdentity();
                 GL.Translate(g.translation);
@@ -266,9 +266,9 @@ namespace SeaBattles
 
             //GL.End();
 
-            GL.Begin(BeginMode.Points);
-            GL.Vertex3(0, 0, -1);
-            GL.End();
+            //GL.Begin(BeginMode.Points);
+            //GL.Vertex3(0, 0, -1);
+            //GL.End();
         }
 
         #endregion

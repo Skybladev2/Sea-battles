@@ -16,11 +16,13 @@ namespace SeaBattles
         internal float rotationAngle = 0;
         internal float uniformScale = 0.5f;
         internal Vector3 scaling;
+        internal float lineWidth = 3;
 
-        public GraphicsAspect(object owner, List<Vector3> vertices) : base(owner)
+        public GraphicsAspect(object owner, List<Vector3> vertices, float lineWidth) : base(owner)
         {
             this.vertices = vertices;
             this.scaling = new Vector3(uniformScale, uniformScale, 1);
+            this.lineWidth = lineWidth;
             handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
         }
 

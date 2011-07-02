@@ -43,7 +43,7 @@ namespace SeaBattles
             InformPosition position = (InformPosition)message;
 
             // если пришла информация о чужом объекте - выходим
-            if (position.InformedObject != this.owner)
+            if (position.InformedObject != this.owner || position.Target != this)
                 return;
 
             if (waitForWeaponCoords)
@@ -52,7 +52,6 @@ namespace SeaBattles
 
                 // вычисляем направление выстрела
                 // оно зависит от борта, с которого производится выстрел
-
                 Vector2 temp = position.Velocity;
                 float angle = 0;
 
@@ -167,24 +166,5 @@ namespace SeaBattles
             waitForWeaponCoords = true;
             MessageDispatcher.Post(new GetOwnerPosition(this, this.owner));
         }
-
-        //#region IMessageHandler Members
-
-        //public void ProcessMessage(object message)
-        //{
-        //    Type type = message.GetType();
-
-        //    // так как данный класс выступает и как аспект, и как агрегация аспектов,
-        //    // то у него 2 списка обработчиков -
-        //    // собственные методы и объекты-аспекты.
-        //    // Сначала сообщения проходят через собственные методы
-        //    if (handlers.ContainsKey(type))
-        //        handlers[type](message);
-
-        //    if (handlersMap.ContainsKey(type))
-        //        handlersMap[type].ProcessMessage(message);
-        //}
-
-        //#endregion
     }
 }

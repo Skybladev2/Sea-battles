@@ -28,11 +28,17 @@ namespace SeaBattles.Messages
         private Vector2 prevPosition;
         private float lastDT;
 
+        /// <summary>
+        /// Объект, данные о котором передаются.
+        /// </summary>
         public object InformedObject
         {
             get { return informedObject; }
         }
 
+        /// <summary>
+        /// Кто получает данное сообщение.
+        /// </summary>
         public object Target
         {
             get { return target; }

@@ -57,7 +57,7 @@ namespace SeaBattles
 
             mechanics = new VehicleWithGearboxAspect(this);
             physics = new PhysicsAspect(this);
-            graphics = new GraphicsAspect(this, shipVerts);
+            graphics = new GraphicsAspect(this, shipVerts, 3);
 
             // подписываем транспортное средство на приём пользовательского ввода
             // оно будет обновлять физику

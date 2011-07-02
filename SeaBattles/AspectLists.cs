@@ -12,9 +12,9 @@ namespace SeaBattles
         internal static ICollection<Aspect> GetAspects(Type type)
         {
             if (aspects.ContainsKey(type))
-                return aspects[type];
+                return aspects[type].ToList();
             else
-                return null;
+                return new LinkedList<Aspect>();
         }
 
         internal static void AddAspect(Aspect aspect)
