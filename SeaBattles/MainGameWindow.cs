@@ -180,7 +180,7 @@ namespace SeaBattles
             //        Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
             //        "SeaBattlesLog.txt"), dt.ToString() + Environment.NewLine);    
             //}
-            
+
             //Console.WriteLine("Update count " + updateCount);
         }
 
@@ -200,7 +200,12 @@ namespace SeaBattles
                 if (input.Pressed(InputVirtualKey.AxisRight))
                     ship.Physics.UpdateRotation(InputVirtualKey.AxisRight, dt);
 
-                ship.Physics.Update(dt);
+                //ship.Physics.Update(dt);
+
+                foreach (PhysicsAspect p in AspectLists.GetAspects(typeof(PhysicsAspect)))
+                {
+                    p.Update(dt);
+                }
             }
         }
 

@@ -29,10 +29,13 @@ namespace SeaBattles
         private void HandleUpdatePosition(object message)
         {
             SetPosition setPosition = (SetPosition)message;
-            this.rotationAngle = setPosition.Angle;
-            //float scale = updatePosition.Velocity.LengthFast;
-            //this.scaling = new Vector3(1, scale, 1);
-            this.translation = new Vector3(setPosition.Position.X, setPosition.Position.Y, 0);
+            if (this.owner == setPosition.Target)
+            {
+                this.rotationAngle = setPosition.Angle;
+                //float scale = updatePosition.Velocity.LengthFast;
+                //this.scaling = new Vector3(1, scale, 1);
+                this.translation = new Vector3(setPosition.Position.X, setPosition.Position.Y, 0);
+            }
         }
     }
 }

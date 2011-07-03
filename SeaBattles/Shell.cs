@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using OpenTK;
+using SeaBattles.Messages;
 
 namespace SeaBattles
 {
     /// <summary>
     /// Снаряд. То, чем стреляют пушки корабля.
     /// </summary>
-    internal class Shell
+    internal class Shell : Aspect
     {
         private GraphicsAspect graphics = null;
         private PhysicsAspect physics = null;
@@ -50,6 +51,8 @@ namespace SeaBattles
             Vector3 shootVelocity = cannonFacing * startSpeed + cannonVelocity;
 
             physics = new PhysicsAspect(this, position.Xy, shootVelocity.Xy, startSpeed);
+
+            MessageDispatcher.RegisterHandler(typeof(SetPosition), graphics);
         }
     }
 }

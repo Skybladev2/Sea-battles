@@ -52,7 +52,7 @@ namespace SeaBattles
 
                 // вычисляем направление выстрела
                 // оно зависит от борта, с которого производится выстрел
-                Vector2 temp = position.Velocity;
+                Vector2 temp = position.Facing;
                 float angle = 0;
 
                 // в зависимости от борта поворачиваем вектор скорости корабля -
@@ -65,10 +65,10 @@ namespace SeaBattles
                         angle = 180;
                         break;
                     case Side.Left:
-                        angle = -90;
+                        angle = 90;
                         break;
                     case Side.Right:
-                        angle = 90;
+                        angle = -90;
                         break;
                     default:
                         break;
@@ -79,10 +79,10 @@ namespace SeaBattles
                 float newY = temp.X * (float)Math.Sin(angle / 180 * Math.PI) + temp.Y * (float)Math.Cos(angle / 180 * Math.PI);
 
                 // один из векторов - его мы будем удлинять на силу выстрела
-                Vector3 weaponFacing = new Vector3(newX, newY, 0);
+                Vector3 weaponFacing = new Vector3(newX, newY, -1);
                 //weaponFacing.Normalize();
 
-                Vector2 lastFrameWeaponVelocity2D = Vector2.Divide(position.Position - position.PrevPosition, position.LastDT);
+                Vector2 lastFrameWeaponVelocity2D = Vector2.Divide(position.Position - position.PrevPosition, position.LastDT * 100);
                 Vector3 lastFrameWeaponVelocity = new Vector3(lastFrameWeaponVelocity2D);
 
                 MessageDispatcher.Post(new Shoot(new Vector3(position.Position), weaponFacing, lastFrameWeaponVelocity));

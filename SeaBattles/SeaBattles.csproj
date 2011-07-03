@@ -74,7 +74,6 @@
     <Compile Include="MainGameWindow.cs" />
     <Compile Include="MessageDispatcher.cs" />
     <Compile Include="Aspects\PhysicsAspect.cs" />
-    <Compile Include="Point3.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Aspects\Ship.cs" />

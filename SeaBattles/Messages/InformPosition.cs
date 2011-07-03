@@ -23,6 +23,7 @@ namespace SeaBattles.Messages
         /// </summary>
         private object informedObject = null;
 
+        private Vector2 facing;
         private Vector2 velocity;
         private Vector2 position;
         private Vector2 prevPosition;
@@ -49,6 +50,11 @@ namespace SeaBattles.Messages
             get { return position; }
         }
 
+        public Vector2 Facing
+        {
+            get { return facing; }
+        }
+
         public Vector2 Velocity
         {
             get { return velocity; }
@@ -72,6 +78,7 @@ namespace SeaBattles.Messages
 
         public InformPosition(object target,
                             object informedObject,
+                            Vector2 facing,
                             Vector2 velocity,
                             Vector2 position,
                             Vector2 prevPosition,
@@ -79,6 +86,7 @@ namespace SeaBattles.Messages
         {
             this.target = target;
             this.informedObject = informedObject;
+            this.facing = facing;
             this.velocity = velocity;
             this.position = position;
             this.lastDT = lastDT; 

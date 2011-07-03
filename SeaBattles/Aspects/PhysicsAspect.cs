@@ -72,8 +72,7 @@ namespace SeaBattles
 
         public PhysicsAspect(object owner, Vector2 position, Vector2 facing, float speed) : this(owner, position, facing)
         {
-            //this.v
-
+            this.speed = speed;
         }
 
         private void HandleSetSpeed(object message)
@@ -90,12 +89,18 @@ namespace SeaBattles
 
            // аспект, запрашивающий положение родителя, должен принадлежать тому же родителю, что и физика
             if (getPosition.Target.Equals(this.owner))
+            {
+                float newX = facing.X * (float)Math.Cos(angle / 180 * Math.PI) - facing.Y * (float)Math.Sin(angle / 180 * Math.PI);
+                float newY = facing.X * (float)Math.Sin(angle / 180 * Math.PI) + facing.Y * (float)Math.Cos(angle / 180 * Math.PI);
+
                 MessageDispatcher.Post(new InformPosition(getPosition.Caller,
                                                             this.owner,
+                                                            new Vector2(newX, newY),
                                                             this.Velocity,
                                                             this.position,
                                                             this.prevPosition,
                                                             this.lastDT));
+            }
         }
 
         internal void UpdateRotation(InputVirtualKey inputVirtualKey, double dt)
@@ -123,6 +128,7 @@ namespace SeaBattles
         {
             this.prevPosition.X = position.X;
             this.prevPosition.Y = position.Y;
+            this.lastDT = (float)dt;
 
             position = Vector2.Add(position, Vector2.Multiply(this.Velocity, (float)dt));
             MessageDispatcher.Post(new SetPosition(this.owner, this.Velocity, this.position, this.angle));
