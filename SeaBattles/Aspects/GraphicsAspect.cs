@@ -18,12 +18,19 @@ namespace SeaBattles
         internal Vector3 scaling;
         internal float lineWidth = 3;
 
-        public GraphicsAspect(object owner, List<Vector3> vertices, float lineWidth) : base(owner)
+        public GraphicsAspect(object owner, List<Vector3> vertices, float lineWidth)
+            : base(owner)
         {
             this.vertices = vertices;
             this.scaling = new Vector3(uniformScale, uniformScale, 1);
             this.lineWidth = lineWidth;
             handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
+        }
+
+        public GraphicsAspect(object owner, List<Vector3> vertices, Vector3 position, float lineWidth)
+            : this(owner, vertices, lineWidth)
+        {
+            this.translation = position;
         }
 
         private void HandleUpdatePosition(object message)

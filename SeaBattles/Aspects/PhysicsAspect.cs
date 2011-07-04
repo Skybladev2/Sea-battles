@@ -80,7 +80,7 @@ namespace SeaBattles
             SetSpeed setSpeed = (SetSpeed)message;
             this.speed = setSpeed.Speed;
 
-            MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
+            //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
         }
 
         private void HandleGetPosition(object message)
@@ -121,7 +121,7 @@ namespace SeaBattles
             if (angle < 0)
                 angle += 360;
 
-            MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
+            //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
         }
 
         internal void Update(double dt)
@@ -132,6 +132,8 @@ namespace SeaBattles
 
             position = Vector2.Add(position, Vector2.Multiply(this.Velocity, (float)dt));
             MessageDispatcher.Post(new SetPosition(this.owner, this.Velocity, this.position, this.angle));
+            if (this.owner.GetType() == typeof(Ship))
+                MessageDispatcher.Post(new TraceText(this.position.ToString()));
         }
     }
 }

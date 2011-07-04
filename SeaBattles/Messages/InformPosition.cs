@@ -89,6 +89,7 @@ namespace SeaBattles.Messages
             this.facing = facing;
             this.velocity = velocity;
             this.position = position;
+            this.prevPosition = prevPosition;
             this.lastDT = lastDT; 
         }
     }
