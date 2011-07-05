@@ -21,7 +21,7 @@ namespace SeaBattles
         public Aspect(object owner)
         {
             this.owner = owner;
-            RegisterSelf();
+            //RegisterSelf();
         }
 
         public virtual void Destroy()

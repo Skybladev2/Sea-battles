@@ -26,16 +26,13 @@ namespace SeaBattles
         public Weapon(object owner, Side weaponSide) : base(owner)
         {
             this.shipSide = weaponSide;
-            //physics = new PhysicsAspect();
-            //graphics = new GraphicsAspect(shipVerts);
             shooter = new ShootAspect(this);
-            //handlersMap.Add(typeof(ButtonDown), physics);
-            //handlersMap.Add(typeof(UpdatePosition), graphics);
-            //handlersMap.Add(typeof(Shoot), shooter);
             handlers.Add(typeof(ButtonDown), HandleButtonDown);
             handlers.Add(typeof(InformPosition), HandleInformPosition);
 
             AddHandlerToMap(typeof(Shoot), shooter);
+
+            RegisterSelf();
         }
 
         private void HandleInformPosition(object message)

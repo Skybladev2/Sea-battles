@@ -16,6 +16,7 @@ namespace SeaBattles
         public VehicleWithGearboxAspect(object owner) : base(owner)
         {
             handlers.Add(typeof(ButtonDown), HandleButtonDown);
+            RegisterSelf();
         }
 
         private void HandleButtonDown(object message)

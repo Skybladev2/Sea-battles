@@ -61,18 +61,27 @@ namespace SeaBattles
         {
             handlers.Add(typeof(SetSpeed), HandleSetSpeed);
             handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
+            RegisterSelf();
         }
 
         public PhysicsAspect(object owner, Vector2 position, Vector2 facing)
-            : this(owner)
+            : base(owner)
         {
             this.position = position;
             this.facing = facing;
+            handlers.Add(typeof(SetSpeed), HandleSetSpeed);
+            handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
+            RegisterSelf();
         }
 
-        public PhysicsAspect(object owner, Vector2 position, Vector2 facing, float speed) : this(owner, position, facing)
+        public PhysicsAspect(object owner, Vector2 position, Vector2 facing, float speed) : base(owner)
         {
             this.speed = speed;
+            this.position = position;
+            this.facing = facing;
+            handlers.Add(typeof(SetSpeed), HandleSetSpeed);
+            handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
+            RegisterSelf();
         }
 
         private void HandleSetSpeed(object message)

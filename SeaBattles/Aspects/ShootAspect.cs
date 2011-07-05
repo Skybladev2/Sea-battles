@@ -19,6 +19,7 @@ namespace SeaBattles
         public ShootAspect(object owner) : base(owner)
         {
             handlers.Add(typeof(Shoot), new HandlerMethodDelegate(Shoot));
+            RegisterSelf();
         }
 
         private void Shoot(object message)
