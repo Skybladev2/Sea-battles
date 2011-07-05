@@ -10,7 +10,7 @@ namespace SeaBattles.Messages
     {
         private object target = null;
         private Vector2 velocity;
-        private Vector2 position;
+        private Vector3 position;
         private float angle;
 
         public object Target
@@ -25,7 +25,7 @@ namespace SeaBattles.Messages
             //set { angle = value; }
         }
 
-        public Vector2 Position
+        public Vector3 Position
         {
             get { return position; }
             //set { position = value; }
@@ -37,7 +37,7 @@ namespace SeaBattles.Messages
             //set { velocity = value; }
         }
 
-        public SetPosition(object target, Vector2 velocity, Vector2 position, float angle)
+        public SetPosition(object target, Vector2 velocity, Vector3 position, float angle)
         {
             this.target = target;
             this.velocity = velocity;

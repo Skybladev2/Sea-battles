@@ -40,19 +40,19 @@ namespace SeaBattles
 
             //vertices.Add(new Vector3(position.X + -2 / unitradius, position.Y + 1 / unitradius, -1));
 
-            vertices.Add(new Vector3(-2 / unitradius, 1 / unitradius, -1));
-            vertices.Add(new Vector3(-1 / unitradius, 2 / unitradius, -1));
+            vertices.Add(new Vector3(-2 / unitradius, 1 / unitradius, 0));
+            vertices.Add(new Vector3(-1 / unitradius, 2 / unitradius, 0));
 
-            vertices.Add(new Vector3(1 / unitradius, 2 / unitradius, -1));
-            vertices.Add(new Vector3(2 / unitradius, 1 / unitradius, -1));
+            vertices.Add(new Vector3(1 / unitradius, 2 / unitradius, 0));
+            vertices.Add(new Vector3(2 / unitradius, 1 / unitradius, 0));
 
-            vertices.Add(new Vector3(2 / unitradius, -1 / unitradius, -1));
-            vertices.Add(new Vector3(1 / unitradius, -2 / unitradius, -1));
+            vertices.Add(new Vector3(2 / unitradius, -1 / unitradius, 0));
+            vertices.Add(new Vector3(1 / unitradius, -2 / unitradius, 0));
 
-            vertices.Add(new Vector3(-1 / unitradius, -2 / unitradius, -1));
-            vertices.Add(new Vector3(-2 / unitradius, -1 / unitradius, -1));
+            vertices.Add(new Vector3(-1 / unitradius, -2 / unitradius, 0));
+            vertices.Add(new Vector3(-2 / unitradius, -1 / unitradius, 0));
 
-            vertices.Add(new Vector3(-2 / unitradius, 1 / unitradius, -1));
+            vertices.Add(new Vector3(-2 / unitradius, 1 / unitradius, 0));
 
             graphics = new GraphicsAspect(this, vertices, position, 1);
 
@@ -60,7 +60,7 @@ namespace SeaBattles
             cannonFacing.NormalizeFast();
             Vector3 shootVelocity = cannonFacing * startSpeed + cannonVelocity;
 
-            physics = new PhysicsAspect(this, position.Xy, shootVelocity.Xy, startSpeed);
+            physics = new PhysicsAspect(this, position, shootVelocity.Xy, startSpeed);
 
             MessageDispatcher.RegisterHandler(typeof(SetPosition), graphics);
         }

@@ -46,7 +46,7 @@ namespace SeaBattles
                 this.rotationAngle = setPosition.Angle;
                 //float scale = updatePosition.Velocity.LengthFast;
                 //this.scaling = new Vector3(1, scale, 1);
-                this.translation = new Vector3(setPosition.Position.X, setPosition.Position.Y, 0);
+                this.translation = setPosition.Position;
             }
         }
     }

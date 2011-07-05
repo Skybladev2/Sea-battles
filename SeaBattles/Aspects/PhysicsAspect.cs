@@ -10,8 +10,8 @@ namespace SeaBattles
 {
     internal class PhysicsAspect : Aspect
     {
-        private Vector2 position = new Vector2(0, 0);
-        private Vector2 prevPosition = new Vector2(0, 0);
+        private Vector3 position = new Vector3(0, 0, 0);
+        private Vector3 prevPosition = new Vector3(0, 0, 0);
         private float angle = 0;
         private float prevAngle = 0;
         private float lastDT = 1;
@@ -32,7 +32,7 @@ namespace SeaBattles
         /// </summary>
         private float speed = 0;
         private Vector2 facing = new Vector2(0, 1);
-        
+
         internal Vector2 Velocity
         {
             get
@@ -56,14 +56,15 @@ namespace SeaBattles
             }
         }
 
-        public PhysicsAspect(object owner) : base(owner)
+        public PhysicsAspect(object owner)
+            : base(owner)
         {
             handlers.Add(typeof(SetSpeed), HandleSetSpeed);
             handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
             RegisterSelf();
         }
 
-        public PhysicsAspect(object owner, Vector2 position, Vector2 facing)
+        public PhysicsAspect(object owner, Vector3 position, Vector2 facing)
             : base(owner)
         {
             this.position = position;
@@ -73,7 +74,8 @@ namespace SeaBattles
             RegisterSelf();
         }
 
-        public PhysicsAspect(object owner, Vector2 position, Vector2 facing, float speed) : base(owner)
+        public PhysicsAspect(object owner, Vector3 position, Vector2 facing, float speed)
+            : base(owner)
         {
             this.speed = speed;
             this.position = position;
@@ -95,7 +97,7 @@ namespace SeaBattles
         {
             GetOwnerPosition getPosition = (GetOwnerPosition)message;
 
-           // аспект, запрашивающий положение родителя, должен принадлежать тому же родителю, что и физика
+            // аспект, запрашивающий положение родителя, должен принадлежать тому же родителю, что и физика
             if (getPosition.Target.Equals(this.owner))
             {
                 float newX = facing.X * (float)Math.Cos(angle / 180 * Math.PI) - facing.Y * (float)Math.Sin(angle / 180 * Math.PI);
@@ -138,7 +140,7 @@ namespace SeaBattles
             this.prevPosition.Y = position.Y;
             this.lastDT = (float)dt;
 
-            position = Vector2.Add(position, Vector2.Multiply(this.Velocity, (float)dt));
+            position = Vector3.Add(position, new Vector3(Vector2.Multiply(this.Velocity, (float)dt)));
             MessageDispatcher.Post(new SetPosition(this.owner, this.Velocity, this.position, this.angle));
             if (this.owner.GetType() == typeof(Ship))
                 MessageDispatcher.Post(new TraceText(this.position.ToString()));

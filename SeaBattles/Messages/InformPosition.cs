@@ -24,8 +24,8 @@ namespace SeaBattles.Messages
 
         private Vector2 facing;
         private Vector2 velocity;
-        private Vector2 position;
-        private Vector2 prevPosition;
+        private Vector3 position;
+        private Vector3 prevPosition;
         private float lastDT;
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace SeaBattles.Messages
             get { return target; }
         }
 
-        public Vector2 Position
+        public Vector3 Position
         {
             get { return position; }
         }
@@ -59,7 +59,7 @@ namespace SeaBattles.Messages
             get { return velocity; }
         }
 
-        public Vector2 PrevPosition
+        public Vector3 PrevPosition
         {
             get
             {
@@ -79,8 +79,8 @@ namespace SeaBattles.Messages
                             object informedObject,
                             Vector2 facing,
                             Vector2 velocity,
-                            Vector2 position,
-                            Vector2 prevPosition,
+                            Vector3 position,
+                            Vector3 prevPosition,
                             float lastDT)
         {
             this.target = target;

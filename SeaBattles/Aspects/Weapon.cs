@@ -79,8 +79,8 @@ namespace SeaBattles
                 //Vector3 weaponFacing = new Vector3(position.Position.X, position.Position.Y, -1);
                 //weaponFacing.Normalize();
 
-                Vector2 lastFrameWeaponVelocity2D = Vector2.Divide(position.Position - position.PrevPosition, position.LastDT);
-                Vector3 lastFrameWeaponVelocity = new Vector3(lastFrameWeaponVelocity2D);
+                Vector3 lastFrameWeaponVelocity = Vector3.Divide(position.Position - position.PrevPosition, position.LastDT);
+                //Vector3 lastFrameWeaponVelocity = new Vector3(lastFrameWeaponVelocity2D);
 
                 MessageDispatcher.Post(new Shoot(new Vector3(position.Position.X, position.Position.Y, -1), weaponFacing, lastFrameWeaponVelocity));
                 //Shell shell = new Shell(position.Position, weaponFacing, new Vector3(lastFrameWeaponVelocity), 1);
