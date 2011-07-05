@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace SeaBattles
@@ -15,7 +14,8 @@ namespace SeaBattles
             lock (syncObj)
             {
                 if (aspects.ContainsKey(type))
-                    return aspects[type].ToList();
+                    //return aspects[type].ToList();
+                    return new List<Aspect>(aspects[type]);
                 else
                     return new LinkedList<Aspect>();
             }

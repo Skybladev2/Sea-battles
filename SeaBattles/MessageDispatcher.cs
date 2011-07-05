@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace SeaBattles
@@ -68,7 +67,8 @@ namespace SeaBattles
                 if (handlers.ContainsKey(type))
                 {
                     //LinkedList<IMessageHandler> typeHandlers = handlers[type];
-                    List<IMessageHandler> typeHandlers = handlers[type].ToList();
+                    //List<IMessageHandler> typeHandlers = handlers[type].ToList();
+                    List<IMessageHandler> typeHandlers = new List<IMessageHandler>(handlers[type]);
                     if (typeHandlers != null)
                         foreach (IMessageHandler handler in typeHandlers)
                         {
