@@ -130,7 +130,7 @@ namespace SeaBattles
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             // Nothing to do. Release the CPU to other threads.
-            //Thread.Sleep(1);
+            Thread.Sleep(1);
         }
 
         #endregion
@@ -169,6 +169,7 @@ namespace SeaBattles
                 render_watch.Reset(); //  Stopwatch may be inaccurate over larger intervals.
                 render_watch.Start(); // Plus, timekeeping is easier if we always start counting from 0.
 
+                GL.Flush();
                 SwapBuffers();
             }
 

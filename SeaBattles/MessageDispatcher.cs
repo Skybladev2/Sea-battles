@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace SeaBattles
 {
@@ -59,6 +60,12 @@ namespace SeaBattles
         }
 
         public static void Post(object message)
+        {
+            //ThreadPool.QueueUserWorkItem(PostInternal, message);
+            PostInternal(message);
+        }
+
+        private static void PostInternal(object message)
         {
             Type type = message.GetType();
 
