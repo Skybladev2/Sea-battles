@@ -298,6 +298,11 @@ namespace SeaBattles
                 case Key.C:
                     key = InputVirtualKey.Action2;
                     break;
+
+                case Key.G:
+                    //key = InputVirtualKey.Action16;
+                    //GC.Collect();
+                    break;
             }
 
             return key;

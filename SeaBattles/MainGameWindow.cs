@@ -71,6 +71,7 @@ namespace SeaBattles
             MessageDispatcher.RegisterHandler(typeof(Shoot), ship);
             //MessageDispatcher.RegisterHandler(typeof(SetPosition), anotherShip);
             MessageDispatcher.RegisterHandler(typeof(TraceText), this);
+            
         }
 
         #region OnLoad
@@ -151,7 +152,7 @@ namespace SeaBattles
 
             GL.ClearColor(Color.MidnightBlue);
             GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.PointSmooth);
+            //GL.Enable(EnableCap.PointSmooth);
             GL.Hint(HintTarget.LineSmoothHint, HintMode.Nicest);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
@@ -206,6 +207,11 @@ namespace SeaBattles
                 foreach (PhysicsAspect p in AspectLists.GetAspects(typeof(PhysicsAspect)))
                 {
                     p.Update(dt);
+                }
+
+                foreach (DestroyByTimerAspect d in AspectLists.GetAspects(typeof(DestroyByTimerAspect)))
+                {
+                    d.Update(dt);
                 }
             }
         }

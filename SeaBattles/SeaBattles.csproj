@@ -46,7 +46,10 @@
   <ItemGroup>
     <Compile Include="Aspects\Aspect.cs" />
     <Compile Include="AspectLists.cs" />
+    <Compile Include="Messages\DestroyChildrenOf.cs" />
+    <Compile Include="Aspects\DestroyByTimerAspect.cs" />
     <Compile Include="GLU\Sphere.cs" />
+    <Compile Include="Messages\DestroySelf.cs" />
     <Compile Include="Messages\InformPosition.cs" />
     <Compile Include="Messages\GetOwnerPosition.cs" />
     <Compile Include="Messages\Shoot.cs" />

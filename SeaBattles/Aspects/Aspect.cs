@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SeaBattles.Messages;
 
 namespace SeaBattles
 {
@@ -15,17 +16,60 @@ namespace SeaBattles
         public Aspect()
         {
             this.owner = null;
+            handlers.Add(typeof(DestroySelf), Destroy);
+            handlers.Add(typeof(DestroyChildrenOf), DestroyByOwner);
         }
 
         public Aspect(object owner)
         {
             this.owner = owner;
+            handlers.Add(typeof(DestroySelf), this.Destroy);
+            handlers.Add(typeof(DestroyChildrenOf), DestroyByOwner);
             //RegisterSelf();
         }
 
-        public virtual void Destroy()
+        protected void DestroyByOwner(object message)
         {
-            UnregisterSelf();
+            DestroyChildrenOf destroy = (DestroyChildrenOf)message;
+
+            // если аспект никому не принадлежит и пришло сообщение уничтожить свободные аспекты
+            if (this.owner == null && destroy.Owner == null)
+            {
+                UnregisterSelf();
+                Cleanup();
+            }
+            else
+                // если пришло сообщение убиться от родителя
+                if (this.owner != null && owner.Equals(destroy.Owner))
+                {
+                    UnregisterSelf();
+                    MessageDispatcher.Post(new DestroyChildrenOf(this));
+                    Cleanup();
+                }
+                // иначе игнорируем
+        }
+
+        protected void Destroy(object message)
+        {
+            DestroySelf destroy = (DestroySelf)message;
+
+            if (destroy.Target.Equals(this))
+            {
+                UnregisterSelf();
+                // посылаем сообщение об инициации удаления всех включённых аспектов
+                MessageDispatcher.Post(new DestroyChildrenOf(this));
+                // затем удаляем себя. нет гарантии, что аспекты внутри успели корректно удалиться
+                // поэтому все аспекты не должны полагаться на то, что owner не будет null и вообще как-то пытаться зависеть от владельца
+                Cleanup(); 
+            }
+        }
+
+        /// <summary>
+        /// Метод для освобождения ресурсов и корректного удаления аспекта.
+        /// </summary>
+        protected virtual void Cleanup()
+        {
+            //UnregisterSelf();
         }
 
         protected void RegisterSelf()

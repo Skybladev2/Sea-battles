@@ -14,6 +14,7 @@ namespace SeaBattles
     {
         private GraphicsAspect graphics = null;
         private PhysicsAspect physics = null;
+        private DestroyByTimerAspect timer = null;
         private float radius = 1;
 
         public Shell(Vector3 position, Vector3 cannonFacing, Vector3 cannonVelocity, float startSpeed)
@@ -61,9 +62,17 @@ namespace SeaBattles
             Vector3 shootVelocity = cannonFacing * startSpeed + cannonVelocity;
 
             physics = new PhysicsAspect(this, position, shootVelocity.Xy, startSpeed);
+            timer = new DestroyByTimerAspect(this, new TimeSpan(0, 0, 1));
 
             MessageDispatcher.RegisterHandler(typeof(SetPosition), graphics);
+            MessageDispatcher.RegisterHandler(typeof(DestroyChildrenOf), this);
+
+            AddHandlerToMap(typeof(DestroyChildrenOf), timer);
+            AddHandlerToMap(typeof(DestroyChildrenOf), graphics);
+            AddHandlerToMap(typeof(DestroyChildrenOf), physics);
         }
     }
 }
+
+
 
