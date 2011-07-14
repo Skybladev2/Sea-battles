@@ -143,6 +143,7 @@ namespace SeaBattles
             MakeCurrent(); // The context now belongs to this thread. No other thread may use it!
 
             VSync = VSyncMode.On;
+            double lastdt = 0;
 
             // Since we don't use OpenTK's timing mechanism, we need to keep time ourselves;
             Stopwatch render_watch = new Stopwatch();
@@ -162,9 +163,12 @@ namespace SeaBattles
 
             while (!exit)
             {
-                Update(update_watch.Elapsed.TotalSeconds);
+                
+                lastdt = update_watch.Elapsed.TotalSeconds;
+                Update(lastdt);  // некорректный алгоритм подсчёта времени. сам Update может занимать львиную долю времени, но таймер будет показывать только время, прошедшее вне Update
                 update_watch.Reset();
                 update_watch.Start();
+                this.Title = lastdt.ToString();
 
                 Render(render_watch.Elapsed.TotalSeconds);
                 render_watch.Reset(); //  Stopwatch may be inaccurate over larger intervals.
