@@ -143,11 +143,17 @@ namespace SeaBattles
             MakeCurrent(); // The context now belongs to this thread. No other thread may use it!
 
             VSync = VSyncMode.On;
-            double lastdt = 0;
+            double lastUpdateDt = 0;
+            double lastRenderDt = 0;
 
             // Since we don't use OpenTK's timing mechanism, we need to keep time ourselves;
             Stopwatch render_watch = new Stopwatch();
             Stopwatch update_watch = new Stopwatch();
+
+            // таймер для измерения времени обновления
+            Stopwatch updateTime = new Stopwatch();
+            // таймер для измерения времени рендеринга
+            Stopwatch renderTime = new Stopwatch();
             update_watch.Start();
             render_watch.Start();
 
@@ -164,13 +170,21 @@ namespace SeaBattles
             while (!exit)
             {
                 
-                lastdt = update_watch.Elapsed.TotalSeconds;
-                Update(lastdt);  // некорректный алгоритм подсчёта времени. сам Update может занимать львиную долю времени, но таймер будет показывать только время, прошедшее вне Update
+                lastUpdateDt = update_watch.Elapsed.TotalSeconds + updateTime.Elapsed.TotalSeconds;
+                updateTime.Reset();
+                updateTime.Start();
+                Update(lastUpdateDt);
+                updateTime.Stop();
                 update_watch.Reset();
                 update_watch.Start();
-                this.Title = lastdt.ToString();
+                //this.Title = lastdt.ToString();
 
-                Render(render_watch.Elapsed.TotalSeconds);
+
+                lastRenderDt = render_watch.Elapsed.TotalSeconds + renderTime.Elapsed.TotalSeconds;
+                renderTime.Reset();
+                renderTime.Start();
+                Render(lastRenderDt);
+                renderTime.Stop();
                 render_watch.Reset(); //  Stopwatch may be inaccurate over larger intervals.
                 render_watch.Start(); // Plus, timekeeping is easier if we always start counting from 0.
 
