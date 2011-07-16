@@ -17,8 +17,7 @@ namespace SeaBattles
     public class MainGameWindow : GameWindow, IMessageHandler
     {
         #region Performance and debug
-        //private int updateCount = 0;
-        //private List<double> dts = new List<double>(15000);
+        private System.Threading.Timer timer = null;
         #endregion
 
         bool viewport_changed = true;
@@ -37,7 +36,7 @@ namespace SeaBattles
         private Dictionary<Type, HandlerMethodDelegate> handlers = new Dictionary<Type, HandlerMethodDelegate>();
 
         public MainGameWindow()
-            : base(800, 600,GraphicsMode.Default, "Sea battles")
+            : base(800, 600, GraphicsMode.Default, "Sea battles")
         {
             Resize += delegate(object sender, EventArgs e)
             {
@@ -71,7 +70,13 @@ namespace SeaBattles
             MessageDispatcher.RegisterHandler(typeof(Shoot), ship);
             //MessageDispatcher.RegisterHandler(typeof(SetPosition), anotherShip);
             MessageDispatcher.RegisterHandler(typeof(TraceText), this);
-            
+
+            timer = new System.Threading.Timer(new TimerCallback(timer_Tick), null, 1000, 1000);
+        }
+
+        void timer_Tick(object sender)
+        {
+            this.Title = MessageDispatcher.GetHandlersCount(typeof(DestroyChildrenOf)).ToString();
         }
 
         #region OnLoad
@@ -169,7 +174,7 @@ namespace SeaBattles
 
             while (!exit)
             {
-                
+
                 lastUpdateDt = update_watch.Elapsed.TotalSeconds + updateTime.Elapsed.TotalSeconds;
                 updateTime.Reset();
                 updateTime.Start();

@@ -89,6 +89,14 @@ namespace SeaBattles
             }
         }
 
+        internal static int GetHandlersCount(Type type)
+        {
+            if (handlers.ContainsKey(type))
+                return handlers[type].Count;
+            else
+                return 0;
+        }
+
         #region Singleton
         private MessageDispatcher() { }
         private static MessageDispatcher _instance = new MessageDispatcher();

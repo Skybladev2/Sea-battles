@@ -22,7 +22,8 @@ namespace SeaBattles
         /// </summary>
         private bool waitForWeaponCoords = false;
 
-        public Weapon(object owner, Side weaponSide) : base(owner)
+        public Weapon(object owner, Side weaponSide)
+            : base(owner)
         {
             this.shipSide = weaponSide;
             shooter = new ShootAspect(this);
@@ -39,7 +40,11 @@ namespace SeaBattles
             InformPosition position = (InformPosition)message;
 
             // если пришла информация о чужом объекте - выходим
-            if (position.InformedObject != this.owner || position.Target != this)
+            if (position.InformedObject != this.owner
+                ||
+                position.Target != this
+                ||
+                ((Weapon)position.Target).shipSide != this.shipSide) // если пришло сообщение для другого борта
                 return;
 
             if (waitForWeaponCoords)
@@ -75,14 +80,14 @@ namespace SeaBattles
                 float newY = temp.X * (float)Math.Sin(angle / 180 * Math.PI) + temp.Y * (float)Math.Cos(angle / 180 * Math.PI);
 
                 // один из векторов - его мы будем удлинять на силу выстрела
-                Vector3 weaponFacing = new Vector3(newX, newY, -1);
+                Vector3 weaponFacing = new Vector3(newX, newY, 0);
                 //Vector3 weaponFacing = new Vector3(position.Position.X, position.Position.Y, -1);
                 //weaponFacing.Normalize();
 
                 Vector3 lastFrameWeaponVelocity = Vector3.Divide(position.Position - position.PrevPosition, position.LastDT);
                 //Vector3 lastFrameWeaponVelocity = new Vector3(lastFrameWeaponVelocity2D);
 
-                MessageDispatcher.Post(new Shoot(new Vector3(position.Position.X, position.Position.Y, -1), weaponFacing, lastFrameWeaponVelocity));
+                MessageDispatcher.Post(new Shoot(this, new Vector3(position.Position.X, position.Position.Y, -1), weaponFacing, lastFrameWeaponVelocity));
                 //Shell shell = new Shell(position.Position, weaponFacing, new Vector3(lastFrameWeaponVelocity), 1);
             }
         }
