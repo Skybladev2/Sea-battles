@@ -71,6 +71,13 @@ namespace SeaBattles
             AddHandlerToMap(typeof(DestroyChildrenOf), graphics);
             AddHandlerToMap(typeof(DestroyChildrenOf), physics);
         }
+
+        protected override void Cleanup()
+        {
+            base.Cleanup();
+            MessageDispatcher.UnRegisterHandler(typeof(DestroyChildrenOf), this);
+            MessageDispatcher.UnRegisterHandler(typeof(SetPosition), graphics);
+        }
     }
 }
 

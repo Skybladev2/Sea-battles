@@ -46,7 +46,13 @@ namespace SeaBattles
                     MessageDispatcher.Post(new DestroyChildrenOf(this));
                     Cleanup();
                 }
-                // иначе игнорируем
+                else
+                    if (this.Equals(destroy.Owner)) // сообщение об уничтожении дочерних объектов родителя пришло родителю
+                    {
+                        UnregisterSelf();
+                        Cleanup();
+                    }
+                    // иначе игнорируем
         }
 
         protected void Destroy(object message)
@@ -60,7 +66,7 @@ namespace SeaBattles
                 MessageDispatcher.Post(new DestroyChildrenOf(this));
                 // затем удаляем себя. нет гарантии, что аспекты внутри успели корректно удалиться
                 // поэтому все аспекты не должны полагаться на то, что owner не будет null и вообще как-то пытаться зависеть от владельца
-                Cleanup(); 
+                Cleanup();
             }
         }
 
