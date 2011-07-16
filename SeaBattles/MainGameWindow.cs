@@ -37,7 +37,7 @@ namespace SeaBattles
         private Dictionary<Type, HandlerMethodDelegate> handlers = new Dictionary<Type, HandlerMethodDelegate>();
 
         public MainGameWindow()
-            : base(800, 600)
+            : base(800, 600,GraphicsMode.Default, "Sea battles")
         {
             Resize += delegate(object sender, EventArgs e)
             {
