@@ -27,12 +27,12 @@ namespace SeaBattles
         {
             this.shipSide = weaponSide;
             shooter = new ShootAspect(this);
+
+            // собственные обработчики класса
             handlers.Add(typeof(ButtonDown), HandleButtonDown);
             handlers.Add(typeof(InformPosition), HandleInformPosition);
-
-            AddHandlerToMap(typeof(Shoot), shooter);
-
-            RegisterSelf();
+            
+            RegisterAllStuff();
         }
 
         private void HandleInformPosition(object message)

@@ -13,6 +13,8 @@ namespace SeaBattles
         // соответствие сообщений методам, их обрабатывающим
         protected Dictionary<Type, HandlerMethodDelegate> handlers = new Dictionary<Type, HandlerMethodDelegate>();
 
+        //protected LinkedList<Aspect> aspects = new LinkedList<Aspect>();
+
         public Aspect()
         {
             this.owner = null;
@@ -25,7 +27,55 @@ namespace SeaBattles
             this.owner = owner;
             handlers.Add(typeof(DestroySelf), this.Destroy);
             handlers.Add(typeof(DestroyChildrenOf), DestroyByOwner);
+
+            //if (owner != null)
+            //{
+            //    Aspect ownerAspect = owner as Aspect;
+            //    if (ownerAspect != null)
+            //    {
+            //        ownerAspect.AddToOwnAspectList(this);
+            //    }
+            //}
+
             //RegisterSelf();
+        }
+
+        //protected void AddToOwnAspectList(Aspect child)
+        //{
+        //    this.aspects.AddLast(child);
+        //}
+
+
+        protected void RegisterHandlersInParent()
+        {
+            if (owner != null)
+            {
+                Aspect ownerAspect = owner as Aspect;
+                if (ownerAspect != null)
+                {
+                    foreach (KeyValuePair<Type, HandlerMethodDelegate> d in handlers)
+                    {
+                        ownerAspect.AddHandlerToMap(d.Key, this);
+                    }
+
+                    foreach (KeyValuePair<Type, LinkedList<IMessageHandler>> handlerMap in handlersMap)
+                    {
+                        foreach (IMessageHandler aspectHandler in handlerMap.Value)
+                        {
+                            ownerAspect.AddHandlerToMap(handlerMap.Key, aspectHandler);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void RegisterAllStuff()
+        {
+            // регистрируем собстввенные обработчики у родителя, чтобы он получал соотвествующие сообщения и передавал их нам
+            RegisterHandlersInParent();
+
+            // регистрируем себя в списке аспектов
+            RegisterSelf();
         }
 
         protected void DestroyByOwner(object message)
@@ -52,7 +102,7 @@ namespace SeaBattles
                         UnregisterSelf();
                         Cleanup();
                     }
-                    // иначе игнорируем
+            // иначе игнорируем
         }
 
         protected void Destroy(object message)
@@ -75,6 +125,7 @@ namespace SeaBattles
         /// </summary>
         protected virtual void Cleanup()
         {
+            //this.aspects.Clear();
             //UnregisterSelf();
         }
 

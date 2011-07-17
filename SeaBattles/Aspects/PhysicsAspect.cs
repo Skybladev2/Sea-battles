@@ -61,7 +61,7 @@ namespace SeaBattles
         {
             handlers.Add(typeof(SetSpeed), HandleSetSpeed);
             handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
-            RegisterSelf();
+            RegisterAllStuff();
         }
 
         public PhysicsAspect(object owner, Vector3 position, Vector2 facing)
@@ -71,7 +71,7 @@ namespace SeaBattles
             this.facing = facing;
             handlers.Add(typeof(SetSpeed), HandleSetSpeed);
             handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
-            RegisterSelf();
+            RegisterAllStuff();
         }
 
         public PhysicsAspect(object owner, Vector3 position, Vector2 facing, float speed)
@@ -82,7 +82,7 @@ namespace SeaBattles
             this.facing = facing;
             handlers.Add(typeof(SetSpeed), HandleSetSpeed);
             handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
-            RegisterSelf();
+            RegisterAllStuff();
         }
 
         private void HandleSetSpeed(object message)

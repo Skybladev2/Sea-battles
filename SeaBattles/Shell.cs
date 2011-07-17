@@ -66,10 +66,6 @@ namespace SeaBattles
 
             MessageDispatcher.RegisterHandler(typeof(SetPosition), graphics);
             MessageDispatcher.RegisterHandler(typeof(DestroyChildrenOf), this);
-
-            AddHandlerToMap(typeof(DestroyChildrenOf), timer);
-            AddHandlerToMap(typeof(DestroyChildrenOf), graphics);
-            AddHandlerToMap(typeof(DestroyChildrenOf), physics);
         }
 
         protected override void Cleanup()

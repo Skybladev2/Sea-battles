@@ -19,7 +19,8 @@ namespace SeaBattles
             : base(owner)
         {
             handlers.Add(typeof(Shoot), new HandlerMethodDelegate(Shoot));
-            RegisterSelf();
+
+            RegisterAllStuff();
         }
 
         private void Shoot(object message)

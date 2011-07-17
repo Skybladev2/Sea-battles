@@ -24,7 +24,7 @@ namespace SeaBattles
             this.scaling = new Vector3(uniformScale, uniformScale, 1);
             this.lineWidth = lineWidth;
             handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
-            RegisterSelf();
+            RegisterAllStuff();
         }
 
         public GraphicsAspect(object owner, List<Vector3> vertices, Vector3 position, float lineWidth)
@@ -35,7 +35,7 @@ namespace SeaBattles
             this.scaling = new Vector3(uniformScale, uniformScale, 1);
             this.lineWidth = lineWidth;
             handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
-            RegisterSelf();
+            RegisterAllStuff();
         }
 
         private void HandleUpdatePosition(object message)

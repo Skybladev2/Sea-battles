@@ -21,6 +21,26 @@ namespace SeaBattles
             }
         }
 
+        //internal static ICollection<Aspect> GetAspectsByOwner(object owner)
+        //{
+        //    // проходим все существующие аспекты
+        //    // если будет медленно, то нужно будет в базовый класс аспекта добавить список включённых аспектов
+        //    lock (syncObj)
+        //    {
+        //        LinkedList<Aspect> result = new LinkedList<Aspect>();
+        //        foreach (KeyValuePair<Type, LinkedList<Aspect>> list in aspects)
+        //        {
+        //            foreach (Aspect aspect in list.Value)
+        //            {
+        //                if (owner.Equals(aspect))
+        //                    result.AddLast(aspect);
+        //            }
+        //        }
+
+        //        return result;
+        //    }
+        //}
+
         internal static void AddAspect(Aspect aspect)
         {
             Type type = aspect.GetType();
