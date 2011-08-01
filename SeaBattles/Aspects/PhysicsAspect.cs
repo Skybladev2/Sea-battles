@@ -25,7 +25,7 @@ namespace SeaBattles
         /// Глобальный коэффициент, влияющий на скорость движения всех объектов в игре.
         /// По идее, должен задаваться извне.
         /// </summary>
-        private readonly float speedMultiplier = 0.1f;
+        private readonly float speedMultiplier = 100;
 
         /// <summary>
         /// Скорость текущего объекта (вектор направления всегда единичный)

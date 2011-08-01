@@ -25,6 +25,7 @@ namespace SeaBattles
         bool exit = false;
         Thread rendering_thread;
         object update_lock = new object();
+        private Camera mainCamera = null;
 
         Random rand = new Random();
 
@@ -51,6 +52,7 @@ namespace SeaBattles
             };
 
             handlers.Add(typeof(TraceText), new HandlerMethodDelegate(WriteTitle));
+            mainCamera = new Camera(0, 0, 1, 800, 600);
             input = new InputLayer(this);
 
             ship = new Ship(new PointF(0, 0));
@@ -257,14 +259,15 @@ namespace SeaBattles
                 }
             }
 
-            Matrix4 perspective =
-                Matrix4.CreatePerspectiveFieldOfView((float)(Math.PI * 45f / 180f), viewport_width / (float)viewport_height, 0.1f, 100f);
-            //Matrix4.CreateOrthographic(2, 2, -1, 1);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref perspective);
+            //Matrix4 perspective =
+            //    Matrix4.CreatePerspectiveFieldOfView((float)(Math.PI * 45f / 180f), viewport_width / (float)viewport_height, 0.1f, 100f);
+            ////Matrix4.CreateOrthographic(2, 2, -1, 1);
+            //GL.MatrixMode(MatrixMode.Projection);
+            //GL.LoadMatrix(ref perspective);
 
-            GL.MatrixMode(MatrixMode.Modelview);
+            //GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
+            mainCamera.SetView();
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             //GL.LineWidth(4);
