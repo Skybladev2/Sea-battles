@@ -12,7 +12,8 @@ namespace SeaBattles
         // индекс передачи в массиве gears
         private int currentGear = 0;
 
-        public VehicleWithGearboxAspect(object owner) : base(owner)
+        public VehicleWithGearboxAspect(object owner)
+            : base(owner)
         {
             handlers.Add(typeof(ButtonDown), HandleButtonDown);
             RegisterAllStuff();
@@ -79,7 +80,7 @@ namespace SeaBattles
             if (currentGear > 0)
                 currentGear--;
 
-            MessageDispatcher.Post(new SetSpeed(currentGear));
+            MessageDispatcher.Post(new SetSpeed(gears[currentGear]));
             //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
         }
 
@@ -88,7 +89,7 @@ namespace SeaBattles
             if (currentGear < gears.Length - 1)
                 currentGear++;
 
-            MessageDispatcher.Post(new SetSpeed(currentGear));
+            MessageDispatcher.Post(new SetSpeed(gears[currentGear]));
             //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
         }
     }

@@ -46,13 +46,14 @@ namespace SeaBattles
         /// <param name="shipVerts"></param>
         public Ship(PointF position)
         {
+            float scale = 0.1f;
             List<Vector3> shipVerts = new List<Vector3>();
-            shipVerts.Add(new Vector3(-100 + position.X, -300 + position.Y, 0));
-            shipVerts.Add(new Vector3(-100 + position.X, 100 + position.Y, 0));
-            shipVerts.Add(new Vector3(0 + position.X, 300 + position.Y, 0));
-            shipVerts.Add(new Vector3(100 + position.X, 100 + position.Y, 0));
-            shipVerts.Add(new Vector3(100 + position.X, -300 + position.Y, 0));
-            shipVerts.Add(new Vector3(-100 + position.X, -300 + position.Y, 0));
+            shipVerts.Add(new Vector3(-100 * scale + position.X, -400 * scale + position.Y, 0));
+            shipVerts.Add(new Vector3(-100 * scale + position.X, 100 * scale + position.Y, 0));
+            shipVerts.Add(new Vector3(0 * scale + position.X, 400 * scale + position.Y, 0));
+            shipVerts.Add(new Vector3(100 * scale + position.X, 100 * scale + position.Y, 0));
+            shipVerts.Add(new Vector3(100 * scale + position.X, -400 * scale + position.Y, 0));
+            shipVerts.Add(new Vector3(-100 * scale + position.X, -400 * scale + position.Y, 0));
 
             mechanics = new VehicleWithGearboxAspect(this);
             physics = new PhysicsAspect(this);
