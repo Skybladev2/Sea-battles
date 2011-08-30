@@ -28,7 +28,7 @@ namespace SeaBattles
             Shoot shoot = (Shoot)message;
             if (shoot.Owner != null && shoot.Owner.Equals(this.owner))
             {
-                Shell shell = new Shell(shoot.From, shoot.Direction, shoot.ShooterVelocity, 1);
+                Shell shell = new Shell(shoot.From, shoot.Direction, shoot.ShooterVelocity, 10);
             }
             //Shell shell = new Shell(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.0001f);
         }

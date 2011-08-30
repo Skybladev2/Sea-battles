@@ -19,49 +19,25 @@ namespace SeaBattles
 
         public Shell(Vector3 position, Vector3 cannonFacing, Vector3 cannonVelocity, float startSpeed)
         {
-            List<Vector3> vertices = new List<Vector3>(8);
+            int segments = 8;
+            List<Vector3> vertices = new List<Vector3>(segments + 1);
 
             //float unitradius = (float)Math.Sqrt(8);
-            float unitradius = 100;
-            // рисуем с левого верхнего угла по часовой стрелке
-            // грубое приближение круга 8 вершинами
-            // радиус sqrt(2^2 + 2^2) = sqrt(8)
-
-            //vertices.Add(new Vector3(position.X + -2 / unitradius, position.Y + 1 / unitradius, -1));
-            //vertices.Add(new Vector3(position.X + -1 / unitradius, position.Y + 2 / unitradius, -1));
-
-            //vertices.Add(new Vector3(position.X + 1 / unitradius, position.Y + 2 / unitradius, -1));
-            //vertices.Add(new Vector3(position.X + 2 / unitradius, position.Y + 1 / unitradius, -1));
-
-            //vertices.Add(new Vector3(position.X + 2 / unitradius, position.Y + -1 / unitradius, -1));
-            //vertices.Add(new Vector3(position.X + 1 / unitradius, position.Y + -2 / unitradius, -1));
-
-            //vertices.Add(new Vector3(position.X + -1 / unitradius, position.Y + -2 / unitradius, -1));
-            //vertices.Add(new Vector3(position.X + -2 / unitradius, position.Y + -1 / unitradius, -1));
-
-            //vertices.Add(new Vector3(position.X + -2 / unitradius, position.Y + 1 / unitradius, -1));
-
-            vertices.Add(new Vector3(-2 / unitradius, 1 / unitradius, 0));
-            vertices.Add(new Vector3(-1 / unitradius, 2 / unitradius, 0));
-
-            vertices.Add(new Vector3(1 / unitradius, 2 / unitradius, 0));
-            vertices.Add(new Vector3(2 / unitradius, 1 / unitradius, 0));
-
-            vertices.Add(new Vector3(2 / unitradius, -1 / unitradius, 0));
-            vertices.Add(new Vector3(1 / unitradius, -2 / unitradius, 0));
-
-            vertices.Add(new Vector3(-1 / unitradius, -2 / unitradius, 0));
-            vertices.Add(new Vector3(-2 / unitradius, -1 / unitradius, 0));
-
-            vertices.Add(new Vector3(-2 / unitradius, 1 / unitradius, 0));
+            float angleStep = (float)(2 * Math.PI / segments);
+            for (int i = 0; i < segments; i++)
+            {
+                vertices.Add(new Vector3((float)Math.Cos(angleStep * i) / 2 * radius, (float)Math.Sin(angleStep * i) / 2 * radius, 0));
+            }
+            vertices.Add(new Vector3(0.5f *radius, 0, 0));
 
             graphics = new GraphicsAspect(this, vertices, position, 1);
 
             // вычисляем вектор полёта снаряда - сумма импульса выстрела и собственной скорости оружия
             cannonFacing.NormalizeFast();
-            Vector3 shootVelocity = cannonFacing * startSpeed + cannonVelocity;
+            //Vector3 shootVelocity = cannonFacing * startSpeed + cannonVelocity;
 
-            physics = new PhysicsAspect(this, position, shootVelocity.Xy, startSpeed);
+            //physics = new PhysicsAspect(this, position, shootVelocity.Xy, startSpeed);
+            physics = new PhysicsAspect(this, position, cannonFacing.Xy, startSpeed);
             timer = new DestroyByTimerAspect(this, new TimeSpan(0, 0, 1));
 
             MessageDispatcher.RegisterHandler(typeof(SetPosition), graphics);

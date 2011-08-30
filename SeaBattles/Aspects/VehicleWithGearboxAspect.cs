@@ -8,7 +8,7 @@ namespace SeaBattles
     class VehicleWithGearboxAspect : Aspect
     {
         // (целевая) скорость на каждой передаче в м/с
-        private float[] gears = new float[] { 0, 1, 2, 3 };
+        private float[] gears = new float[] { 0, 10, 20, 30 };
         // индекс передачи в массиве gears
         private int currentGear = 0;
 

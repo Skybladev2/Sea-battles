@@ -44,11 +44,10 @@ namespace SeaBattles
         /// Конструктор
         /// </summary>
         /// <param name="shipVerts"></param>
-        public Ship(PointF position)
+        public Ship(PointF position, float length, float width)
         {
-            float scale = 1f;
-            float width = 10f;
-            float length = 40f;
+            //float width = 10f;
+            //float length = 40f;
             List<Vector3> shipVerts = new List<Vector3>();
             shipVerts.Add(new Vector3(-1f * width / 2 + position.X, -1f * length / 2 + position.Y, 0));
             shipVerts.Add(new Vector3(-1f * width / 2 + position.X, 0.25f * length / 2 + position.Y, 0));

@@ -55,7 +55,7 @@ namespace SeaBattles
             mainCamera = new Camera(0, 0, 1, 200, 150);
             input = new InputLayer(this);
 
-            ship = new Ship(new PointF(0, 0));
+            ship = new Ship(new PointF(0, 0), 40, 10);
             //anotherShip = new Ship(new PointF(0.5f, 0));
 
             //---------------------------------------------------
