@@ -32,7 +32,13 @@ namespace SeaBattles
         Action4,
         Action5,
         Action6,
+        /// <summary>
+        /// Zoom in
+        /// </summary>
         Action7,
+        /// <summary>
+        /// Zoom out
+        /// </summary>
         Action8,
         Action9,
         Action10,

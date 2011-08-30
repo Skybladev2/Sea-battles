@@ -12,8 +12,8 @@ namespace SeaBattles
     /// </summary>
     class Camera
     {
-        private int viewport_width;
-        private int viewport_height;
+        private float viewport_width;
+        private float viewport_height;
 
         //private readonly float right;
         //private readonly float up;
@@ -118,6 +118,18 @@ namespace SeaBattles
             float[] matrix = new float[16];
             GL.GetFloat(GetPName.ModelviewMatrix, matrix);
             return matrix;
+        }
+
+        internal void ZoomIn(float speed)
+        {
+            this.viewport_width /= speed;
+            this.viewport_height /= speed;
+        }
+
+        internal void ZoomOut(float speed)
+        {
+            this.viewport_width *= speed;
+            this.viewport_height *= speed;
         }
     }
 }

@@ -273,6 +273,7 @@ namespace SeaBattles
 
             switch (button)
             {
+                #region Movement
                 case Key.W:
                 case Key.Up:
                     key = InputVirtualKey.AxisUp;
@@ -289,6 +290,9 @@ namespace SeaBattles
                 case Key.Right:
                     key = InputVirtualKey.AxisRight;
                     break;
+                #endregion
+
+                #region Shooting
                 case Key.Z:
                     key = InputVirtualKey.Action1;
                     break;
@@ -298,11 +302,21 @@ namespace SeaBattles
                 case Key.C:
                     key = InputVirtualKey.Action2;
                     break;
+                #endregion
 
+                #region Camera
+                case Key.PageDown:
+                    key = InputVirtualKey.Action7;
+                    break;
+                case Key.PageUp:
+                    key = InputVirtualKey.Action8;
+                    break;
+                #endregion
                 case Key.G:
                     //key = InputVirtualKey.Action16;
                     //GC.Collect();
                     break;
+
             }
 
             return key;

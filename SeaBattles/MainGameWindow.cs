@@ -52,7 +52,7 @@ namespace SeaBattles
             };
 
             handlers.Add(typeof(TraceText), new HandlerMethodDelegate(WriteTitle));
-            mainCamera = new Camera(0, 0, 1, 800, 600);
+            mainCamera = new Camera(0, 0, 1, 200, 150);
             input = new InputLayer(this);
 
             ship = new Ship(new PointF(0, 0));
@@ -226,6 +226,12 @@ namespace SeaBattles
 
                 if (input.Pressed(InputVirtualKey.AxisRight))
                     ship.Physics.UpdateRotation(InputVirtualKey.AxisRight, dt);
+
+                if (input.Pressed(InputVirtualKey.Action7))
+                    mainCamera.ZoomIn(1.01f);
+
+                if (input.Pressed(InputVirtualKey.Action8))
+                    mainCamera.ZoomOut(1.01f);
 
                 //ship.Physics.Update(dt);
 
