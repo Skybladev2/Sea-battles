@@ -142,8 +142,8 @@ namespace SeaBattles
 
             position = Vector3.Add(position, new Vector3(Vector2.Multiply(this.Velocity, (float)dt)));
             MessageDispatcher.Post(new SetPosition(this.owner, this.Velocity, this.position, this.angle));
-            //if (this.owner.GetType() == typeof(Ship))
-            //    MessageDispatcher.Post(new TraceText(this.position.ToString()));
+            //if (this.owner.GetType() == typeof(Shell))
+            //    MessageDispatcher.Post(new TraceText(this.Velocity.ToString()));
         }
     }
 }

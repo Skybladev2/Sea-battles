@@ -26,18 +26,21 @@ namespace SeaBattles
             float angleStep = (float)(2 * Math.PI / segments);
             for (int i = 0; i < segments; i++)
             {
-                vertices.Add(new Vector3((float)Math.Cos(angleStep * i) / 2 * radius, (float)Math.Sin(angleStep * i) / 2 * radius, 0));
+                vertices.Add(new Vector3((float)Math.Cos(angleStep * i) * radius, (float)Math.Sin(angleStep * i) * radius, 0));
             }
-            vertices.Add(new Vector3(0.5f *radius, 0, 0));
+            vertices.Add(new Vector3(radius, 0, 0));
 
             graphics = new GraphicsAspect(this, vertices, position, 1);
 
             // вычисляем вектор полёта снаряда - сумма импульса выстрела и собственной скорости оружия
             cannonFacing.NormalizeFast();
-            //Vector3 shootVelocity = cannonFacing * startSpeed + cannonVelocity;
-
+            Vector3 shootVelocity = cannonFacing * startSpeed + cannonVelocity;
+            Vector2 shootDirection = shootVelocity.Xy;
+            shootDirection.NormalizeFast();
             //physics = new PhysicsAspect(this, position, shootVelocity.Xy, startSpeed);
-            physics = new PhysicsAspect(this, position, cannonFacing.Xy, startSpeed);
+
+            physics = new PhysicsAspect(this, position, shootDirection, shootVelocity.LengthFast);
+            //physics = new PhysicsAspect(this, position, Vector2.Zero, 0);
             timer = new DestroyByTimerAspect(this, new TimeSpan(0, 0, 1));
 
             MessageDispatcher.RegisterHandler(typeof(SetPosition), graphics);

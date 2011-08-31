@@ -13,7 +13,7 @@ namespace SeaBattles
         internal Vector3 translation = new Vector3(0, 0, 0);
         internal Vector3 rotationAxis = new Vector3(0, 0, 1);
         internal float rotationAngle = 0;
-        internal float uniformScale = 0.5f;
+        internal float uniformScale = 1f;
         internal Vector3 scaling;
         internal float lineWidth = 3;
 
@@ -47,6 +47,9 @@ namespace SeaBattles
                 //float scale = updatePosition.Velocity.LengthFast;
                 //this.scaling = new Vector3(1, scale, 1);
                 this.translation = setPosition.Position;
+
+                //if (this.owner.GetType() == typeof(Shell))
+                //    MessageDispatcher.Post(new TraceText(this.translation.ToString()));
             }
         }
     }

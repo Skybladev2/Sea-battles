@@ -78,7 +78,7 @@ namespace SeaBattles
 
         void timer_Tick(object sender)
         {
-            MessageDispatcher.Post(new TraceText(MessageDispatcher.GetHandlersCount(typeof(DestroyChildrenOf)).ToString()));
+            //MessageDispatcher.Post(new TraceText(MessageDispatcher.GetHandlersCount(typeof(DestroyChildrenOf)).ToString()));
         }
 
         #region OnLoad
