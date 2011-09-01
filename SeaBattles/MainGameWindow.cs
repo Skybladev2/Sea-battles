@@ -164,18 +164,15 @@ namespace SeaBattles
             update_watch.Start();
             render_watch.Start();
 
-            GL.CullFace(CullFaceMode.Back);
-            GL.Enable(EnableCap.CullFace);
             GL.ClearColor(Color.MidnightBlue);
-            //GL.Enable(EnableCap.DepthTest);
-            GL.Disable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.AlphaTest);
             //GL.Enable(EnableCap.PointSmooth);
             //GL.Hint(HintTarget.LineSmoothHint, HintMode.Nicest);
             GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
             GL.Enable(EnableCap.Blend);
-            //GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-            GL.BlendFunc(BlendingFactorSrc.SrcAlphaSaturate, BlendingFactorDest.One);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            //GL.BlendFunc(BlendingFactorSrc.SrcAlphaSaturate, BlendingFactorDest.One);
             //GL.Enable(EnableCap.LineSmooth);
             GL.Enable(EnableCap.PolygonSmooth);
             GL.PointSize(16);
@@ -279,8 +276,8 @@ namespace SeaBattles
             GL.LoadIdentity();
             mainCamera.SetView();
 
-            //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            //GL.Clear(ClearBufferMask.ColorBufferBit);
             //GL.LineWidth(4);
 
             foreach (GraphicsAspect g in AspectLists.GetAspects(typeof(GraphicsAspect)))
