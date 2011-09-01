@@ -46,6 +46,9 @@
   <ItemGroup>
     <Compile Include="Aspects\Aspect.cs" />
     <Compile Include="AspectLists.cs" />
+    <Compile Include="Aspects\BoundsAspect.cs" />
+    <Compile Include="Aspects\RectangleBoundsAspect.cs" />
+    <Compile Include="BoundShape.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Messages\DestroyChildrenOf.cs" />
     <Compile Include="Aspects\DestroyByTimerAspect.cs" />
@@ -61,6 +64,7 @@
     <Compile Include="Messages\ButtonPress.cs" />
     <Compile Include="Messages\SetPosition.cs" />
     <Compile Include="Messages\TraceText.cs" />
+    <Compile Include="Misc.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="Side.cs" />
     <Compile Include="Aspects\VehicleWithGearboxAspect.cs" />

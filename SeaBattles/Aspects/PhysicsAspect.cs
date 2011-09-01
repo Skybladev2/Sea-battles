@@ -49,10 +49,12 @@ namespace SeaBattles
         {
             get
             {
-                // поворот вектора
-                float newX = facing.X * (float)Math.Cos(prevAngle / 180 * Math.PI) - facing.Y * (float)Math.Sin(prevAngle / 180 * Math.PI);
-                float newY = facing.X * (float)Math.Sin(prevAngle / 180 * Math.PI) + facing.Y * (float)Math.Cos(prevAngle / 180 * Math.PI);
-                return new Vector2(newX, newY);
+                //// http://en.wikipedia.org/wiki/Rotation_(mathematics)
+                //// поворот вектора
+                //float newX = facing.X * (float)Math.Cos(prevAngle / 180 * Math.PI) - facing.Y * (float)Math.Sin(prevAngle / 180 * Math.PI);
+                //float newY = facing.X * (float)Math.Sin(prevAngle / 180 * Math.PI) + facing.Y * (float)Math.Cos(prevAngle / 180 * Math.PI);
+                //return new Vector2(newX, newY);
+                return Misc.RotateVector(facing, prevAngle);
             }
         }
 

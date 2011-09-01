@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Diagnostics;
 using SeaBattles.Messages;
 using System.IO;
+using SeaBattles.Aspects;
 
 namespace SeaBattles
 {
