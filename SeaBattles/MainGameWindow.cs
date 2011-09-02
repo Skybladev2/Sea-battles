@@ -11,7 +11,7 @@ using System.Drawing;
 using System.Diagnostics;
 using SeaBattles.Messages;
 using System.IO;
-using SeaBattles.Aspects;
+using SeaBattles.Tests;
 
 namespace SeaBattles
 {
@@ -34,7 +34,7 @@ namespace SeaBattles
         //---------------------------------
         //private List<GraphicsAspect> graphicsAspects = new List<GraphicsAspect>();
         private Ship ship = null;
-        private Ship anotherShip = null;
+        private TestBoundingRectangle box = null;
         private Dictionary<Type, HandlerMethodDelegate> handlers = new Dictionary<Type, HandlerMethodDelegate>();
 
         public MainGameWindow()
@@ -56,23 +56,31 @@ namespace SeaBattles
             mainCamera = new Camera(0, 0, 1, 200, 150);
             input = new InputLayer(this);
 
-            ship = new Ship(new PointF(0, 0), 40, 10);
-            //anotherShip = new Ship(new PointF(0.5f, 0));
+            //ship = new Ship(new PointF(0, 0), 40, 10);
+
+            box = new TestBoundingRectangle(new PointF(0, 0), 40, 40);
+            MessageDispatcher.RegisterHandler(typeof(ButtonDown), box);
+            MessageDispatcher.RegisterHandler(typeof(SetPosition), box);
+            MessageDispatcher.RegisterHandler(typeof(SetSpeed), box);
+            MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), box);
+            MessageDispatcher.RegisterHandler(typeof(InformPosition), box);
+            MessageDispatcher.RegisterHandler(typeof(Collision), box);
+            MessageDispatcher.RegisterHandler(typeof(NotCollision), box);
 
             //---------------------------------------------------
             //graphicsAspects.Add(ship.Graphics);
 
             //только корабль игрока подписывается на приём пользовательского ввода
-            MessageDispatcher.RegisterHandler(typeof(ButtonDown), ship);
-            MessageDispatcher.RegisterHandler(typeof(SetPosition), ship);
-            MessageDispatcher.RegisterHandler(typeof(SetSpeed), ship);
-            // нужно для определения координат и скорости корабля в момент выстрела
-            // в данном случае owner-ом является ship
-            MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), ship);
-            MessageDispatcher.RegisterHandler(typeof(InformPosition), ship);
-            MessageDispatcher.RegisterHandler(typeof(Shoot), ship);
-            //MessageDispatcher.RegisterHandler(typeof(SetPosition), anotherShip);
-            MessageDispatcher.RegisterHandler(typeof(TraceText), this);
+            //MessageDispatcher.RegisterHandler(typeof(ButtonDown), ship);
+            //MessageDispatcher.RegisterHandler(typeof(SetPosition), ship);
+            //MessageDispatcher.RegisterHandler(typeof(SetSpeed), ship);
+            //// нужно для определения координат и скорости корабля в момент выстрела
+            //// в данном случае owner-ом является ship
+            //MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), ship);
+            //MessageDispatcher.RegisterHandler(typeof(InformPosition), ship);
+            //MessageDispatcher.RegisterHandler(typeof(Shoot), ship);
+            ////MessageDispatcher.RegisterHandler(typeof(SetPosition), anotherShip);
+            //MessageDispatcher.RegisterHandler(typeof(TraceText), this);
 
             timer = new System.Threading.Timer(new TimerCallback(timer_Tick), null, 1000, 1000);
         }
@@ -177,6 +185,30 @@ namespace SeaBattles
             //GL.Enable(EnableCap.LineSmooth);
             GL.Enable(EnableCap.PolygonSmooth);
             GL.PointSize(16);
+            GL.DepthFunc(DepthFunction.Lequal);
+            
+            bool result = GL.IsEnabled(EnableCap.DepthTest);
+            Console.WriteLine("Depth test is {0}", result);
+
+            float res = 0;
+            GL.GetFloat( GetPName.DepthClearValue, out res );
+            Console.WriteLine("Depth Clear Value is {0}", res);
+
+            GL.GetBoolean( GetPName.DepthWritemask, out result );
+            Console.WriteLine("Depth mask is {0}", result);
+
+            int resint = 0;
+            GL.GetInteger( GetPName.DepthFunc, out resint );
+            Console.WriteLine("Depth comparsion is {0}", (DepthFunction)resint);
+
+            GL.GetInteger( GetPName.DepthBits, out resint );
+            Console.WriteLine("Depth bits is {0}", resint);
+
+            float[] range = new float[2];
+            GL.GetFloat( GetPName.DepthRange, range ); // returns an array
+            Console.WriteLine("Depth range is {0} - {1}", range[0], range[1]);
+
+            //GL.ClearDepth(1);
 
             while (!exit)
             {
@@ -224,10 +256,16 @@ namespace SeaBattles
                 //dts.Add(dt);
 
                 if (input.Pressed(InputVirtualKey.AxisLeft))
-                    ship.Physics.UpdateRotation(InputVirtualKey.AxisLeft, dt);
+                    box.Physics.UpdateRotation(InputVirtualKey.AxisLeft, dt);
 
                 if (input.Pressed(InputVirtualKey.AxisRight))
-                    ship.Physics.UpdateRotation(InputVirtualKey.AxisRight, dt);
+                    box.Physics.UpdateRotation(InputVirtualKey.AxisRight, dt);
+
+                //if (input.Pressed(InputVirtualKey.AxisLeft))
+                //    ship.Physics.UpdateRotation(InputVirtualKey.AxisLeft, dt);
+
+                //if (input.Pressed(InputVirtualKey.AxisRight))
+                //    ship.Physics.UpdateRotation(InputVirtualKey.AxisRight, dt);
 
                 if (input.Pressed(InputVirtualKey.Action7))
                     mainCamera.ZoomIn(1.01f);
@@ -245,6 +283,14 @@ namespace SeaBattles
                 foreach (DestroyByTimerAspect d in AspectLists.GetAspects(typeof(DestroyByTimerAspect)))
                 {
                     d.Update(dt);
+                }
+
+                foreach (BoundsAspect bound in AspectLists.GetDerivedAspects(typeof(BoundsAspect)))
+                {
+                    if (bound.IntersectsWith(Vector2.Zero))
+                        MessageDispatcher.Post(new Collision(bound, null));
+                    else
+                        MessageDispatcher.Post(new NotCollision(bound, null));
                 }
             }
         }
@@ -280,9 +326,15 @@ namespace SeaBattles
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             //GL.Clear(ClearBufferMask.ColorBufferBit);
             //GL.LineWidth(4);
+            
 
             foreach (GraphicsAspect g in AspectLists.GetAspects(typeof(GraphicsAspect)))
             {
+                GL.PushAttrib(AttribMask.EnableBit | AttribMask.LightingBit| AttribMask.CurrentBit);
+                GL.Disable(EnableCap.Lighting);
+                GL.Disable(EnableCap.Texture2D);
+                GL.Color3(g.color);
+
                 GL.LineWidth(g.lineWidth);
                 GL.PushMatrix();
                 GL.LoadIdentity();
@@ -302,6 +354,7 @@ namespace SeaBattles
                 GL.End();
 
                 GL.PopMatrix();
+                GL.PopAttrib();
             }
 
             //GL.Begin(BeginMode.LineLoop);
@@ -314,9 +367,9 @@ namespace SeaBattles
 
             //GL.End();
 
-            //GL.Begin(BeginMode.Points);
-            //GL.Vertex3(0, 0, -1);
-            //GL.End();
+            GL.Begin(BeginMode.Points);
+            GL.Vertex3(0, 0, 0.5f);
+            GL.End();
         }
 
         #endregion

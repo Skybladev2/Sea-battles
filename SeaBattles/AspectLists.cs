@@ -21,6 +21,33 @@ namespace SeaBattles
             }
         }
 
+        internal static ICollection<Aspect> GetDerivedAspects(Type type)
+        {
+            lock (syncObj)
+            {
+                LinkedList<Aspect> filteredAspects = new LinkedList<Aspect>();
+                Dictionary<Type, LinkedList<Aspect>>.KeyCollection keys = aspects.Keys;
+
+                foreach (Type currentType in keys)
+                {
+                    if (currentType.IsSubclassOf(type))
+                    {
+                        foreach (Aspect aspect in aspects[currentType])
+                        {
+                            filteredAspects.AddLast(aspect);
+                        }
+                    }
+                }
+                //if (aspects.ContainsKey(type))
+                //    //return aspects[type].ToList();
+                //    return new List<Aspect>(aspects[type]);
+                //else
+                //    return 
+
+                return filteredAspects;
+            }
+        }
+
         //internal static ICollection<Aspect> GetAspectsByOwner(object owner)
         //{
         //    // проходим все существующие аспекты

@@ -19,9 +19,6 @@ namespace SeaBattles
         private Weapon rightCannon;
         private Weapon rearCannon;
 
-        //private Dictionary<Type, IMessageHandler> handlersMap = new Dictionary<Type, IMessageHandler>();
-        //private Dictionary<Type, LinkedList<IMessageHandler>> handlersMap = new Dictionary<Type, LinkedList<IMessageHandler>>();
-
         internal VehicleWithGearboxAspect Mechanics
         {
             get { return mechanics; }

@@ -50,6 +50,8 @@
     <Compile Include="Aspects\RectangleBoundsAspect.cs" />
     <Compile Include="BoundShape.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="Messages\NotCollision.cs" />
+    <Compile Include="Messages\Collision.cs" />
     <Compile Include="Messages\DestroyChildrenOf.cs" />
     <Compile Include="Aspects\DestroyByTimerAspect.cs" />
     <Compile Include="GLU\Sphere.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="Shell.cs" />
     <Compile Include="Side.cs" />
     <Compile Include="Aspects\VehicleWithGearboxAspect.cs" />
+    <Compile Include="Tests\TestBoundingRectangle.cs" />
     <Compile Include="VirtualKeys.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
