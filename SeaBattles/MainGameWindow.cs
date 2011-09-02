@@ -326,7 +326,6 @@ namespace SeaBattles
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             //GL.Clear(ClearBufferMask.ColorBufferBit);
             //GL.LineWidth(4);
-            
 
             foreach (GraphicsAspect g in AspectLists.GetAspects(typeof(GraphicsAspect)))
             {
@@ -340,7 +339,7 @@ namespace SeaBattles
                 GL.LoadIdentity();
                 GL.Translate(g.translation);
                 GL.Rotate(g.rotationAngle, g.rotationAxis);
-                GL.Scale(g.scaling);
+                //GL.Scale(g.scaling);
 
                 GL.Begin(BeginMode.TriangleFan);
                 //GL.Begin(BeginMode.LineStrip);
@@ -368,8 +367,13 @@ namespace SeaBattles
             //GL.End();
 
             GL.Begin(BeginMode.Points);
-            GL.Vertex3(0, 0, 0.5f);
+            GL.Vertex3(0, 0, 1f);
             GL.End();
+
+            float [] pixels = new float[1];
+            GL.ReadPixels(400, 300, 1, 1, PixelFormat.DepthComponent, PixelType.Float, pixels);
+            this.Title = pixels[0].ToString();
+            //Console.WriteLine("Depth read pixels is {0}", pixels[0]);
         }
 
         #endregion
