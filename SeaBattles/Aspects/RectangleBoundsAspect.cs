@@ -48,7 +48,7 @@ namespace SeaBattles
             {
                 // поворачиваем точку вокруг центра и смотрим, внутри ли она прямоугольника
                 Vector2 difference = point - position;
-                Vector2 rotated = Misc.RotateVector(difference, angle);
+                Vector2 rotated = Misc.RotateVector(difference, -angle);
 
                 if (rotated.X >= -width / 2 && rotated.X <= width / 2
                     &&

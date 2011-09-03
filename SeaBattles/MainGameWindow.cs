@@ -184,7 +184,7 @@ namespace SeaBattles
             //GL.BlendFunc(BlendingFactorSrc.SrcAlphaSaturate, BlendingFactorDest.One);
             //GL.Enable(EnableCap.LineSmooth);
             GL.Enable(EnableCap.PolygonSmooth);
-            GL.PointSize(16);
+            GL.PointSize(1);
             GL.DepthFunc(DepthFunction.Lequal);
             
             bool result = GL.IsEnabled(EnableCap.DepthTest);
@@ -336,7 +336,7 @@ namespace SeaBattles
 
                 GL.LineWidth(g.lineWidth);
                 GL.PushMatrix();
-                GL.LoadIdentity();
+                //GL.LoadIdentity();
                 GL.Translate(g.translation);
                 GL.Rotate(g.rotationAngle, g.rotationAxis);
                 //GL.Scale(g.scaling);
@@ -366,13 +366,14 @@ namespace SeaBattles
 
             //GL.End();
 
+            GL.Color3(Color.Green);
             GL.Begin(BeginMode.Points);
             GL.Vertex3(0, 0, 1f);
             GL.End();
 
-            float [] pixels = new float[1];
-            GL.ReadPixels(400, 300, 1, 1, PixelFormat.DepthComponent, PixelType.Float, pixels);
-            this.Title = pixels[0].ToString();
+            //float [] pixels = new float[1];
+            //GL.ReadPixels(400, 300, 1, 1, PixelFormat.DepthComponent, PixelType.Float, pixels);
+            //this.Title = pixels[0].ToString();
             //Console.WriteLine("Depth read pixels is {0}", pixels[0]);
         }
 
