@@ -34,7 +34,7 @@ namespace SeaBattles
         //---------------------------------
         //private List<GraphicsAspect> graphicsAspects = new List<GraphicsAspect>();
         private Ship ship = null;
-        private TestBoundingRectangle box = null;
+        private TestBoundingObject box = null;
         private Dictionary<Type, HandlerMethodDelegate> handlers = new Dictionary<Type, HandlerMethodDelegate>();
 
         public MainGameWindow()
@@ -58,7 +58,7 @@ namespace SeaBattles
 
             //ship = new Ship(new PointF(0, 0), 40, 10);
 
-            box = new TestBoundingRectangle(new PointF(0, 0), 40, 40);
+            box = new TestBoundingObject(new PointF(0, 0), 10, 40);
             MessageDispatcher.RegisterHandler(typeof(ButtonDown), box);
             MessageDispatcher.RegisterHandler(typeof(SetPosition), box);
             MessageDispatcher.RegisterHandler(typeof(SetSpeed), box);
@@ -80,7 +80,7 @@ namespace SeaBattles
             //MessageDispatcher.RegisterHandler(typeof(InformPosition), ship);
             //MessageDispatcher.RegisterHandler(typeof(Shoot), ship);
             ////MessageDispatcher.RegisterHandler(typeof(SetPosition), anotherShip);
-            //MessageDispatcher.RegisterHandler(typeof(TraceText), this);
+            MessageDispatcher.RegisterHandler(typeof(TraceText), this);
 
             timer = new System.Threading.Timer(new TimerCallback(timer_Tick), null, 1000, 1000);
         }

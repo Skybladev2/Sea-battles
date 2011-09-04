@@ -12,10 +12,8 @@ namespace SeaBattles
     /// </summary>
     internal class RectangleBoundsAspect : BoundsAspect
     {
-        // <summary>
         // Координаты считаются от центра прямоугольника (объекта).
-        // </summary>
-        
+        // 
         private float height;
         private float width;
 

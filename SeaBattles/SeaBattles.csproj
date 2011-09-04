@@ -47,6 +47,8 @@
     <Compile Include="Aspects\Aspect.cs" />
     <Compile Include="AspectLists.cs" />
     <Compile Include="Aspects\BoundsAspect.cs" />
+    <Compile Include="Aspects\CircleBoundsAspect.cs" />
+    <Compile Include="Aspects\TriangleBoundsAspect.cs" />
     <Compile Include="Aspects\RectangleBoundsAspect.cs" />
     <Compile Include="BoundShape.cs" />
     <Compile Include="Camera.cs" />
