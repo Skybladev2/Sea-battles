@@ -17,26 +17,32 @@ namespace SeaBattles
         internal Vector3 scaling;
         internal float lineWidth = 3;
         internal Color color = Color.White;
+        internal Color notCollisionColor = Color.White;
+        internal Color collisionColor = Color.Red;
 
-        public GraphicsAspect(object owner, List<Vector3> vertices, float lineWidth)
+        public GraphicsAspect(object owner, List<Vector3> vertices, float lineWidth, Color notCollisionColor, Color collisionColor)
             : base(owner)
         {
             this.vertices = vertices;
             this.scaling = new Vector3(uniformScale, uniformScale, 1);
             this.lineWidth = lineWidth;
+            this.notCollisionColor = notCollisionColor;
+            this.collisionColor = collisionColor;
             handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
             handlers.Add(typeof(Collision), new HandlerMethodDelegate(HandleCollision));
             handlers.Add(typeof(NotCollision), new HandlerMethodDelegate(HandleNotCollision));
             RegisterAllStuff();
         }
 
-        public GraphicsAspect(object owner, List<Vector3> vertices, Vector3 position, float lineWidth)
-            : this(owner, vertices, lineWidth)
+        public GraphicsAspect(object owner, List<Vector3> vertices, Vector3 position, float lineWidth, Color notCollisionColor, Color collisionColor)
+            : base(owner)
         {
             this.translation = position;
             this.vertices = vertices;
             this.scaling = new Vector3(uniformScale, uniformScale, 1);
             this.lineWidth = lineWidth;
+            this.notCollisionColor = notCollisionColor;
+            this.collisionColor = collisionColor;
             handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
             handlers.Add(typeof(Collision), new HandlerMethodDelegate(HandleCollision));
             handlers.Add(typeof(NotCollision), new HandlerMethodDelegate(HandleNotCollision));
@@ -65,7 +71,7 @@ namespace SeaBattles
             {
                 if (collision.Objects[i] != null && collision.Objects[i].GetOwner() == this.owner)
                 {
-                    this.color = Color.Red;
+                    this.color = collisionColor;
                 }
             }
         }
@@ -77,7 +83,7 @@ namespace SeaBattles
             {
                 if (collision.Objects[i] != null && collision.Objects[i].GetOwner() == this.owner)
                 {
-                    this.color = Color.White;
+                    this.color = notCollisionColor;
                 }
             }
         }

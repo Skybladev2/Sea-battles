@@ -30,7 +30,7 @@ namespace SeaBattles
             }
             vertices.Add(new Vector3(radius, 0, 0));
 
-            graphics = new GraphicsAspect(this, vertices, position, 1);
+            graphics = new GraphicsAspect(this, vertices, position, 1, Color.White, Color.Red);
 
             // вычисляем вектор полёта снаряда - сумма импульса выстрела и собственной скорости оружия
             cannonFacing.NormalizeFast();

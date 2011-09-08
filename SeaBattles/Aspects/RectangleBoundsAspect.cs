@@ -74,5 +74,15 @@ namespace SeaBattles
                 this.position = setPosition.Position.Xy;
             }
         }
+
+        public override bool IntersectsWith(CircleBoundsAspect circle)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool IntersectsWith(TriangleBoundsAspect triangle)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

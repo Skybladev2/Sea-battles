@@ -43,7 +43,7 @@ namespace SeaBattles
         {
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
-            Matrix4 mat = Matrix4.CreateOrthographicOffCenter(-this.viewport_width / 2, this.viewport_width / 2, -this.viewport_height / 2, this.viewport_height / 2, -1, 1);
+            Matrix4 mat = Matrix4.CreateOrthographicOffCenter(-this.viewport_width / 2, this.viewport_width / 2, -this.viewport_height / 2, this.viewport_height / 2, -2, 2);
             GL.LoadMatrix(ref mat);
             //Matrix4.CreatePerspectiveFieldOfView((float)(Math.PI * 45f / 180f), viewport_width / (float)viewport_height, 0.1f, 100f);
             //Glu.gluPerspective(45, 800.0f / 600.0f, 0.001f, 500);

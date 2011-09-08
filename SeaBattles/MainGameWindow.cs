@@ -35,6 +35,7 @@ namespace SeaBattles
         //private List<GraphicsAspect> graphicsAspects = new List<GraphicsAspect>();
         private Ship ship = null;
         private TestBoundingObject box = null;
+        private TestBoundingObject box2 = null;
         private Dictionary<Type, HandlerMethodDelegate> handlers = new Dictionary<Type, HandlerMethodDelegate>();
 
         public MainGameWindow()
@@ -58,7 +59,9 @@ namespace SeaBattles
 
             //ship = new Ship(new PointF(0, 0), 40, 10);
 
-            box = new TestBoundingObject(new PointF(0, 0), 10, 40);
+            box = new TestBoundingObject(new PointF(0, 0), 10, 20, Color.Green, Color.Red, 0);
+            box2 = new TestBoundingObject(new PointF(0, 0), 20, 40, Color.White, Color.Black, -0.1f);
+
             MessageDispatcher.RegisterHandler(typeof(ButtonDown), box);
             MessageDispatcher.RegisterHandler(typeof(SetPosition), box);
             MessageDispatcher.RegisterHandler(typeof(SetSpeed), box);
@@ -287,10 +290,10 @@ namespace SeaBattles
 
                 foreach (BoundsAspect bound in AspectLists.GetDerivedAspects(typeof(BoundsAspect)))
                 {
-                    if (bound.IntersectsWith(Vector2.Zero))
-                        MessageDispatcher.Post(new Collision(bound, null));
+                    if (bound.IntersectsWith((TriangleBoundsAspect)box2.Bounds))
+                        MessageDispatcher.Post(new Collision(bound, box2.Bounds));
                     else
-                        MessageDispatcher.Post(new NotCollision(bound, null));
+                        MessageDispatcher.Post(new NotCollision(bound, box2.Bounds));
                 }
             }
         }
@@ -366,12 +369,12 @@ namespace SeaBattles
 
             //GL.End();
 
-            GL.Color3(Color.Green);
-            GL.Begin(BeginMode.Points);
-            GL.Vertex3(0, 0, 1f);
-            GL.End();
+            //GL.Color3(Color.Green);
+            //GL.Begin(BeginMode.Points);
+            //GL.Vertex3(0, 0, 1f);
+            //GL.End();
 
-            //float [] pixels = new float[1];
+            //float[] pixels = new float[1];
             //GL.ReadPixels(400, 300, 1, 1, PixelFormat.DepthComponent, PixelType.Float, pixels);
             //this.Title = pixels[0].ToString();
             //Console.WriteLine("Depth read pixels is {0}", pixels[0]);

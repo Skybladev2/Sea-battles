@@ -55,7 +55,7 @@ namespace SeaBattles
 
             mechanics = new VehicleWithGearboxAspect(this);
             physics = new PhysicsAspect(this);
-            graphics = new GraphicsAspect(this, shipVerts, 3);
+            graphics = new GraphicsAspect(this, shipVerts, 3, Color.White, Color.Red);
 
             rearCannon = new Weapon(this, Side.Rear);
             leftCannon = new Weapon(this, Side.Left);

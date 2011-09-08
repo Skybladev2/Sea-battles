@@ -19,7 +19,12 @@ namespace SeaBattles.Tests
             //set { physics = value; }
         }
 
-        public TestBoundingObject(PointF position, float height, float width)
+        internal BoundsAspect Bounds
+        {
+            get { return bounds; }
+        }
+
+        public TestBoundingObject(PointF position, float height, float width, Color notColisionColor, Color collisionColor, float depth)
         {
             #region Rectangle
             //List<Vector3> verts = new List<Vector3>();
@@ -30,8 +35,8 @@ namespace SeaBattles.Tests
             #endregion
 
             #region Circle
-            //float radius = 10;
-            //int segments = 8;
+            //float radius = height;
+            //int segments = 20;
             //List<Vector3> vertices = new List<Vector3>(segments + 1);
 
             ////float unitradius = (float)Math.Sqrt(8);
@@ -45,14 +50,14 @@ namespace SeaBattles.Tests
 
             #region Triangle
             List<Vector3> vertices = new List<Vector3>(3);
-            vertices.Add(new Vector3(-10, -20, 0));
-            vertices.Add(new Vector3(0, 20, 0));
-            vertices.Add(new Vector3(20, -20, 0));
+            vertices.Add(new Vector3(-width / 2, -height / 2, depth));
+            vertices.Add(new Vector3(0, height / 2, depth));
+            vertices.Add(new Vector3(width / 2, -height / 2, depth));
             #endregion
 
             mechanics = new VehicleWithGearboxAspect(this);
             physics = new PhysicsAspect(this);
-            graphics = new GraphicsAspect(this, vertices, 1);
+            graphics = new GraphicsAspect(this, vertices, 1, notColisionColor, collisionColor);
             //bounds = new RectangleBoundsAspect(this, width, height, new Vector2(0, 0), 0);
             //bounds = new CircleBoundsAspect(this, new Vector2(0, 0), radius);
             bounds = new TriangleBoundsAspect(this, vertices[0].Xy, vertices[1].Xy, vertices[2].Xy);

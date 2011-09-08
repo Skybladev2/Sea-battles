@@ -11,6 +11,16 @@ namespace SeaBattles
         private Vector2 position;
         private float radius;
 
+        public Vector2 Position
+        {
+            get { return position; }
+        }
+
+        public float Radius
+        {
+            get { return radius; }
+        }
+
         public CircleBoundsAspect(object owner, Vector2 position, float radius)
             : base(owner)
         {
@@ -30,6 +40,14 @@ namespace SeaBattles
                 return false;
         }
 
+        public override bool IntersectsWith(CircleBoundsAspect circle)
+        {
+            if ((this.radius + circle.Radius) >= (this.position - circle.Position).Length)
+                return true;
+            else
+                return false;
+        }
+
         internal override object GetOwner()
         {
             return this.owner;
@@ -42,6 +60,11 @@ namespace SeaBattles
             {
                 this.position = setPosition.Position.Xy;
             }
+        }
+
+        public override bool IntersectsWith(TriangleBoundsAspect triangle)
+        {
+            throw new NotImplementedException();
         }
     }
 }
