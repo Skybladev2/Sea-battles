@@ -7,6 +7,7 @@ namespace SeaBattles
     internal enum BoundShape
     {
         Rectangle,
-        Circle
+        Circle,
+        Triangle
     }
 }

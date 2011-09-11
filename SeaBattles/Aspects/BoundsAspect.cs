@@ -17,5 +17,7 @@ namespace SeaBattles
         public abstract bool IntersectsWith(CircleBoundsAspect circle);
         public abstract bool IntersectsWith(TriangleBoundsAspect triangle);
         internal abstract object GetOwner();
+
+
     }
 }

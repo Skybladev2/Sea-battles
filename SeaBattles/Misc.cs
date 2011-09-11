@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using OpenTK;
+using System.Drawing;
 
 namespace SeaBattles
 {
@@ -51,6 +52,27 @@ namespace SeaBattles
                 return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Finds projection of the p to line. {p1;p2} defines line
+        /// http://www.rsdn.ru/forum/alg/1655970.flat.aspx
+        /// </summary>
+        /// <param name="p">Point to project</param>
+        /// <param name="p1">First point of line segment</param>
+        /// <param name="p2">Second point of line segment</param>
+        /// <returns></returns>
+        public static float GetProjection(Vector2 p, Vector2 p1, Vector2 p2)
+        {
+            float fDenominator = (p2.X - p1.X) * (p2.X - p1.X) + (p2.Y - p1.Y) * (p2.Y - p1.Y);
+            if (fDenominator == 0) // p1 and p2 are the same
+                //return p1;
+                return 0;
+
+            float t = (p.X * (p2.X - p1.X) - (p2.X - p1.X) * p1.X + p.Y * (p2.Y - p1.Y) - (p2.Y - p1.Y) * p1.Y) / fDenominator;
+
+            return t;
+            //return new Vector2(p1.X + (p2.X - p1.X) * t, p1.Y + (p2.Y - p1.Y) * t);
         }
     }
 }

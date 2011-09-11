@@ -59,8 +59,8 @@ namespace SeaBattles
 
             //ship = new Ship(new PointF(0, 0), 40, 10);
 
-            box = new TestBoundingObject(new PointF(0, 0), 10, 20, Color.Green, Color.Red, 0);
-            box2 = new TestBoundingObject(new PointF(0, 0), 20, 40, Color.White, Color.Black, -0.1f);
+            box = new TestBoundingObject(BoundShape.Triangle, new PointF(0, 0), 10, 20, Color.Green, Color.Red, 0);
+            box2 = new TestBoundingObject(BoundShape.Circle, new PointF(0, 0), 20, 40, Color.White, Color.Black, -0.5f);
 
             MessageDispatcher.RegisterHandler(typeof(ButtonDown), box);
             MessageDispatcher.RegisterHandler(typeof(SetPosition), box);
@@ -290,10 +290,13 @@ namespace SeaBattles
 
                 foreach (BoundsAspect bound in AspectLists.GetDerivedAspects(typeof(BoundsAspect)))
                 {
-                    if (bound.IntersectsWith((TriangleBoundsAspect)box2.Bounds))
-                        MessageDispatcher.Post(new Collision(bound, box2.Bounds));
-                    else
-                        MessageDispatcher.Post(new NotCollision(bound, box2.Bounds));
+                    if (bound.GetType() == typeof(TriangleBoundsAspect))
+                    {
+                        if (bound.IntersectsWith((CircleBoundsAspect)box2.Bounds))
+                            MessageDispatcher.Post(new Collision(bound, box2.Bounds));
+                        else
+                            MessageDispatcher.Post(new NotCollision(bound, box2.Bounds));
+                    }
                 }
             }
         }
@@ -374,9 +377,9 @@ namespace SeaBattles
             //GL.Vertex3(0, 0, 1f);
             //GL.End();
 
-            //float[] pixels = new float[1];
-            //GL.ReadPixels(400, 300, 1, 1, PixelFormat.DepthComponent, PixelType.Float, pixels);
-            //this.Title = pixels[0].ToString();
+            float[] pixels = new float[1];
+            GL.ReadPixels(400, 300, 1, 1, PixelFormat.DepthComponent, PixelType.Float, pixels);
+            this.Title = pixels[0].ToString();
             //Console.WriteLine("Depth read pixels is {0}", pixels[0]);
         }
 
