@@ -18,6 +18,7 @@ namespace SeaBattles
         public abstract bool IntersectsWith(TriangleBoundsAspect triangle);
         internal abstract object GetOwner();
 
-
+        internal abstract Vector2 Position { get; }
+        internal abstract float Radius { get; }
     }
 }

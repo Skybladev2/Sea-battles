@@ -377,9 +377,9 @@ namespace SeaBattles
             //GL.Vertex3(0, 0, 1f);
             //GL.End();
 
-            float[] pixels = new float[1];
-            GL.ReadPixels(400, 300, 1, 1, PixelFormat.DepthComponent, PixelType.Float, pixels);
-            this.Title = pixels[0].ToString();
+            //float[] pixels = new float[1];
+            //GL.ReadPixels(400, 300, 1, 1, PixelFormat.DepthComponent, PixelType.Float, pixels);
+            //this.Title = pixels[0].ToString();
             //Console.WriteLine("Depth read pixels is {0}", pixels[0]);
         }
 

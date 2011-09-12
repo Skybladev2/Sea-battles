@@ -17,11 +17,22 @@ namespace SeaBattles
         /// Центр треугольника
         /// </summary>
         private Vector2 position;
-        float angle;
+        private float angle;
+
         /// <summary>
         /// Наибольшее рассояние от центра до одной из вершин
         /// </summary>
-        float longestRadius = 0;
+        private float longestRadius = 0;
+
+        internal override Vector2 Position
+        {
+            get { return position; }
+        }
+
+        internal override float Radius
+        {
+            get { return longestRadius; }
+        }
 
         public TriangleBoundsAspect(object owner, Vector2 a, Vector2 b, Vector2 c)
             : base(owner)
@@ -91,6 +102,11 @@ namespace SeaBattles
 
         public override bool IntersectsWith(CircleBoundsAspect circle)
         {
+            // сначала грубая проверка, аппроксимация окружностью
+            float distanceBetweenCenters = (position - circle.Position).LengthFast;
+            if (distanceBetweenCenters > longestRadius + circle.Radius)
+                return false;
+
             // Для произвольных выпуклых объектов используем Gilbert–Johnson–Keerthi distance algorithm
             // тут мы используем теорему о разделяющей оси http://www.gamedev.ru/code/terms/SAT
             // небольшие пояснения тут http://www.ryandudley.com/docs/spheretri.pdf

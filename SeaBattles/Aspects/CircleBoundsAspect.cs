@@ -11,12 +11,12 @@ namespace SeaBattles
         private Vector2 position;
         private float radius;
 
-        public Vector2 Position
+        internal override Vector2 Position
         {
             get { return position; }
         }
 
-        public float Radius
+        internal override float Radius
         {
             get { return radius; }
         }
@@ -64,7 +64,7 @@ namespace SeaBattles
 
         public override bool IntersectsWith(TriangleBoundsAspect triangle)
         {
-            throw new NotImplementedException();
+            return triangle.IntersectsWith(this);
         }
     }
 }

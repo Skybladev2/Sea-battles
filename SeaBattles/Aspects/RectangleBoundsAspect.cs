@@ -25,6 +25,16 @@ namespace SeaBattles
         /// </summary>
         private float diagonalLength;
 
+        internal override Vector2 Position
+        {
+            get { return position; }
+        }
+
+        internal override float Radius
+        {
+            get { return diagonalLength; }
+        }
+
         public RectangleBoundsAspect(object owner, float width, float height, Vector2 position, float angle) :base(owner)
         {
             this.height = height;
