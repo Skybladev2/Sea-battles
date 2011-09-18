@@ -29,8 +29,8 @@ namespace SeaBattles
             this.notCollisionColor = notCollisionColor;
             this.collisionColor = collisionColor;
             handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
-            handlers.Add(typeof(Collision), new HandlerMethodDelegate(HandleCollision));
-            handlers.Add(typeof(NotCollision), new HandlerMethodDelegate(HandleNotCollision));
+            handlers.Add(typeof(BoundSetCollision), new HandlerMethodDelegate(HandleCollision));
+            handlers.Add(typeof(BoundSetNotCollision), new HandlerMethodDelegate(HandleNotCollision));
             RegisterAllStuff();
         }
 
@@ -44,8 +44,8 @@ namespace SeaBattles
             this.notCollisionColor = notCollisionColor;
             this.collisionColor = collisionColor;
             handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
-            handlers.Add(typeof(Collision), new HandlerMethodDelegate(HandleCollision));
-            handlers.Add(typeof(NotCollision), new HandlerMethodDelegate(HandleNotCollision));
+            handlers.Add(typeof(BoundSetCollision), new HandlerMethodDelegate(HandleCollision));
+            handlers.Add(typeof(BoundSetNotCollision), new HandlerMethodDelegate(HandleNotCollision));
             RegisterAllStuff();
         }
 
@@ -66,7 +66,7 @@ namespace SeaBattles
 
         private void HandleCollision(object message)
         {
-            Collision collision = (Collision)message;
+            BoundSetCollision collision = (BoundSetCollision)message;
             for (int i = 0; i < collision.Objects.Length; i++)
             {
                 if (collision.Objects[i] != null && collision.Objects[i].GetOwner() == this.owner)
@@ -78,7 +78,7 @@ namespace SeaBattles
 
         private void HandleNotCollision(object message)
         {
-            NotCollision collision = (NotCollision)message;
+            BoundSetNotCollision collision = (BoundSetNotCollision)message;
             for (int i = 0; i < collision.Objects.Length; i++)
             {
                 if (collision.Objects[i] != null && collision.Objects[i].GetOwner() == this.owner)

@@ -66,5 +66,10 @@ namespace SeaBattles
         {
             return triangle.IntersectsWith(this);
         }
+
+        public override bool IntersectsWith(BoundsAspect bound)
+        {
+            return bound.IntersectsWith(this);
+        }
     }
 }

@@ -43,15 +43,14 @@ namespace SeaBattles
         /// <param name="shipVerts"></param>
         public Ship(PointF position, float length, float width)
         {
-            //float width = 10f;
-            //float length = 40f;
+            float depth = 0;
             List<Vector3> shipVerts = new List<Vector3>();
-            shipVerts.Add(new Vector3(-1f * width / 2 + position.X, -1f * length / 2 + position.Y, 0));
-            shipVerts.Add(new Vector3(-1f * width / 2 + position.X, 0.25f * length / 2 + position.Y, 0));
-            shipVerts.Add(new Vector3(0 * width / 2 + position.X, 1f * length / 2 + position.Y, 0));
-            shipVerts.Add(new Vector3(1f * width / 2 + position.X, 0.25f * length / 2 + position.Y, 0));
-            shipVerts.Add(new Vector3(1f * width / 2 + position.X, -1f * length / 2 + position.Y, 0));
-            shipVerts.Add(new Vector3(-1f * width / 2 + position.X, -1f * length / 2 + position.Y, 0));
+            shipVerts.Add(new Vector3(-1f * width / 2 + position.X, -1f * length / 2 + position.Y, depth));
+            shipVerts.Add(new Vector3(-1f * width / 2 + position.X, 0.25f * length / 2 + position.Y, depth));
+            shipVerts.Add(new Vector3(0 * width / 2 + position.X, 1f * length / 2 + position.Y, depth));
+            shipVerts.Add(new Vector3(1f * width / 2 + position.X, 0.25f * length / 2 + position.Y, depth));
+            shipVerts.Add(new Vector3(1f * width / 2 + position.X, -1f * length / 2 + position.Y, depth));
+            shipVerts.Add(new Vector3(-1f * width / 2 + position.X, -1f * length / 2 + position.Y, depth));
 
             mechanics = new VehicleWithGearboxAspect(this);
             physics = new PhysicsAspect(this);

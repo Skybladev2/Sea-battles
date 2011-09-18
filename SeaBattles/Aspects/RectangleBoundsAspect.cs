@@ -94,5 +94,10 @@ namespace SeaBattles
         {
             throw new NotImplementedException();
         }
+
+        public override bool IntersectsWith(BoundsAspect bound)
+        {
+            return bound.IntersectsWith(this);
+        }
     }
 }

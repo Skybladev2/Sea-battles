@@ -212,6 +212,11 @@ namespace SeaBattles
 
             return true;
         }
+
+        public override bool IntersectsWith(BoundsAspect bound)
+        {
+            return bound.IntersectsWith(this);
+        }
     }
 }
 

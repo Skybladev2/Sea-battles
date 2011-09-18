@@ -59,16 +59,18 @@ namespace SeaBattles
 
             //ship = new Ship(new PointF(0, 0), 40, 10);
 
-            box = new TestBoundingObject(BoundShape.Triangle, new PointF(0, 0), 10, 20, Color.Green, Color.Red, 0);
-            box2 = new TestBoundingObject(BoundShape.Circle, new PointF(0, 0), 20, 40, Color.White, Color.Black, -0.5f);
+            box = new TestBoundingObject(new PointF(0, 0), 10, 20, Color.Green, Color.Red, 0);
+            box2 = new TestBoundingObject(new PointF(0, 0), 20, 40, Color.White, Color.Black, -0.5f);
 
             MessageDispatcher.RegisterHandler(typeof(ButtonDown), box);
             MessageDispatcher.RegisterHandler(typeof(SetPosition), box);
             MessageDispatcher.RegisterHandler(typeof(SetSpeed), box);
             MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), box);
             MessageDispatcher.RegisterHandler(typeof(InformPosition), box);
-            MessageDispatcher.RegisterHandler(typeof(Collision), box);
-            MessageDispatcher.RegisterHandler(typeof(NotCollision), box);
+            //MessageDispatcher.RegisterHandler(typeof(Collision), box);
+            //MessageDispatcher.RegisterHandler(typeof(NotCollision), box);
+            MessageDispatcher.RegisterHandler(typeof(BoundSetCollision), box);
+            MessageDispatcher.RegisterHandler(typeof(BoundSetNotCollision), box);
 
             //---------------------------------------------------
             //graphicsAspects.Add(ship.Graphics);
@@ -189,26 +191,26 @@ namespace SeaBattles
             GL.Enable(EnableCap.PolygonSmooth);
             GL.PointSize(1);
             GL.DepthFunc(DepthFunction.Lequal);
-            
+
             bool result = GL.IsEnabled(EnableCap.DepthTest);
             Console.WriteLine("Depth test is {0}", result);
 
             float res = 0;
-            GL.GetFloat( GetPName.DepthClearValue, out res );
+            GL.GetFloat(GetPName.DepthClearValue, out res);
             Console.WriteLine("Depth Clear Value is {0}", res);
 
-            GL.GetBoolean( GetPName.DepthWritemask, out result );
+            GL.GetBoolean(GetPName.DepthWritemask, out result);
             Console.WriteLine("Depth mask is {0}", result);
 
             int resint = 0;
-            GL.GetInteger( GetPName.DepthFunc, out resint );
+            GL.GetInteger(GetPName.DepthFunc, out resint);
             Console.WriteLine("Depth comparsion is {0}", (DepthFunction)resint);
 
-            GL.GetInteger( GetPName.DepthBits, out resint );
+            GL.GetInteger(GetPName.DepthBits, out resint);
             Console.WriteLine("Depth bits is {0}", resint);
 
             float[] range = new float[2];
-            GL.GetFloat( GetPName.DepthRange, range ); // returns an array
+            GL.GetFloat(GetPName.DepthRange, range); // returns an array
             Console.WriteLine("Depth range is {0} - {1}", range[0], range[1]);
 
             //GL.ClearDepth(1);
@@ -288,14 +290,26 @@ namespace SeaBattles
                     d.Update(dt);
                 }
 
-                foreach (BoundsAspect bound in AspectLists.GetDerivedAspects(typeof(BoundsAspect)))
+                //foreach (BoundsAspect bound in AspectLists.GetDerivedAspects(typeof(BoundsAspect)))
+                //{
+                //    if (bound.GetType() == typeof(TriangleBoundsAspect))
+                //    {
+                //        if (bound.IntersectsWith((CircleBoundsAspect)box2.Bounds))
+                //            MessageDispatcher.Post(new Collision(bound, box2.Bounds));
+                //        else
+                //            MessageDispatcher.Post(new NotCollision(bound, box2.Bounds));
+                //    }
+                //}
+
+                foreach (BoundSetAspect boundSet in AspectLists.GetAspects(typeof(BoundSetAspect)))
                 {
-                    if (bound.GetType() == typeof(TriangleBoundsAspect))
+                    foreach (BoundSetAspect boundSet2 in AspectLists.GetAspects(typeof(BoundSetAspect)))
                     {
-                        if (bound.IntersectsWith((CircleBoundsAspect)box2.Bounds))
-                            MessageDispatcher.Post(new Collision(bound, box2.Bounds));
-                        else
-                            MessageDispatcher.Post(new NotCollision(bound, box2.Bounds));
+                        if (boundSet != boundSet2)
+                            if (boundSet.IntersectsWith(boundSet2))
+                                MessageDispatcher.Post(new BoundSetCollision(boundSet, box2.Bounds));
+                            else
+                                MessageDispatcher.Post(new BoundSetNotCollision(boundSet2, box2.Bounds));
                     }
                 }
             }
@@ -335,7 +349,7 @@ namespace SeaBattles
 
             foreach (GraphicsAspect g in AspectLists.GetAspects(typeof(GraphicsAspect)))
             {
-                GL.PushAttrib(AttribMask.EnableBit | AttribMask.LightingBit| AttribMask.CurrentBit);
+                GL.PushAttrib(AttribMask.EnableBit | AttribMask.LightingBit | AttribMask.CurrentBit);
                 GL.Disable(EnableCap.Lighting);
                 GL.Disable(EnableCap.Texture2D);
                 GL.Color3(g.color);
