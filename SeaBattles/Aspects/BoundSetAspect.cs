@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using OpenTK;
+using SeaBattles.Messages;
 
 namespace SeaBattles
 {
@@ -16,6 +17,9 @@ namespace SeaBattles
         //protected LinkedList<TriangleBoundsAspect> triangles = new LinkedList<TriangleBoundsAspect>();
         //protected LinkedList<RectangleBoundsAspect> rectangles = new LinkedList<RectangleBoundsAspect>();
         protected LinkedList<BoundsAspect> bounds = new LinkedList<BoundsAspect>();
+        protected bool positionSynced = false;
+        protected Vector2 physicalPositionDisplacement;
+        //protected float angle = 0;
 
         private float radius;
         private Vector2 position;
@@ -38,6 +42,7 @@ namespace SeaBattles
                 this.bounds = TriangulateFan(vertices);
                 RecomputeBounds();
             }
+            handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
 
             RegisterAllStuff();
         }
@@ -143,6 +148,12 @@ namespace SeaBattles
 
             this.position = currentCenter;
             this.radius = currentRadius;
+
+            // устанаваливаем новые координаты родителя (BoundSetAspect) для всех детей (BoundsAspect)
+            foreach (BoundsAspect bound in bounds)
+            {
+                bound.SetParentPosition(this.position);
+            }
         }
 
         /// <summary>
@@ -187,6 +198,41 @@ namespace SeaBattles
         {
             return this.owner;
         }
-    }
 
+        private void HandleUpdatePosition(object message)
+        {
+            SetPosition setPosition = (SetPosition)message;
+            if (this.owner == setPosition.Target)
+            {
+                if (!positionSynced)
+                {
+                    // вектор от физической позиции до геометрического центра покрывающего круга
+                    this.physicalPositionDisplacement = this.position -
+                                                            (setPosition.Position.Xy +
+                                                            Vector2.Multiply(
+                                                                Misc.RotateVector(setPosition.Velocity,
+                                                                                    setPosition.Angle),
+                                                                setPosition.Dt));
+
+                    positionSynced = true;
+                }
+
+                // поворачиваем вектор от физической позиции до центра покрывающего круга на угол, на который повернулась физика
+                Vector2 rotatedPosition = Misc.RotateVector(this.physicalPositionDisplacement, setPosition.Angle);
+                // новая позиция будет считаться от физической позиции, смещённой на предыдущий повернутый вектор
+                this.position = setPosition.Position.Xy + rotatedPosition;
+                // угол поворота совпадает с углом повторота физики
+
+                // теперь можно перемещать и поворачивать все части BoundSetAspect вокруг нового центра
+                LinkedListNode<BoundsAspect> boundNode = this.bounds.First;
+                BoundsAspect bound = null;
+                while (boundNode != null)
+                {
+                    bound = boundNode.Value;
+                    bound.UpdatePosition(this.position, setPosition.Angle);
+                    boundNode = boundNode.Next;
+                }
+            }
+        }
+    }
 }

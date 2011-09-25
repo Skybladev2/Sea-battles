@@ -99,5 +99,15 @@ namespace SeaBattles
         {
             return bound.IntersectsWith(this);
         }
+
+        //internal override void SetParentPosition(Vector2 parentPosition)
+        //{
+        //    this.displacementFromParent = parentPosition - this.position;
+        //}
+
+        internal override void UpdatePosition(Vector2 parentPosition, float angle)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

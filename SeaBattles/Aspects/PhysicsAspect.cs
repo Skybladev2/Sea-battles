@@ -143,7 +143,7 @@ namespace SeaBattles
             this.lastDT = (float)dt;
 
             position = Vector3.Add(position, new Vector3(Vector2.Multiply(this.Velocity, (float)dt)));
-            MessageDispatcher.Post(new SetPosition(this.owner, this.Velocity, this.position, this.angle));
+            MessageDispatcher.Post(new SetPosition(this.owner, this.Velocity, this.position, this.angle, (float)dt));
             //if (this.owner.GetType() == typeof(Shell))
             //    MessageDispatcher.Post(new TraceText(this.Velocity.ToString()));
         }

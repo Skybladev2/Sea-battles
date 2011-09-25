@@ -13,6 +13,12 @@ namespace SeaBattles
         private Vector2[] startVertices = new Vector2[3];
         private Vector2[] vertices = new Vector2[3];
 
+        // Векторы от центра прямоугольника до вершин (чтобы было удобно поворачивать)
+        // Конечные координаты вершин есть position + centerToVertsVectors[i]
+        private Vector2[] centerToVertsVectors = new Vector2[3];
+        // временный массив повёрнутых векторов вершин
+        private Vector2[] rotatedVertsVectors = new Vector2[3];
+
         /// <summary>
         /// Центр треугольника
         /// </summary>
@@ -48,13 +54,18 @@ namespace SeaBattles
             this.position = new Vector2((a.X + b.X + c.X) / 3, (a.Y + b.Y + c.Y) / 3);
             this.angle = 0;
 
+            this.centerToVertsVectors[0] = a - position;
+            this.centerToVertsVectors[1] = b - position;
+            this.centerToVertsVectors[2] = c - position;
+
             for (int i = 0; i < 3; i++)
             {
                 if ((vertices[i] - position).LengthSquared > longestRadius)
                     longestRadius = (vertices[0] - position).Length;
             }
 
-            handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
+            // больше не подписываемся на SetPosition, так как нашим положением явно управляет родительский объект
+            //handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
 
             RegisterAllStuff();
         }
@@ -94,9 +105,10 @@ namespace SeaBattles
                 this.position = setPosition.Position.Xy;
                 this.angle = setPosition.Angle;
 
-                vertices[0] = position + Misc.RotateVector(startVertices[0], angle);
-                vertices[1] = position + Misc.RotateVector(startVertices[1], angle);
-                vertices[2] = position + Misc.RotateVector(startVertices[2], angle);
+                for (int i = 0; i < 3; i++)
+                {
+                    vertices[i] = position + Misc.RotateVector(startVertices[i], angle);    
+                }
             }
         }
 
@@ -216,6 +228,26 @@ namespace SeaBattles
         public override bool IntersectsWith(BoundsAspect bound)
         {
             return bound.IntersectsWith(this);
+        }
+
+        //internal override void SetParentPosition(Vector2 parentPosition)
+        //{
+        //    this.displacementFromParent = parentPosition - this.position;
+        //}
+
+        internal override void UpdatePosition(Vector2 parentPosition, float angle)
+        {
+            // перемещаем центр треугольника
+            //
+            Vector2 rotated = Misc.RotateVector(displacementFromParent, angle);
+            this.position = parentPosition + rotated;
+            
+            // поворачиваем вершины
+            for (int i = 0; i < 3; i++)
+            {
+                rotatedVertsVectors[i] = Misc.RotateVector(centerToVertsVectors[i], angle);
+                vertices[i] = this.position + rotatedVertsVectors[i];
+            }
         }
     }
 }
