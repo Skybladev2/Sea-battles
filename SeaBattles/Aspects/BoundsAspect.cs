@@ -9,7 +9,14 @@ namespace SeaBattles
     {
         protected Vector2 displacementFromParent;
 
-        public BoundsAspect(object owner)
+        //public static BoundsAspect Create(object owner)
+        //{
+        //    BoundsAspect aspect = new BoundsAspect(owner);
+        //    aspect.RegisterAllStuff();
+        //    return aspect;
+        //}
+
+        protected BoundsAspect(object owner)
             : base(owner)
         {
 

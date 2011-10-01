@@ -22,17 +22,22 @@ namespace SeaBattles
         /// </summary>
         private bool waitForWeaponCoords = false;
 
-        public Weapon(object owner, Side weaponSide)
+        public static Weapon Create(object owner, Side weaponSide)
+        {
+            Weapon aspect = new Weapon(owner, weaponSide);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
+        private Weapon(object owner, Side weaponSide)
             : base(owner)
         {
             this.shipSide = weaponSide;
-            shooter = new ShootAspect(this);
+            shooter = ShootAspect.Create(this);
 
             // собственные обработчики класса
             handlers.Add(typeof(ButtonDown), HandleButtonDown);
             handlers.Add(typeof(InformPosition), HandleInformPosition);
-            
-            RegisterAllStuff();
         }
 
         private void HandleInformPosition(object message)

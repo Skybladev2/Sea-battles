@@ -20,33 +20,38 @@ namespace SeaBattles
         internal Color notCollisionColor = Color.White;
         internal Color collisionColor = Color.Red;
 
-        public GraphicsAspect(object owner, List<Vector3> vertices, float lineWidth, Color notCollisionColor, Color collisionColor)
-            : base(owner)
+        public static GraphicsAspect Create(object owner, List<Vector3> vertices, float lineWidth, Color notCollisionColor, Color collisionColor)
         {
-            this.vertices = vertices;
-            this.scaling = new Vector3(uniformScale, uniformScale, 1);
-            this.lineWidth = lineWidth;
-            this.notCollisionColor = notCollisionColor;
-            this.collisionColor = collisionColor;
-            handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
-            handlers.Add(typeof(BoundSetCollision), new HandlerMethodDelegate(HandleCollision));
-            handlers.Add(typeof(BoundSetNotCollision), new HandlerMethodDelegate(HandleNotCollision));
-            RegisterAllStuff();
+            GraphicsAspect aspect = new GraphicsAspect(owner, vertices, lineWidth, notCollisionColor, collisionColor);
+            aspect.RegisterAllStuff();
+            return aspect;
         }
 
-        public GraphicsAspect(object owner, List<Vector3> vertices, Vector3 position, float lineWidth, Color notCollisionColor, Color collisionColor)
+        public static GraphicsAspect Create(object owner, List<Vector3> vertices, Vector3 position, float lineWidth, Color notCollisionColor, Color collisionColor)
+        {
+            GraphicsAspect aspect = new GraphicsAspect(owner, vertices, position, lineWidth, notCollisionColor, collisionColor);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
+        private GraphicsAspect(object owner, List<Vector3> vertices, float lineWidth, Color notCollisionColor, Color collisionColor)
             : base(owner)
         {
-            this.translation = position;
             this.vertices = vertices;
             this.scaling = new Vector3(uniformScale, uniformScale, 1);
             this.lineWidth = lineWidth;
             this.notCollisionColor = notCollisionColor;
             this.collisionColor = collisionColor;
+
             handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
             handlers.Add(typeof(BoundSetCollision), new HandlerMethodDelegate(HandleCollision));
             handlers.Add(typeof(BoundSetNotCollision), new HandlerMethodDelegate(HandleNotCollision));
-            RegisterAllStuff();
+        }
+
+        private GraphicsAspect(object owner, List<Vector3> vertices, Vector3 position, float lineWidth, Color notCollisionColor, Color collisionColor)
+            : this(owner, vertices, lineWidth, notCollisionColor, collisionColor)
+        {
+            this.translation = position;
         }
 
         private void HandleUpdatePosition(object message)

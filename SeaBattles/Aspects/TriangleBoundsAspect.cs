@@ -40,7 +40,14 @@ namespace SeaBattles
             get { return longestRadius; }
         }
 
-        public TriangleBoundsAspect(object owner, Vector2 a, Vector2 b, Vector2 c)
+        public static TriangleBoundsAspect Create(object owner, Vector2 a, Vector2 b, Vector2 c)
+        {
+            TriangleBoundsAspect aspect = new TriangleBoundsAspect(owner, a, b, c);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
+        private TriangleBoundsAspect(object owner, Vector2 a, Vector2 b, Vector2 c)
             : base(owner)
         {
             this.startVertices[0] = a;
@@ -66,8 +73,6 @@ namespace SeaBattles
 
             // больше не подписываемся на SetPosition, так как нашим положением явно управляет родительский объект
             //handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
-
-            RegisterAllStuff();
         }
 
         public override bool IntersectsWith(Vector2 point)

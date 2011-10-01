@@ -15,12 +15,17 @@ namespace SeaBattles
         //private GraphicsAspect graphics = null;
         private float startVelocity = 1; // начальная скорость снаряда в м/с
 
-        public ShootAspect(object owner)
+        public static ShootAspect Create(object owner)
+        {
+            ShootAspect aspect = new ShootAspect(owner);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
+        private ShootAspect(object owner)
             : base(owner)
         {
             handlers.Add(typeof(Shoot), new HandlerMethodDelegate(Shoot));
-
-            RegisterAllStuff();
         }
 
         private void Shoot(object message)

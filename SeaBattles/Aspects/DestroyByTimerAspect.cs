@@ -15,10 +15,16 @@ namespace SeaBattles
         private TimeSpan timeToLive;
         private double lifeInSeconds = 0;
 
-        public DestroyByTimerAspect(object owner, TimeSpan timeToLive) : base(owner)
+        public static DestroyByTimerAspect Create(object owner, TimeSpan timeToLive)
+        {
+            DestroyByTimerAspect aspect = new DestroyByTimerAspect(owner, timeToLive);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
+        private DestroyByTimerAspect(object owner, TimeSpan timeToLive) : base(owner)
         {
             this.timeToLive = timeToLive;
-            RegisterAllStuff();
         }
 
         public void Update (double dt)

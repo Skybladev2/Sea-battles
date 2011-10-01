@@ -37,11 +37,18 @@ namespace SeaBattles
             //set { physics = value; }
         }
 
+        public static Ship Create(PointF position, float length, float width)
+        {
+            Ship aspect = new Ship(position, length, width);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
         /// <summary>
         /// Конструктор
         /// </summary>
         /// <param name="shipVerts"></param>
-        public Ship(PointF position, float length, float width)
+        private Ship(PointF position, float length, float width)
         {
             float depth = 0;
             List<Vector3> shipVerts = new List<Vector3>();
@@ -52,15 +59,13 @@ namespace SeaBattles
             shipVerts.Add(new Vector3(1f * width / 2 + position.X, -1f * length / 2 + position.Y, depth));
             shipVerts.Add(new Vector3(-1f * width / 2 + position.X, -1f * length / 2 + position.Y, depth));
 
-            mechanics = new VehicleWithGearboxAspect(this);
-            physics = new PhysicsAspect(this);
-            graphics = new GraphicsAspect(this, shipVerts, 3, Color.White, Color.Red);
+            mechanics = VehicleWithGearboxAspect.Create(this);
+            physics = PhysicsAspect.Create(this);
+            graphics = GraphicsAspect.Create(this, shipVerts, 3, Color.White, Color.Red);
 
-            rearCannon = new Weapon(this, Side.Rear);
-            leftCannon = new Weapon(this, Side.Left);
-            rightCannon = new Weapon(this, Side.Right);
-
-            RegisterAllStuff();
+            rearCannon = Weapon.Create(this, Side.Rear);
+            leftCannon = Weapon.Create(this, Side.Left);
+            rightCannon = Weapon.Create(this, Side.Right);
         }
     }
 }

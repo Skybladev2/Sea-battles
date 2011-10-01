@@ -34,7 +34,14 @@ namespace SeaBattles
             get { return radius; }
         }
 
-        public BoundSetAspect(object owner, IList<Vector3> vertices)
+        public static BoundSetAspect Create(object owner, IList<Vector3> vertices)
+        {
+            BoundSetAspect aspect = new BoundSetAspect(owner, vertices);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
+        private BoundSetAspect(object owner, IList<Vector3> vertices)
             : base(owner)
         {
             if (vertices != null)
@@ -43,8 +50,6 @@ namespace SeaBattles
                 RecomputeBounds();
             }
             handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
-
-            RegisterAllStuff();
         }
 
         internal void AddBound(BoundsAspect bound)
@@ -171,7 +176,7 @@ namespace SeaBattles
             {
                 secondPoint = verticesFan[i - 1].Xy;
                 thirdPoint = verticesFan[i].Xy;
-                triangles.AddLast(new TriangleBoundsAspect(this.owner, firstPoint, secondPoint, thirdPoint));
+                triangles.AddLast(TriangleBoundsAspect.Create(this.owner, firstPoint, secondPoint, thirdPoint));
             }
             return triangles;
         }

@@ -12,11 +12,17 @@ namespace SeaBattles
         // индекс передачи в массиве gears
         private int currentGear = 0;
 
-        public VehicleWithGearboxAspect(object owner)
+        public static VehicleWithGearboxAspect Create(object owner)
+        {
+            VehicleWithGearboxAspect aspect = new VehicleWithGearboxAspect(owner);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
+        private VehicleWithGearboxAspect(object owner)
             : base(owner)
         {
             handlers.Add(typeof(ButtonDown), HandleButtonDown);
-            RegisterAllStuff();
         }
 
         private void HandleButtonDown(object message)

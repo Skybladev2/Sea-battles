@@ -30,7 +30,7 @@ namespace SeaBattles
             }
             vertices.Add(new Vector3(radius, 0, 0));
 
-            graphics = new GraphicsAspect(this, vertices, position, 1, Color.White, Color.Red);
+            graphics = GraphicsAspect.Create(this, vertices, position, 1, Color.White, Color.Red);
 
             // вычисляем вектор полёта снаряда - сумма импульса выстрела и собственной скорости оружия
             cannonFacing.NormalizeFast();
@@ -39,9 +39,9 @@ namespace SeaBattles
             shootDirection.NormalizeFast();
             //physics = new PhysicsAspect(this, position, shootVelocity.Xy, startSpeed);
 
-            physics = new PhysicsAspect(this, position, shootDirection, shootVelocity.LengthFast);
+            physics = PhysicsAspect.Create(this, position, shootDirection, shootVelocity.LengthFast);
             //physics = new PhysicsAspect(this, position, Vector2.Zero, 0);
-            timer = new DestroyByTimerAspect(this, new TimeSpan(0, 0, 0, 2, 500));
+            timer = DestroyByTimerAspect.Create(this, new TimeSpan(0, 0, 0, 2, 500));
 
             MessageDispatcher.RegisterHandler(typeof(SetPosition), graphics);
             MessageDispatcher.RegisterHandler(typeof(DestroyChildrenOf), this);

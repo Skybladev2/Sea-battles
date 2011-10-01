@@ -58,33 +58,45 @@ namespace SeaBattles
             }
         }
 
-        public PhysicsAspect(object owner)
+        public static PhysicsAspect Create(object owner)
+        {
+            PhysicsAspect aspect = new PhysicsAspect(owner);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
+        public static PhysicsAspect Create(object owner, Vector3 position, Vector2 facing)
+        {
+            PhysicsAspect aspect = new PhysicsAspect(owner, position, facing);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
+        public static PhysicsAspect Create(object owner, Vector3 position, Vector2 facing, float speed)
+        {
+            PhysicsAspect aspect = new PhysicsAspect(owner, position, facing, speed);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
+        private PhysicsAspect(object owner)
             : base(owner)
         {
             handlers.Add(typeof(SetSpeed), HandleSetSpeed);
             handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
-            RegisterAllStuff();
         }
 
-        public PhysicsAspect(object owner, Vector3 position, Vector2 facing)
-            : base(owner)
+        private PhysicsAspect(object owner, Vector3 position, Vector2 facing)
+            : this(owner)
         {
             this.position = position;
             this.facing = facing;
-            handlers.Add(typeof(SetSpeed), HandleSetSpeed);
-            handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
-            RegisterAllStuff();
         }
 
-        public PhysicsAspect(object owner, Vector3 position, Vector2 facing, float speed)
-            : base(owner)
+        private PhysicsAspect(object owner, Vector3 position, Vector2 facing, float speed)
+            : this(owner, position, facing)
         {
             this.speed = speed;
-            this.position = position;
-            this.facing = facing;
-            handlers.Add(typeof(SetSpeed), HandleSetSpeed);
-            handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
-            RegisterAllStuff();
         }
 
         private void HandleSetSpeed(object message)

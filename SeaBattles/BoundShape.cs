@@ -8,6 +8,10 @@ namespace SeaBattles
     {
         Rectangle,
         Circle,
-        Triangle
+        Triangle,
+        /// <summary>
+        /// только для тестов
+        /// </summary>
+        Ship
     }
 }

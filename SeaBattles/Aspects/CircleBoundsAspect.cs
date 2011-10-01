@@ -21,7 +21,14 @@ namespace SeaBattles
             get { return radius; }
         }
 
-        public CircleBoundsAspect(object owner, Vector2 position, float radius)
+        public static CircleBoundsAspect Create(object owner, Vector2 position, float radius)
+        {
+            CircleBoundsAspect aspect = new CircleBoundsAspect (owner, position, radius);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
+        private CircleBoundsAspect(object owner, Vector2 position, float radius)
             : base(owner)
         {
             this.position = position;
@@ -29,7 +36,7 @@ namespace SeaBattles
 
             handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
 
-            RegisterAllStuff();
+            //RegisterAllStuff();
         }
 
         public override bool IntersectsWith(Vector2 point)

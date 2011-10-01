@@ -35,18 +35,24 @@ namespace SeaBattles
             get { return diagonalLength; }
         }
 
-        public RectangleBoundsAspect(object owner, float width, float height, Vector2 position, float angle) :base(owner)
+        public static RectangleBoundsAspect Create(object owner, float width, float height, Vector2 position, float angle)
+        {
+            RectangleBoundsAspect aspect = new RectangleBoundsAspect(owner, width, height, position, angle);
+            aspect.RegisterAllStuff();
+            return aspect;
+        }
+
+        private RectangleBoundsAspect(object owner, float width, float height, Vector2 position, float angle)
+            : base(owner)
         {
             this.height = height;
             this.width = width;
             this.position = position;
             this.angle = angle;
 
-            this.diagonalLength = (float)Math.Sqrt(Math.Pow(height/ 2, 2) + Math.Pow(width / 2, 2));
+            this.diagonalLength = (float)Math.Sqrt(Math.Pow(height / 2, 2) + Math.Pow(width / 2, 2));
 
             handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
-
-            RegisterAllStuff();
         }
 
         public override bool IntersectsWith(Vector2 point)
