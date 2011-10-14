@@ -9,12 +9,8 @@ namespace SeaBattles
     {
         protected Vector2 displacementFromParent;
 
-        //public static BoundsAspect Create(object owner)
-        //{
-        //    BoundsAspect aspect = new BoundsAspect(owner);
-        //    aspect.RegisterAllStuff();
-        //    return aspect;
-        //}
+        internal abstract Vector2 Position { get; }
+        internal abstract float Radius { get; }
 
         protected BoundsAspect(object owner)
             : base(owner)
@@ -26,10 +22,7 @@ namespace SeaBattles
         public abstract bool IntersectsWith(CircleBoundsAspect circle);
         public abstract bool IntersectsWith(TriangleBoundsAspect triangle);
         public abstract bool IntersectsWith(BoundsAspect bound);
-        internal abstract object GetOwner();
-
-        internal abstract Vector2 Position { get; }
-        internal abstract float Radius { get; }
+        //internal abstract object GetOwner();
 
         internal void SetParentPosition(Vector2 parentPosition)
         {

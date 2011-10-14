@@ -15,6 +15,8 @@ namespace SeaBattles
         private PhysicsAspect physics;
         private VehicleWithGearboxAspect mechanics;
         private GraphicsAspect graphics;
+        private BoundSetAspect bounds;
+
         private Weapon leftCannon;
         private Weapon rightCannon;
         private Weapon rearCannon;
@@ -40,7 +42,19 @@ namespace SeaBattles
         public static Ship Create(PointF position, float length, float width)
         {
             Ship aspect = new Ship(position, length, width);
+
+            MessageDispatcher.RegisterHandler(typeof(SetPosition), aspect);
+            MessageDispatcher.RegisterHandler(typeof(SetSpeed), aspect);
+            // нужно для определения координат и скорости корабля в момент выстрела
+            // в данном случае owner-ом является ship
+            MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), aspect);
+            MessageDispatcher.RegisterHandler(typeof(InformPosition), aspect);
+            MessageDispatcher.RegisterHandler(typeof(Shoot), aspect);
+            MessageDispatcher.RegisterHandler(typeof(BoundSetCollision), aspect);
+            MessageDispatcher.RegisterHandler(typeof(BoundSetNotCollision), aspect);
+
             aspect.RegisterAllStuff();
+
             return aspect;
         }
 
@@ -62,6 +76,7 @@ namespace SeaBattles
             mechanics = VehicleWithGearboxAspect.Create(this);
             physics = PhysicsAspect.Create(this);
             graphics = GraphicsAspect.Create(this, shipVerts, 3, Color.White, Color.Red);
+            bounds = BoundSetAspect.Create(this, shipVerts);
 
             rearCannon = Weapon.Create(this, Side.Rear);
             leftCannon = Weapon.Create(this, Side.Left);

@@ -86,7 +86,7 @@ namespace SeaBattles
             if (currentGear > 0)
                 currentGear--;
 
-            MessageDispatcher.Post(new SetSpeed(gears[currentGear]));
+            MessageDispatcher.Post(new SetSpeed(owner, gears[currentGear]));
             //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
         }
 
@@ -95,7 +95,7 @@ namespace SeaBattles
             if (currentGear < gears.Length - 1)
                 currentGear++;
 
-            MessageDispatcher.Post(new SetSpeed(gears[currentGear]));
+            MessageDispatcher.Post(new SetSpeed(owner, gears[currentGear]));
             //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
         }
     }

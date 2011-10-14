@@ -34,6 +34,7 @@ namespace SeaBattles
         //---------------------------------
         //private List<GraphicsAspect> graphicsAspects = new List<GraphicsAspect>();
         private Ship ship = null;
+        private Ship ship2 = null;
         private TestBoundingObject box = null;
         private TestBoundingObject box2 = null;
         private Dictionary<Type, HandlerMethodDelegate> handlers = new Dictionary<Type, HandlerMethodDelegate>();
@@ -57,26 +58,26 @@ namespace SeaBattles
             mainCamera = new Camera(0, 0, 1, 200, 150);
             input = new InputLayer(this);
 
-            //ship = new Ship(new PointF(0, 0), 40, 10);
+            ship = Ship.Create(new PointF(0, 0), 40, 10);
+            ship2 = Ship.Create(new PointF(0, 0), 20, 20);
 
-            box = new TestBoundingObject(BoundShape.Ship, new PointF(0, 0), 10, 20, Color.Green, Color.Red, 0);
-            box2 = new TestBoundingObject(BoundShape.Circle, new PointF(0, 0), 20, 40, Color.White, Color.Black, -0.5f);
+            //box = new TestBoundingObject(BoundShape.Ship, new PointF(0, 0), 10, 20, Color.Green, Color.Red, 0);
+            //box2 = new TestBoundingObject(BoundShape.Circle, new PointF(0, 0), 20, 40, Color.White, Color.Black, -0.5f);
 
-            MessageDispatcher.RegisterHandler(typeof(ButtonDown), box);
-            MessageDispatcher.RegisterHandler(typeof(SetPosition), box);
-            MessageDispatcher.RegisterHandler(typeof(SetSpeed), box);
-            MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), box);
-            MessageDispatcher.RegisterHandler(typeof(InformPosition), box);
-            //MessageDispatcher.RegisterHandler(typeof(Collision), box);
-            //MessageDispatcher.RegisterHandler(typeof(NotCollision), box);
-            MessageDispatcher.RegisterHandler(typeof(BoundSetCollision), box);
-            MessageDispatcher.RegisterHandler(typeof(BoundSetNotCollision), box);
+            //MessageDispatcher.RegisterHandler(typeof(ButtonDown), box);
+            //MessageDispatcher.RegisterHandler(typeof(SetPosition), box);
+            //MessageDispatcher.RegisterHandler(typeof(SetSpeed), box);
+            //MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), box);
+            //MessageDispatcher.RegisterHandler(typeof(InformPosition), box);
+            //MessageDispatcher.RegisterHandler(typeof(BoundSetCollision), box);
+            //MessageDispatcher.RegisterHandler(typeof(BoundSetNotCollision), box);
 
             //---------------------------------------------------
             //graphicsAspects.Add(ship.Graphics);
 
             //только корабль игрока подписывается на приём пользовательского ввода
-            //MessageDispatcher.RegisterHandler(typeof(ButtonDown), ship);
+            MessageDispatcher.RegisterHandler(typeof(ButtonDown), ship);
+
             //MessageDispatcher.RegisterHandler(typeof(SetPosition), ship);
             //MessageDispatcher.RegisterHandler(typeof(SetSpeed), ship);
             //// нужно для определения координат и скорости корабля в момент выстрела
@@ -84,7 +85,10 @@ namespace SeaBattles
             //MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), ship);
             //MessageDispatcher.RegisterHandler(typeof(InformPosition), ship);
             //MessageDispatcher.RegisterHandler(typeof(Shoot), ship);
+            //MessageDispatcher.RegisterHandler(typeof(BoundSetCollision), ship);
+            //MessageDispatcher.RegisterHandler(typeof(BoundSetNotCollision), ship);
             ////MessageDispatcher.RegisterHandler(typeof(SetPosition), anotherShip);
+
             MessageDispatcher.RegisterHandler(typeof(TraceText), this);
 
             timer = new System.Threading.Timer(new TimerCallback(timer_Tick), null, 1000, 1000);
@@ -260,17 +264,17 @@ namespace SeaBattles
             {
                 //dts.Add(dt);
 
-                if (input.Pressed(InputVirtualKey.AxisLeft))
-                    box.Physics.UpdateRotation(InputVirtualKey.AxisLeft, dt);
-
-                if (input.Pressed(InputVirtualKey.AxisRight))
-                    box.Physics.UpdateRotation(InputVirtualKey.AxisRight, dt);
-
                 //if (input.Pressed(InputVirtualKey.AxisLeft))
-                //    ship.Physics.UpdateRotation(InputVirtualKey.AxisLeft, dt);
+                //    box.Physics.UpdateRotation(InputVirtualKey.AxisLeft, dt);
 
                 //if (input.Pressed(InputVirtualKey.AxisRight))
-                //    ship.Physics.UpdateRotation(InputVirtualKey.AxisRight, dt);
+                //    box.Physics.UpdateRotation(InputVirtualKey.AxisRight, dt);
+
+                if (input.Pressed(InputVirtualKey.AxisLeft))
+                    ship.Physics.UpdateRotation(InputVirtualKey.AxisLeft, dt);
+
+                if (input.Pressed(InputVirtualKey.AxisRight))
+                    ship.Physics.UpdateRotation(InputVirtualKey.AxisRight, dt);
 
                 if (input.Pressed(InputVirtualKey.Action7))
                     mainCamera.ZoomIn(1.01f);
@@ -307,9 +311,9 @@ namespace SeaBattles
                     {
                         if (boundSet != boundSet2)
                             if (boundSet.IntersectsWith(boundSet2))
-                                MessageDispatcher.Post(new BoundSetCollision(boundSet, box2.Bounds));
+                                MessageDispatcher.Post(new BoundSetCollision(boundSet, boundSet2));
                             else
-                                MessageDispatcher.Post(new BoundSetNotCollision(boundSet2, box2.Bounds));
+                                MessageDispatcher.Post(new BoundSetNotCollision(boundSet, boundSet2));
                     }
                 }
             }

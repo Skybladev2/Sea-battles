@@ -102,7 +102,8 @@ namespace SeaBattles
         private void HandleSetSpeed(object message)
         {
             SetSpeed setSpeed = (SetSpeed)message;
-            this.speed = setSpeed.Speed;
+            if (setSpeed.Owner == this.owner)
+                this.speed = setSpeed.Speed;
 
             //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
         }

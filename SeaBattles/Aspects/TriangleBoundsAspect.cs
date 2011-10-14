@@ -97,10 +97,10 @@ namespace SeaBattles
             return (u > 0) && (v > 0) && (u + v < 1);
         }
 
-        internal override object GetOwner()
-        {
-            return this.owner;
-        }
+        //internal override object GetOwner()
+        //{
+        //    return this.owner;
+        //}
 
         private void HandleUpdatePosition(object message)
         {

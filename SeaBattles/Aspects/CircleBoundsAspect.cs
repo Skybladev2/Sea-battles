@@ -55,10 +55,10 @@ namespace SeaBattles
                 return false;
         }
 
-        internal override object GetOwner()
-        {
-            return this.owner;
-        }
+        //internal override object GetOwner()
+        //{
+        //    return this.owner;
+        //}
 
         private void HandleUpdatePosition(object message)
         {
