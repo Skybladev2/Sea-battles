@@ -209,6 +209,7 @@ namespace SeaBattles
             SetPosition setPosition = (SetPosition)message;
             if (this.owner == setPosition.Target)
             {
+                //bool a = setPosition.Target.GetType() == typeof(Shell);
                 if (!positionSynced)
                 {
                     // вектор от физической позиции до геометрического центра покрывающего круга
