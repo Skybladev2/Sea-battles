@@ -34,7 +34,7 @@ namespace SeaBattles
             if (shoot.Owner != null && shoot.Owner.Equals(this.owner))
             {
                 // 400 м/с
-                Shell shell = new Shell(shoot.From, shoot.Direction, shoot.ShooterVelocity, 40);
+                Shell shell = new Shell(shoot.From, shoot.Direction, shoot.ShooterVelocity, 400);
             }
             //Shell shell = new Shell(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.0001f);
         }

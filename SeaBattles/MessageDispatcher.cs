@@ -19,7 +19,7 @@ namespace SeaBattles
             {
                 if (handlers.ContainsKey(type))
                 {
-                    Console.WriteLine("Type found - checking handlers list");
+                    //Console.WriteLine("Type found - checking handlers list");
                     LinkedList<IMessageHandler> typeHandlers = handlers[type];
                     if (typeHandlers == null) // для этого типа раньше не регистрировались подписчики
                     {
@@ -32,7 +32,7 @@ namespace SeaBattles
                 }
                 else
                 {
-                    Console.WriteLine("Type not found - creating handlers list");
+                    //Console.WriteLine("Type not found - creating handlers list");
                     handlers.Add(type, new LinkedList<IMessageHandler>());
                     handlers[type].AddLast(handlerObject);
                 }

@@ -77,83 +77,90 @@ namespace SeaBattles
         /// <remarks>http://cg.scs.carleton.ca/~zarrabi/files/papers/CCCG06/meb.pdf</remarks>
         protected void RecomputeBounds()
         {
-            // 1 этап
-            // Берём попарно все ограничивающие окружности BoundAspect-ов и
-            // проводим через их центры прямые.
-            // Затем находим пересечения этих прямых с окружностями (4 точки) и
-            // берём самые удалённые друг от друга точки.
-            // Скармливаем их алгоритму построения минимального покрывающего круга для точек.
-            // 2 этап
-            // Проводим от центра покрывающего круга до каждого центра окружностей прямые и
-            // проецируем круги на эти прямые.
-            // Корректиреум радиус покрывающего круга на расстояние до края самого удалённого круга.
-
-            LinkedList<Vector2> circlesBorderPoints = new LinkedList<Vector2>();
-
-            Vector2 start;
-            Vector2 end;
-
-            foreach (BoundsAspect bound1 in bounds)
+            if (this.bounds.Count == 1 && this.bounds.Last.Value.GetType() == typeof(CircleBoundsAspect))
             {
-                foreach (BoundsAspect bound2 in bounds)
+                this.position = this.bounds.Last.Value.Position;
+                this.radius = this.bounds.Last.Value.Radius;
+            }
+            else
+            {
+                // 1 этап
+                // Берём попарно все ограничивающие окружности BoundAspect-ов и
+                // проводим через их центры прямые.
+                // Затем находим пересечения этих прямых с окружностями (4 точки) и
+                // берём самые удалённые друг от друга точки.
+                // Скармливаем их алгоритму построения минимального покрывающего круга для точек.
+                // 2 этап
+                // Проводим от центра покрывающего круга до каждого центра окружностей прямые и
+                // проецируем круги на эти прямые.
+                // Корректиреум радиус покрывающего круга на расстояние до края самого удалённого круга.
+
+                LinkedList<Vector2> circlesBorderPoints = new LinkedList<Vector2>();
+
+                Vector2 start;
+                Vector2 end;
+
+                foreach (BoundsAspect bound1 in bounds)
                 {
-                    if (bound1 == bound2)
-                        continue;
+                    foreach (BoundsAspect bound2 in bounds)
+                    {
+                        if (bound1 == bound2)
+                            continue;
 
-                    start = bound1.Position;
-                    end = bound2.Position;
+                        start = bound1.Position;
+                        end = bound2.Position;
 
-                    float bound1CenterProjection = Misc.GetProjection(bound1.Position, start, end);
-                    float radius1Length = bound1.Radius / (start - end).Length;
-                    float bound2CenterProjection = Misc.GetProjection(bound2.Position, start, end);
-                    float radius2Length = bound2.Radius / (start - end).Length;
-                    float bound1MinProjection = bound1CenterProjection - radius1Length;
-                    float bound1MaxProjection = bound1CenterProjection + radius1Length;
-                    float bound2MinProjection = bound2CenterProjection - radius2Length;
-                    float bound2MaxProjection = bound2CenterProjection + radius2Length;
+                        float bound1CenterProjection = Misc.GetProjection(bound1.Position, start, end);
+                        float radius1Length = bound1.Radius / (start - end).Length;
+                        float bound2CenterProjection = Misc.GetProjection(bound2.Position, start, end);
+                        float radius2Length = bound2.Radius / (start - end).Length;
+                        float bound1MinProjection = bound1CenterProjection - radius1Length;
+                        float bound1MaxProjection = bound1CenterProjection + radius1Length;
+                        float bound2MinProjection = bound2CenterProjection - radius2Length;
+                        float bound2MaxProjection = bound2CenterProjection + radius2Length;
 
-                    float min = Math.Min(bound1MinProjection, bound2MinProjection);
-                    circlesBorderPoints.AddLast(new Vector2(start.X + (end.X - start.X) * min, start.Y + (end.Y - start.Y) * min));
+                        float min = Math.Min(bound1MinProjection, bound2MinProjection);
+                        circlesBorderPoints.AddLast(new Vector2(start.X + (end.X - start.X) * min, start.Y + (end.Y - start.Y) * min));
 
-                    float max = Math.Max(bound1MaxProjection, bound2MaxProjection);
-                    circlesBorderPoints.AddLast(new Vector2(start.X + (end.X - start.X) * max, start.Y + (end.Y - start.Y) * max));
+                        float max = Math.Max(bound1MaxProjection, bound2MaxProjection);
+                        circlesBorderPoints.AddLast(new Vector2(start.X + (end.X - start.X) * max, start.Y + (end.Y - start.Y) * max));
+                    }
                 }
+
+                // нахождение минимального покрывающего круга 
+                //
+                Vector2 lastCenter = bounds.First.Value.Position;
+
+                float lastRadius = 0;
+                float delta;
+                float distanceToNewPoint;
+                Vector2 currentCenter = Vector2.Zero;
+                float currentRadius = 0;
+
+                foreach (Vector2 vector in circlesBorderPoints)
+                {
+                    distanceToNewPoint = (vector - lastCenter).Length;
+                    delta = (distanceToNewPoint - lastRadius) / 2;
+
+                    currentCenter = lastCenter + delta / distanceToNewPoint * (vector - lastCenter);
+                    currentRadius = lastRadius + delta;
+
+                    lastCenter = currentCenter;
+                    lastRadius = currentRadius;
+                }
+
+                currentRadius = 0;
+                // 2 этап
+                foreach (BoundsAspect bound in bounds)
+                {
+                    float radius = (lastCenter - bound.Position).Length + bound.Radius;
+                    if (radius > currentRadius)
+                        currentRadius = radius;
+                }
+
+                this.position = currentCenter;
+                this.radius = currentRadius;
             }
-
-            // нахождение минимального покрывающего круга 
-            //
-            Vector2 lastCenter = bounds.First.Value.Position;
-
-            float lastRadius = 0;
-            float delta;
-            float distanceToNewPoint;
-            Vector2 currentCenter = Vector2.Zero;
-            float currentRadius = 0;
-
-            foreach (Vector2 vector in circlesBorderPoints)
-            {
-                distanceToNewPoint = (vector - lastCenter).Length;
-                delta = (distanceToNewPoint - lastRadius) / 2;
-
-                currentCenter = lastCenter + delta / distanceToNewPoint * (vector - lastCenter);
-                currentRadius = lastRadius + delta;
-
-                lastCenter = currentCenter;
-                lastRadius = currentRadius;
-            }
-
-            currentRadius = 0;
-            // 2 этап
-            foreach (BoundsAspect bound in bounds)
-            {
-                float radius = (lastCenter - bound.Position).Length + bound.Radius;
-                if (radius > currentRadius)
-                    currentRadius = radius;
-            }
-
-            this.position = currentCenter;
-            this.radius = currentRadius;
-
             // устанаваливаем новые координаты родителя (BoundSetAspect) для всех детей (BoundsAspect)
             foreach (BoundsAspect bound in bounds)
             {

@@ -59,7 +59,7 @@ namespace SeaBattles
             input = new InputLayer(this);
 
             ship = Ship.Create(new PointF(0, 0), 40, 10);
-            ship2 = Ship.Create(new PointF(0, 0), 20, 20);
+            ship2 = Ship.Create(new PointF(0, 0), 40, 5);
 
             //box = new TestBoundingObject(BoundShape.Ship, new PointF(0, 0), 10, 20, Color.Green, Color.Red, 0);
             //box2 = new TestBoundingObject(BoundShape.Circle, new PointF(0, 0), 20, 40, Color.White, Color.Black, -0.5f);
@@ -91,7 +91,7 @@ namespace SeaBattles
 
             MessageDispatcher.RegisterHandler(typeof(TraceText), this);
 
-            timer = new System.Threading.Timer(new TimerCallback(timer_Tick), null, 1000, 1000);
+            //timer = new System.Threading.Timer(new TimerCallback(timer_Tick), null, 1000, 1000);
         }
 
         void timer_Tick(object sender)

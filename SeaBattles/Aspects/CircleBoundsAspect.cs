@@ -86,7 +86,10 @@ namespace SeaBattles
 
         internal override void UpdatePosition(Vector2 parentPosition, float angle)
         {
-            throw new NotImplementedException();
+            // перемещаем центр круга
+            //
+            Vector2 rotated = Misc.RotateVector(displacementFromParent, angle);
+            this.position = parentPosition + rotated;
         }
     }
 }

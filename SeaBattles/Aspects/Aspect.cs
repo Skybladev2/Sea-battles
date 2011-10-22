@@ -20,6 +20,8 @@ namespace SeaBattles
             this.owner = null;
             handlers.Add(typeof(DestroySelf), Destroy);
             handlers.Add(typeof(DestroyChildrenOf), DestroyByOwner);
+            MessageDispatcher.RegisterHandler(typeof(DestroySelf), this);
+            MessageDispatcher.RegisterHandler(typeof(DestroyChildrenOf), this);
         }
 
         public Aspect(object owner)
@@ -27,6 +29,8 @@ namespace SeaBattles
             this.owner = owner;
             handlers.Add(typeof(DestroySelf), this.Destroy);
             handlers.Add(typeof(DestroyChildrenOf), DestroyByOwner);
+            MessageDispatcher.RegisterHandler(typeof(DestroySelf), this);
+            MessageDispatcher.RegisterHandler(typeof(DestroyChildrenOf), this);
 
             //if (owner != null)
             //{

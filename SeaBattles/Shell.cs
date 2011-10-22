@@ -58,6 +58,7 @@ namespace SeaBattles
             base.Cleanup();
             MessageDispatcher.UnRegisterHandler(typeof(DestroyChildrenOf), this);
             MessageDispatcher.UnRegisterHandler(typeof(SetPosition), graphics);
+            MessageDispatcher.UnRegisterHandler(typeof(SetPosition), bounds);
         }
     }
 }
