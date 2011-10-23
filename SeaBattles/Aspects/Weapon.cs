@@ -164,7 +164,8 @@ namespace SeaBattles
                 PerformShoot();
         }
 
-        private void PerformShoot()
+        //private void PerformShoot()
+        internal void PerformShoot()
         {
             // отправляем сообщение об определении текущего местоположения
             // мы знаем, что принадлежим какому-то объекту - запрашиваем его координаты
@@ -172,6 +173,11 @@ namespace SeaBattles
             // в данном случае мы должны принадлежать объекту Ship
             waitForWeaponCoords = true;
             MessageDispatcher.Post(new GetOwnerPosition(this, this.owner));
+        }
+
+        internal object GetOwner()
+        {
+            return this.owner;
         }
     }
 }

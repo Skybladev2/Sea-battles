@@ -59,7 +59,7 @@ namespace SeaBattles
             input = new InputLayer(this);
 
             ship = Ship.Create(new PointF(0, 0), 40, 10);
-            ship2 = Ship.Create(new PointF(0, 0), 40, 5);
+            ship2 = Ship.Create(new PointF(0, 0), 40, 1);
 
             //box = new TestBoundingObject(BoundShape.Ship, new PointF(0, 0), 10, 20, Color.Green, Color.Red, 0);
             //box2 = new TestBoundingObject(BoundShape.Circle, new PointF(0, 0), 20, 40, Color.White, Color.Black, -0.5f);
@@ -310,10 +310,7 @@ namespace SeaBattles
                     foreach (BoundSetAspect boundSet2 in AspectLists.GetAspects(typeof(BoundSetAspect)))
                     {
                         if (boundSet != boundSet2)
-                            if (boundSet.IntersectsWith(boundSet2))
-                                MessageDispatcher.Post(new BoundSetCollision(boundSet, boundSet2));
-                            else
-                                MessageDispatcher.Post(new BoundSetNotCollision(boundSet, boundSet2));
+                            CollisionManager.CheckIntersection(boundSet, boundSet2);
                     }
                 }
             }
@@ -399,6 +396,7 @@ namespace SeaBattles
             //GL.ReadPixels(400, 300, 1, 1, PixelFormat.DepthComponent, PixelType.Float, pixels);
             //this.Title = pixels[0].ToString();
             //Console.WriteLine("Depth read pixels is {0}", pixels[0]);
+            GL.Flush();
         }
 
         #endregion

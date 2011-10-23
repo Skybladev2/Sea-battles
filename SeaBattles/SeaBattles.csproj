@@ -53,6 +53,7 @@
     <Compile Include="Aspects\RectangleBoundsAspect.cs" />
     <Compile Include="BoundShape.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="CollisionManager.cs" />
     <Compile Include="Messages\BoundSetCollision.cs" />
     <Compile Include="Messages\BoundSetNotCollision.cs" />
     <Compile Include="Messages\NotCollision.cs" />

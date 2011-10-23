@@ -39,6 +39,11 @@ namespace SeaBattles
             //set { physics = value; }
         }
 
+        internal Weapon RearCannon
+        {
+            get { return rearCannon; }
+        }
+
         public static Ship Create(PointF position, float length, float width)
         {
             Ship aspect = new Ship(position, length, width);

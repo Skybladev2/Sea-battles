@@ -18,7 +18,16 @@ namespace SeaBattles
         private BoundSetAspect bounds = null;
         private float radius = 0.76f; // калибр 152 мм
 
-        public Shell(Vector3 position, Vector3 cannonFacing, Vector3 cannonVelocity, float startSpeed)
+        // какому кораблю принадлежит снаряд
+        private object shellOwner = null;
+
+        public object ShellOwner
+        {
+            get { return shellOwner; }
+            //set { shellOwner = value; }
+        }
+
+        public Shell(Vector3 position, Vector3 cannonFacing, Vector3 cannonVelocity, float startSpeed, object shellOwner)
         {
             int segments = 8;
             List<Vector3> vertices = new List<Vector3>(segments + 1);
@@ -47,6 +56,8 @@ namespace SeaBattles
             
             //physics = new PhysicsAspect(this, position, Vector2.Zero, 0);
             timer = DestroyByTimerAspect.Create(this, new TimeSpan(0, 0, 0, 2, 500));
+
+            this.shellOwner = shellOwner;
 
             MessageDispatcher.RegisterHandler(typeof(SetPosition), bounds);
             MessageDispatcher.RegisterHandler(typeof(SetPosition), graphics);
