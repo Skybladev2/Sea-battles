@@ -45,8 +45,8 @@ namespace SeaBattles
             {
                 if (handlers.ContainsKey(type))
                 {
-                    if (true)
-                        Console.WriteLine();
+                    //if (true)
+                        //Console.WriteLine();
 
                     //Console.WriteLine("Type found - checking handlers list");
                     LinkedList<IMessageHandler> typeHandlers = handlers[type];

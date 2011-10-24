@@ -12,7 +12,8 @@ namespace SeaBattles
     /// </summary>
     internal class DestroyByTimerAspect : Aspect
     {
-        private TimeSpan timeToLive;
+        //private TimeSpan timeToLive;
+        private double timeToLive;
         private double lifeInSeconds = 0;
 
         public static DestroyByTimerAspect Create(object owner, TimeSpan timeToLive)
@@ -24,13 +25,13 @@ namespace SeaBattles
 
         private DestroyByTimerAspect(object owner, TimeSpan timeToLive) : base(owner)
         {
-            this.timeToLive = timeToLive;
+            this.timeToLive = timeToLive.TotalSeconds;
         }
 
         public void Update (double dt)
         {
             lifeInSeconds += dt;
-            if (lifeInSeconds >= timeToLive.TotalSeconds)
+            if (lifeInSeconds >= timeToLive)
                 MessageDispatcher.Post(new DestroyChildrenOf(owner));
         }
     }

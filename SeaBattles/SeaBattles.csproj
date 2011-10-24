@@ -73,6 +73,7 @@
     <Compile Include="Messages\SetPosition.cs" />
     <Compile Include="Messages\TraceText.cs" />
     <Compile Include="Misc.cs" />
+    <Compile Include="Pair.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="Side.cs" />
     <Compile Include="Aspects\VehicleWithGearboxAspect.cs" />
