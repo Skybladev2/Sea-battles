@@ -141,6 +141,8 @@ namespace SeaBattles
         protected void UnregisterSelf()
         {
             AspectLists.RemoveAspect(this);
+            MessageDispatcher.UnRegisterHandler(typeof(DestroySelf), this);
+            MessageDispatcher.UnRegisterHandler(typeof(DestroyChildrenOf), this);
         }
 
         protected void AddHandlerToMap(Type type, IMessageHandler handler)
