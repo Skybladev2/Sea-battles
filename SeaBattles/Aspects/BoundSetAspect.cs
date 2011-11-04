@@ -247,5 +247,14 @@ namespace SeaBattles
                 }
             }
         }
+
+        protected override void Cleanup()
+        {
+            base.Cleanup();
+
+            // нужно удалить аспект из CollisionManager, если в момент уничтожения объекта
+            // он с чем-то сталкивается
+            CollisionManager.RemoveAspect(this);
+        }
     }
 }

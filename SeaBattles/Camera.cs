@@ -14,6 +14,7 @@ namespace SeaBattles
     {
         private float viewport_width;
         private float viewport_height;
+        private float aspect = 1;
 
         //private readonly float right;
         //private readonly float up;
@@ -21,10 +22,24 @@ namespace SeaBattles
         //private float position;
         private float[] transform = null;
 
+        public float ViewportWidth
+        {
+            get { return viewport_width; }
+            set { viewport_width = value; }
+        }
+
+        public float ViewportHeight
+        {
+            get { return viewport_height; }
+            set { viewport_height = value; }
+        }
+
+
         public Camera(float x, float y, float z, int viewport_width, int viewport_height)
         {
             this.viewport_width = viewport_width;
             this.viewport_height = viewport_height;
+            this.aspect = viewport_width / viewport_height;
 
             transform = new float[16];
             transform[0] = 1.0f;
@@ -41,6 +56,7 @@ namespace SeaBattles
 
         internal void SetView()
         {
+            this.aspect = viewport_width / viewport_height;
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
             Matrix4 mat = Matrix4.CreateOrthographicOffCenter(-this.viewport_width / 2, this.viewport_width / 2, -this.viewport_height / 2, this.viewport_height / 2, -2, 2);

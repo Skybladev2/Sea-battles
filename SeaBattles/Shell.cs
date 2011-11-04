@@ -55,7 +55,8 @@ namespace SeaBattles
             bounds.AddBound(bound);
             
             //physics = new PhysicsAspect(this, position, Vector2.Zero, 0);
-            timer = DestroyByTimerAspect.Create(this, new TimeSpan(0, 0, 0, 2, 500));
+            //timer = DestroyByTimerAspect.Create(this, new TimeSpan(0, 0, 0, 2, 500));
+            timer = DestroyByTimerAspect.Create(this, new TimeSpan(0, 0, 0, 1, 0));
 
             this.shellOwner = shellOwner;
 

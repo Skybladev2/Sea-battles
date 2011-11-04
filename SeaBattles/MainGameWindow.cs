@@ -49,13 +49,13 @@ namespace SeaBattles
                 lock (update_lock)
                 {
                     viewport_changed = true;
-                    viewport_width = Width;
-                    viewport_height = Height;
+                    viewport_width = this.ClientRectangle.Width;
+                    viewport_height = this.ClientRectangle.Height;
                 }
             };
 
             handlers.Add(typeof(TraceText), new HandlerMethodDelegate(WriteTitle));
-            mainCamera = new Camera(0, 0, 1, 200, 150);
+            mainCamera = new Camera(0, 0, 1, 800, 600);
             input = new InputLayer(this);
 
             ship = Ship.Create(new PointF(0, 0), 40, 10);
@@ -330,6 +330,8 @@ namespace SeaBattles
                 if (viewport_changed)
                 {
                     GL.Viewport(0, 0, viewport_width, viewport_height);
+                    mainCamera.ViewportWidth = viewport_width;
+                    mainCamera.ViewportHeight = viewport_height;
                     viewport_changed = false;
                 }
             }

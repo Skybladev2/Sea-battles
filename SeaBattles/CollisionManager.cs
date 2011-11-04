@@ -68,5 +68,18 @@ namespace SeaBattles
                 }
             }
         }
+
+        internal static void RemoveAspect(BoundSetAspect boundSetAspect)
+        {
+            Pair<BoundSetAspect>[] pairs = new Pair<BoundSetAspect>[collisions.Keys.Count];
+            collisions.Keys.CopyTo(pairs, 0);
+            foreach (Pair<BoundSetAspect> pair in pairs)
+            {
+                if (pair.First == boundSetAspect || pair.Second == boundSetAspect)
+                {
+                    collisions.Remove(pair);
+                }
+            }
+        }
     }
 }
