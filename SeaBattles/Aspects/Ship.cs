@@ -82,6 +82,7 @@ namespace SeaBattles
             physics = PhysicsAspect.Create(this);
             graphics = GraphicsAspect.Create(this, shipVerts, 3, Color.White, Color.Red);
             bounds = BoundSetAspect.Create(this, shipVerts);
+            //bounds.GetOuterContour();
 
             rearCannon = Weapon.Create(this, Side.Rear);
             leftCannon = Weapon.Create(this, Side.Left);

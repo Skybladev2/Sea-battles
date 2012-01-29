@@ -21,6 +21,7 @@ namespace SeaBattles
         public abstract bool IntersectsWith(Vector2 point);
         public abstract bool IntersectsWith(CircleBoundsAspect circle);
         public abstract bool IntersectsWith(TriangleBoundsAspect triangle);
+        public abstract bool IntersectsWith(Triangle<Vector2> stretchedOutlinePart);
         public abstract bool IntersectsWith(BoundsAspect bound);
         //internal abstract object GetOwner();
 
@@ -30,5 +31,7 @@ namespace SeaBattles
         }
 
         internal abstract void UpdatePosition(Vector2 parentPosition, float angle);
+        internal abstract Vector2[] Triangulate();
+        internal abstract void SetVertexAsOuter(Vector2 secondPoint);
     }
 }

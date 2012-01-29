@@ -182,6 +182,10 @@ namespace SeaBattles
             update_watch.Start();
             render_watch.Start();
 
+            //GL.Enable(EnableCap.PolygonOffsetFill);
+            //GL.PolygonOffset(1, 1);
+            //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+
             GL.ClearColor(Color.MidnightBlue);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.AlphaTest);

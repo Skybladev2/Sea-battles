@@ -115,5 +115,20 @@ namespace SeaBattles
         {
             throw new NotImplementedException();
         }
+
+        internal override Vector2[] Triangulate()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal override void SetVertexAsOuter(Vector2 secondPoint)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool IntersectsWith(Triangle<Vector2> stretchedOutlinePart)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

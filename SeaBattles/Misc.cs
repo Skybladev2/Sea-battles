@@ -75,6 +75,97 @@ namespace SeaBattles
             //return new Vector2(p1.X + (p2.X - p1.X) * t, p1.Y + (p2.Y - p1.Y) * t);
         }
 
-        
+        public static void Swap<T>(ref T left, ref T right) where T : class
+        {
+            T temp;
+            temp = left;
+            left = right;
+            right = temp;
+        }
+
+        public static bool AreEqual<T>(LinkedList<T> a, LinkedList<T> b) where T : IEquatable<T>
+        {
+            if (a.Count != b.Count)
+            {
+                return false;
+            }
+
+            LinkedListNode<T> currA = a.First;
+            LinkedListNode<T> currB = b.First;
+
+            while (currA != null)
+            {
+                if (!currA.Value.Equals(currB.Value))
+                    return false;
+
+                currA = currA.Next;
+                currB = currB.Next;
+            }
+
+            return true;
+        }
+
+        public static bool TriangleIntersectsWithTriangle(Triangle<Vector2> first, Triangle<Vector2> second)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (Misc.IntersectSegment(first[i], first[(i + 1) % 3], second[j], second[(j + 1) % 3]))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            // Если нет пересечений, то возможен ещё один вариант - один треугольник в другом
+            // Но мы не знаем, какой в каком, поэтому проверяем оба по очереди
+            // на включение всех трёх вершин внутри себя
+
+            bool threeVerts = true;
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (!Misc.TriangleIntersectsWithPoint(first, second[i]))
+                {
+                    threeVerts = false;
+                    break;
+                }
+            }
+
+            // этот треугольник не содержит внутри себя второй треугольник, проверяем другой
+            if (!threeVerts)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    if (!Misc.TriangleIntersectsWithPoint(second, first[i]))
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static bool TriangleIntersectsWithPoint(Triangle<Vector2> triangle, Vector2 point)
+        {
+            //http://www.blackpawn.com/texts/pointinpoly/default.html
+            Vector2 v0 = triangle[2] - triangle[0];
+            Vector2 v1 = triangle[1] - triangle[0];
+            Vector2 v2 = point - triangle[0];
+
+            float dot00 = Vector2.Dot(v0, v0);
+            float dot01 = Vector2.Dot(v0, v1);
+            float dot02 = Vector2.Dot(v0, v2);
+            float dot11 = Vector2.Dot(v1, v1);
+            float dot12 = Vector2.Dot(v1, v2);
+
+            // Compute barycentric coordinates
+            float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+            float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+            float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+            //MessageDispatcher.Post(new TraceText("u = " + u + ", v = " + v));
+            return (u > 0) && (v > 0) && (u + v < 1);
+        }
     }
 }

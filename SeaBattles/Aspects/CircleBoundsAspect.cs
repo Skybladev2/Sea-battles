@@ -23,7 +23,7 @@ namespace SeaBattles
 
         public static CircleBoundsAspect Create(object owner, Vector2 position, float radius)
         {
-            CircleBoundsAspect aspect = new CircleBoundsAspect (owner, position, radius);
+            CircleBoundsAspect aspect = new CircleBoundsAspect(owner, position, radius);
             aspect.RegisterAllStuff();
             return aspect;
         }
@@ -90,6 +90,30 @@ namespace SeaBattles
             //
             Vector2 rotated = Misc.RotateVector(displacementFromParent, angle);
             this.position = parentPosition + rotated;
+        }
+
+        internal override Vector2[] Triangulate()
+        {
+            int segments = 8;
+            Vector2[] vertices = new Vector2[segments];
+
+            float angleStep = (float)(2 * Math.PI / segments);
+            for (int i = 0; i < segments; i++)
+            {
+                vertices[i] = new Vector2((float)Math.Cos(angleStep * i) * radius, (float)Math.Sin(angleStep * i) * radius);
+            }
+
+            return vertices;
+        }
+
+        internal override void SetVertexAsOuter(Vector2 secondPoint)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool IntersectsWith(Triangle<Vector2> stretchedOutlinePart)
+        {
+            throw new NotImplementedException();
         }
     }
 }
