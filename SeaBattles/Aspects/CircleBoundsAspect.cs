@@ -113,7 +113,7 @@ namespace SeaBattles
 
         public override bool IntersectsWith(Triangle<Vector2> stretchedOutlinePart)
         {
-            throw new NotImplementedException();
+            return Misc.CircleIntersectsWithTriangle(this, stretchedOutlinePart);
         }
     }
 }

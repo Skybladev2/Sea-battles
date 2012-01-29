@@ -53,6 +53,7 @@ namespace SeaBattles
             bounds = BoundSetAspect.Create(this, null);
             BoundsAspect bound = CircleBoundsAspect.Create(bounds, position.Xy, radius);
             bounds.AddBound(bound);
+            bounds.SetAttribute(Strings.CollisionDetectionSpeedType, Strings.CollisionDetectionSpeedTypeFast);
             
             //physics = new PhysicsAspect(this, position, Vector2.Zero, 0);
             //timer = DestroyByTimerAspect.Create(this, new TimeSpan(0, 0, 0, 2, 500));

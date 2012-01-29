@@ -167,5 +167,69 @@ namespace SeaBattles
             //MessageDispatcher.Post(new TraceText("u = " + u + ", v = " + v));
             return (u > 0) && (v > 0) && (u + v < 1);
         }
+
+        public static bool CircleIntersectsWithTriangle(CircleBoundsAspect circle, Triangle<Vector2> triangle)
+        {
+            // Для произвольных выпуклых объектов используем Gilbert–Johnson–Keerthi distance algorithm
+            // тут мы используем теорему о разделяющей оси http://www.gamedev.ru/code/terms/SAT
+            // небольшие пояснения тут http://www.ryandudley.com/docs/spheretri.pdf
+
+            // сначала проверяем 3 прямые, образованные сторонами треугольника
+            for (int i = 0; i < 3; i++)
+            {
+                Vector2 start = triangle[i];
+                Vector2 end = triangle[(i + 1) % 3];
+
+                if (!TestSegmentIntersection(circle, triangle, ref start, ref end))
+                    return false;
+            }
+
+            // теперь проверяем 3 прямые, проходящие через центр круга и каждую из вершин треугольника
+            for (int i = 0; i < 3; i++)
+            {
+                Vector2 start = triangle[i];
+                Vector2 end = circle.Position;
+
+                if (!TestSegmentIntersection(circle, triangle, ref start, ref end))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public static bool TestSegmentIntersection(CircleBoundsAspect circle, Triangle<Vector2> triangle, ref Vector2 start, ref Vector2 end)
+        {
+            // проецируем каждую вершину треугольника на прямую
+            float triangleProjection;
+            float triangleMinProjection = float.MaxValue;
+            float triangleMaxProjection = float.MinValue;
+
+            for (int j = 0; j < 3; j++)
+            {
+                triangleProjection = Misc.GetProjection(triangle[j], start, end);
+                if (triangleMinProjection > triangleProjection)
+                    triangleMinProjection = triangleProjection;
+
+                if (triangleMaxProjection < triangleProjection)
+                    triangleMaxProjection = triangleProjection;
+            }
+            // получили 2 точки - проекция треугольника на одну из прямых
+            // проецируем центр круга и прибавляем к нему по радиусу с каждой стороны
+            // так как GetProjection возвращает координату, зависящую от длины отрезка,
+            // нужно выразить радиус круга в длине отрезка
+            float circleCenterProjection = Misc.GetProjection(circle.Position, start, end);
+            float radiusLength = circle.Radius / (start - end).LengthFast;
+            float circleMinProjection = circleCenterProjection - radiusLength;
+            float circleMaxProjection = circleCenterProjection + radiusLength;
+
+            // сравниваем, что cMin < tMax или cMax > tMin
+            // если это не так, то круг и треугольник не пересекаются и дальше можно не проверять
+            if (circleMinProjection > triangleMaxProjection || circleMaxProjection < triangleMinProjection)
+                return false;
+            else
+                return true;
+        }
     }
+
+
 }

@@ -11,7 +11,7 @@ namespace SeaBattles
     /// Содержит в себе другие BoundingAspect и служит грубым приближением их формы.
     /// Для BoundingAspect внутри одного BoundingSet проверка на столкновения не производится.
     /// </summary>
-    internal class BoundSetAspect : Aspect//, IReflectionAttributes
+    internal class BoundSetAspect : Aspect, IReflectionAttributes
     {
         private bool IAmCircle { get; set; }
         private ReflectionAttributes ReflectionAttributes { get; set; }
@@ -715,23 +715,23 @@ namespace SeaBattles
             return false;
         }
 
-        //#region IReflectionAttributes Members
+        #region IReflectionAttributes Members
 
-        //public bool SetAttribute(string attributeName, string attributeValue)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public bool SetAttribute(string attributeName, string attributeValue)
+        {
+            return ReflectionAttributes.SetAttribute(attributeName, attributeValue);
+        }
 
-        //public bool GetAttribute(string attributeName, out string attributeValue)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public bool GetAttribute(string attributeName, out string attributeValue)
+        {
+            return ReflectionAttributes.GetAttribute(attributeName, out attributeValue);
+        }
 
-        //public void RemoveAttribute(string attributeName)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public void RemoveAttribute(string attributeName)
+        {
+            ReflectionAttributes.RemoveAttribute(attributeName);
+        }
 
-        //#endregion
+        #endregion
     }
 }
