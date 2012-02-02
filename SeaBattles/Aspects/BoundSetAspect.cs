@@ -67,6 +67,7 @@ namespace SeaBattles
         {
             BoundSetAspect aspect = new BoundSetAspect(owner, vertices);
             aspect.RegisterAllStuff();
+            aspect.SetAttribute(Strings.CollisionDetectionSpeedType, Strings.CollisionDetectionSpeedTypeSlowOrStatic);
             return aspect;
         }
 
@@ -222,7 +223,7 @@ namespace SeaBattles
         public bool IntersectsWith(BoundSetAspect boundSet)
         {
             // первый тик - стандартное определение столкновения
-            if (previousContour == null)
+            if (this.previousContour == null && boundSet.previousContour == null)
             {
                 return DiscreteCollisionDetection(boundSet);
             }
@@ -246,7 +247,8 @@ namespace SeaBattles
                         slowBoundSet = this;
                         fastBoundSet = boundSet;
 
-                        return IntersectSlowAndFastBounds(slowBoundSet, fastBoundSet);
+                        bool result = IntersectSlowAndFastBounds(slowBoundSet, fastBoundSet);
+                        return result;
                     }
 
                     // быстрый - медленный 
@@ -258,7 +260,8 @@ namespace SeaBattles
                         slowBoundSet = boundSet;
                         fastBoundSet = this;
 
-                        return IntersectSlowAndFastBounds(slowBoundSet, fastBoundSet);
+                        bool result = IntersectSlowAndFastBounds(slowBoundSet, fastBoundSet);
+                        return result;
                     }
 
                     // медленный - медленный
@@ -478,7 +481,8 @@ namespace SeaBattles
 
                 this.previousContour = this.outerContour;
                 // строим новый контур исходя из новых координат
-                //BuildOuterContour();
+                if (AmIFastMovingObject())
+                    BuildOuterContour();
             }
         }
 
@@ -509,7 +513,7 @@ namespace SeaBattles
         /// <summary>
         /// Получает внешний контур объекта.
         /// </summary>
-        [Obsolete("Алгоритму определения столкновений больше не требуется внушний контур объекта, достаточно вытянуть все его треугольники вдоль траектории")]
+        //[Obsolete("Алгоритму определения столкновений больше не требуется внушний контур объекта, достаточно вытянуть все его треугольники вдоль траектории")]
         internal void BuildOuterContour()
         {
             // в данном случае порядок имеет значение, но мы будем стравнивать элементы поодиночке,
@@ -554,8 +558,8 @@ namespace SeaBattles
                     if (edgeIsOuter)
                     {
                         // теперь нужно пометить вершины внешнего контура флагом, что они внешние
-                        bound.SetVertexAsOuter(firstPoint);
-                        bound.SetVertexAsOuter(secondPoint);
+                        //bound.SetVertexAsOuter(firstPoint);
+                        //bound.SetVertexAsOuter(secondPoint);
 
                         contourEdges.Add(new Pair<Vector2>(firstPoint, secondPoint));
                         //if (!contourPoints.Contains(firstPoint))
@@ -607,6 +611,20 @@ namespace SeaBattles
             return contourPoints;
         }
 
+        protected bool AmIFastMovingObject()
+        {
+            string collisionType = null;
+            if (this.GetAttribute(Strings.CollisionDetectionSpeedType, out collisionType))
+            {
+                if (collisionType != Strings.CollisionDetectionSpeedTypeFast)
+                    return false;
+                else
+                    return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Вытягивает внешний контур объекта в указанном направлении.
         /// </summary>
@@ -615,6 +633,9 @@ namespace SeaBattles
         /// <param name="transfer">Вектор переноса.</param>
         internal void StretchContour(Vector2 transfer)
         {
+            if (!AmIFastMovingObject())
+                return;
+
             stretchedOutline.Clear();
 
             // для круга особая процедура
@@ -622,13 +643,13 @@ namespace SeaBattles
             {
                 CircleBoundsAspect circle = (CircleBoundsAspect)this.bounds.First.Value;
 
-                Vector2 firstPoint = transfer.PerpendicularRight;
+                Vector2 firstPoint =  transfer.PerpendicularRight;
                 firstPoint.Normalize();
-                Vector2 firstTriangleFirstPoint = Vector2.Multiply(firstPoint, circle.Radius);
+                Vector2 firstTriangleFirstPoint = circle.Position + Vector2.Multiply(firstPoint, circle.Radius);
 
                 Vector2 secondPoint = transfer.PerpendicularLeft;
                 secondPoint.Normalize();
-                Vector2 firstTriangleSecondPoint = Vector2.Multiply(secondPoint, circle.Radius);
+                Vector2 firstTriangleSecondPoint = circle.Position + Vector2.Multiply(secondPoint, circle.Radius);
 
                 Vector2 firstTriangleThirdPoint = firstTriangleSecondPoint + transfer;
 

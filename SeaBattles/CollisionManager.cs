@@ -75,10 +75,17 @@ namespace SeaBattles
             collisions.Keys.CopyTo(pairs, 0);
             foreach (Pair<BoundSetAspect> pair in pairs)
             {
-                if (pair.First == boundSetAspect || pair.Second == boundSetAspect)
+                if (pair.First == boundSetAspect)
                 {
                     collisions.Remove(pair);
+                    SendNotCollision(boundSetAspect, pair.Second);
                 }
+                else
+                    if (pair.Second == boundSetAspect)
+                    {
+                        collisions.Remove(pair);
+                        SendNotCollision(boundSetAspect, pair.First);
+                    }
             }
         }
     }

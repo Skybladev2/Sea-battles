@@ -83,6 +83,7 @@ namespace SeaBattles
             graphics = GraphicsAspect.Create(this, shipVerts, 3, Color.White, Color.Red);
             bounds = BoundSetAspect.Create(this, shipVerts);
             //bounds.GetOuterContour();
+            bounds.SetAttribute(Strings.CollisionDetectionSpeedType, Strings.CollisionDetectionSpeedTypeSlowOrStatic);
 
             rearCannon = Weapon.Create(this, Side.Rear);
             leftCannon = Weapon.Create(this, Side.Left);

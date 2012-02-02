@@ -315,6 +315,7 @@ namespace SeaBattles
                 case Key.G:
                     //key = InputVirtualKey.Action16;
                     //GC.Collect();
+                    MessageDispatcher.Post(new TraceText(""));
                     break;
 
             }

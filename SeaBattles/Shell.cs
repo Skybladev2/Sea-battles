@@ -53,6 +53,7 @@ namespace SeaBattles
             bounds = BoundSetAspect.Create(this, null);
             BoundsAspect bound = CircleBoundsAspect.Create(bounds, position.Xy, radius);
             bounds.AddBound(bound);
+            // снаряд будет быстродвижущимся объектом, для него особый алгоритм определения столкновений
             bounds.SetAttribute(Strings.CollisionDetectionSpeedType, Strings.CollisionDetectionSpeedTypeFast);
             
             //physics = new PhysicsAspect(this, position, Vector2.Zero, 0);

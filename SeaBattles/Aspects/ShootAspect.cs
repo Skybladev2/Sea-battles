@@ -36,7 +36,7 @@ namespace SeaBattles
                 Weapon ownWeapon = (Weapon)this.owner;
                 Ship ownShip = (Ship)ownWeapon.GetOwner();
                 // 400 м/с
-                Shell shell = new Shell(shoot.From, shoot.Direction, shoot.ShooterVelocity, 400, ownShip);
+                Shell shell = new Shell(shoot.From, shoot.Direction, shoot.ShooterVelocity, 40000, ownShip);
             }
             //Shell shell = new Shell(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.0001f);
         }
