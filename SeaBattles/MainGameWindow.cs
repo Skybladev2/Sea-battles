@@ -77,6 +77,7 @@ namespace SeaBattles
 
             //только корабль игрока подписывается на приём пользовательского ввода
             MessageDispatcher.RegisterHandler(typeof(ButtonDown), ship);
+            MessageDispatcher.RegisterHandler(typeof(ButtonHold), ship);
 
             //MessageDispatcher.RegisterHandler(typeof(SetPosition), ship);
             //MessageDispatcher.RegisterHandler(typeof(SetSpeed), ship);
@@ -274,19 +275,19 @@ namespace SeaBattles
                 //if (input.Pressed(InputVirtualKey.AxisRight))
                 //    box.Physics.UpdateRotation(InputVirtualKey.AxisRight, dt);
 
-                if (input.Pressed(InputVirtualKey.AxisLeft))
-                    ship.Physics.UpdateRotation(InputVirtualKey.AxisLeft, dt);
-
-                if (input.Pressed(InputVirtualKey.AxisRight))
-                    ship.Physics.UpdateRotation(InputVirtualKey.AxisRight, dt);
+                // все нажатые кнопки помещаются в связный список
+                LinkedListNode<InputVirtualKey> holdingKeyNode = input.FirstHoldingButton;
+                while (holdingKeyNode != null)
+                {
+                    input.ProcessHoldingKey(holdingKeyNode.Value, dt);
+                    holdingKeyNode = holdingKeyNode.Next;
+                }
 
                 if (input.Pressed(InputVirtualKey.Action7))
                     mainCamera.ZoomIn(1.01f);
 
                 if (input.Pressed(InputVirtualKey.Action8))
                     mainCamera.ZoomOut(1.01f);
-
-                //ship.Physics.Update(dt);
 
                 foreach (PhysicsAspect p in AspectLists.GetAspects(typeof(PhysicsAspect)))
                 {

@@ -84,6 +84,7 @@ namespace SeaBattles
         {
             handlers.Add(typeof(SetSpeed), HandleSetSpeed);
             handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
+            handlers.Add(typeof(ButtonHold), HandleButtonHold);
         }
 
         private PhysicsAspect(object owner, Vector3 position, Vector2 facing)
@@ -126,6 +127,14 @@ namespace SeaBattles
                                                             this.prevPosition,
                                                             this.lastDT));
             }
+        }
+
+        private void HandleButtonHold(object message)
+        {
+            ButtonHold buttonHold = (ButtonHold)message;
+            // кагбе тут должно стоять условие, а что же делать, когда удерживается кнопка
+            // но мы пока безусловно поворачиваем физику
+            UpdateRotation(buttonHold.Button, buttonHold.DT);
         }
 
         internal void UpdateRotation(InputVirtualKey inputVirtualKey, double dt)

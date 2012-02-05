@@ -12,6 +12,13 @@ namespace SeaBattles
         private GameWindow owner;
         private Dictionary<InputVirtualKey, bool> pressed = new Dictionary<InputVirtualKey, bool>(20);
         private Vector2 joystickPos = new Vector2(0, 0);
+        private LinkedList<InputVirtualKey> holdingButtonsList = new LinkedList<InputVirtualKey>();
+        private List<InputVirtualKey> buttonsToHold = new List<InputVirtualKey>();
+
+        public LinkedListNode<InputVirtualKey> FirstHoldingButton
+        {
+            get { return holdingButtonsList.First; }
+        }
 
         public InputLayer(GameWindow owner)
         {
@@ -27,12 +34,26 @@ namespace SeaBattles
                 owner.Joysticks[0].Move += new EventHandler<JoystickMoveEventArgs>(JoystickMove);
             }
 
+            // заполняем словарь кнопок ключами
+            // по умолчанию все кнопки не нажаты
             foreach (InputVirtualKey key in Enum.GetValues(typeof(InputVirtualKey)))
             {
                 pressed.Add(key, false);
             }
-        }
 
+            // хардкод клавиш, которые должны удерживаться для генерирования сообщений
+            // TODO: в будущем нужно иметь не список клавиш, а список виртуальных действий,
+            // которые требуют удерживания клавиш, на которые динамически отображаются виртуальные коды клавиш
+            buttonsToHold.Add(InputVirtualKey.AxisLeft);
+            buttonsToHold.Add(InputVirtualKey.AxisRight);
+            buttonsToHold.Add(InputVirtualKey.Action7);
+            buttonsToHold.Add(InputVirtualKey.Action8);
+        }
+        /// <summary>
+        /// Обрабатывает события отпускания клавиши на клавиатуре.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void KeyboardKeyUp(object sender, KeyboardKeyEventArgs e)
         {
             if (e.Key == Key.F1)
@@ -45,12 +66,27 @@ namespace SeaBattles
 
             if (pressed[key])
             {
+                // нам нет смысла искать предварительно клавишу в списке,
+                // так как она сначала ищется за время O(n),
+                // а затем удаляется за время O(n)
+                // если её нет в списке, то Remove просто вернёт false
+
+                //if (buttonsToHold.Contains(key))
+                // проверка лишняя, так как список всех возможных нажатых клавиш наверняка
+                //короче списка нажатых в данный момент
+                holdingButtonsList.Remove(key);
+
                 pressed[key] = false;
                 //MessageDispatcher.Post(new ButtonPress(key));
             }
             MessageDispatcher.Post(new ButtonUp(key));
         }
 
+        /// <summary>
+        /// Обрабатывает события нажатия клавиши на клавиатуре.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void KeyboardKeyDown(object sender, KeyboardKeyEventArgs e)
         {
             if (e.Key == Key.Escape)
@@ -61,9 +97,16 @@ namespace SeaBattles
             // строго говоря, эта проверка не нужна
             if (!pressed[key])
             {
+                PutKeyToHoldingButtonsList(key);
                 pressed[key] = true;
                 MessageDispatcher.Post(new ButtonDown(key));
             }
+        }
+
+        private void PutKeyToHoldingButtonsList(InputVirtualKey key)
+        {
+            if (buttonsToHold.Contains(key) && !holdingButtonsList.Contains(key))
+                holdingButtonsList.AddLast(key);
         }
 
         public bool Pressed(InputVirtualKey key)
@@ -103,6 +146,11 @@ namespace SeaBattles
             pressed[axisDown] = true;
             pressed[axisUp] = false;
 
+            holdingButtonsList.Remove(axisUp);
+
+            if (buttonsToHold.Contains(axisDown) && !holdingButtonsList.Contains(axisDown))
+                holdingButtonsList.AddLast(axisDown);
+
             //Console.WriteLine("AxisUp pressed: " + pressed[InputVirtualKey.AxisUp]);
             //owner.Title = e.Axis.ToString() + ": " + e.Value;
         }
@@ -114,6 +162,7 @@ namespace SeaBattles
             // строго говоря, эта проверка не нужна
             if (!pressed[key])
             {
+                PutKeyToHoldingButtonsList(key);
                 pressed[key] = true;
                 MessageDispatcher.Post(new ButtonDown(key));
             }
@@ -127,7 +176,9 @@ namespace SeaBattles
 
             if (pressed[key])
             {
+                holdingButtonsList.Remove(key);
                 pressed[key] = false;
+                
                 //MessageDispatcher.Post(new ButtonPress(key));
             }
             MessageDispatcher.Post(new ButtonUp(key));
@@ -323,6 +374,14 @@ namespace SeaBattles
             return key;
         }
 
+        /// <summary>
+        /// Посылаем сообщение в эфир, что данная кнопка до сих пор нажата.
+        /// </summary>
+        /// <param name="inputVirtualKey">Удерживаемая кнопка.</param>
+        internal void ProcessHoldingKey(InputVirtualKey inputVirtualKey, double dt)
+        {
+            MessageDispatcher.Post(new ButtonHold(inputVirtualKey, dt));
+        }
     }
 }
 
