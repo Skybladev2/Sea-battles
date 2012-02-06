@@ -8,18 +8,14 @@ namespace SeaBattles
     public abstract class Aspect : IMessageHandler
     {
         protected object owner = null;
-        // соответствие сообщений классам (аспектам), их обрабатывающим
-        protected Dictionary<Type, LinkedList<IMessageHandler>> handlersMap = new Dictionary<Type, LinkedList<IMessageHandler>>();
-        // соответствие сообщений методам, их обрабатывающим
-        protected Dictionary<Type, HandlerMethodDelegate> handlers = new Dictionary<Type, HandlerMethodDelegate>();
-
+        protected MessageHandler messageHandler = new MessageHandler();
         //protected LinkedList<Aspect> aspects = new LinkedList<Aspect>();
 
         public Aspect()
         {
             this.owner = null;
-            handlers.Add(typeof(DestroySelf), Destroy);
-            handlers.Add(typeof(DestroyChildrenOf), DestroyByOwner);
+            messageHandler.Handlers.Add(typeof(DestroySelf), Destroy);
+            messageHandler.Handlers.Add(typeof(DestroyChildrenOf), DestroyByOwner);
             MessageDispatcher.RegisterHandler(typeof(DestroySelf), this);
             MessageDispatcher.RegisterHandler(typeof(DestroyChildrenOf), this);
         }
@@ -27,8 +23,8 @@ namespace SeaBattles
         public Aspect(object owner)
         {
             this.owner = owner;
-            handlers.Add(typeof(DestroySelf), this.Destroy);
-            handlers.Add(typeof(DestroyChildrenOf), DestroyByOwner);
+            messageHandler.Handlers.Add(typeof(DestroySelf), this.Destroy);
+            messageHandler.Handlers.Add(typeof(DestroyChildrenOf), DestroyByOwner);
             MessageDispatcher.RegisterHandler(typeof(DestroySelf), this);
             MessageDispatcher.RegisterHandler(typeof(DestroyChildrenOf), this);
 
@@ -57,12 +53,12 @@ namespace SeaBattles
                 Aspect ownerAspect = owner as Aspect;
                 if (ownerAspect != null)
                 {
-                    foreach (KeyValuePair<Type, HandlerMethodDelegate> d in handlers)
+                    foreach (KeyValuePair<Type, HandlerMethodDelegate> d in messageHandler.Handlers)
                     {
                         ownerAspect.AddHandlerToMap(d.Key, this);
                     }
 
-                    foreach (KeyValuePair<Type, LinkedList<IMessageHandler>> handlerMap in handlersMap)
+                    foreach (KeyValuePair<Type, LinkedList<IMessageHandler>> handlerMap in messageHandler.HandlersMap)
                     {
                         foreach (IMessageHandler aspectHandler in handlerMap.Value)
                         {
@@ -147,35 +143,22 @@ namespace SeaBattles
 
         protected void AddHandlerToMap(Type type, IMessageHandler handler)
         {
-            if (!handlersMap.ContainsKey(type))
+            if (!messageHandler.HandlersMap.ContainsKey(type))
             {
                 LinkedList<IMessageHandler> list = new LinkedList<IMessageHandler>();
                 list.AddFirst(handler);
-                handlersMap.Add(type, list);
+                messageHandler.HandlersMap.Add(type, list);
             }
             else
-                if (!handlersMap[type].Contains(handler))
-                    handlersMap[type].AddLast(handler);
+                if (!messageHandler.HandlersMap[type].Contains(handler))
+                    messageHandler.HandlersMap[type].AddLast(handler);
         }
 
         #region IMessageHandler Members
 
         public void ProcessMessage(object message)
         {
-            Type type = message.GetType();
-
-            // так как данный класс выступает и как аспект, и как агрегация аспектов,
-            // то у него 2 списка обработчиков -
-            // собственные методы и объекты-аспекты.
-            // Сначала сообщения проходят через собственные методы
-            if (handlers.ContainsKey(type))
-                handlers[type](message);
-
-            if (handlersMap.ContainsKey(type))
-                foreach (IMessageHandler handler in handlersMap[type])
-                {
-                    handler.ProcessMessage(message);
-                }
+            messageHandler.ProcessMessage(message);
         }
 
         #endregion

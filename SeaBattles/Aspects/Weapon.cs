@@ -36,8 +36,8 @@ namespace SeaBattles
             shooter = ShootAspect.Create(this);
 
             // собственные обработчики класса
-            handlers.Add(typeof(ButtonDown), HandleButtonDown);
-            handlers.Add(typeof(InformPosition), HandleInformPosition);
+            messageHandler.Handlers.Add(typeof(ButtonDown), HandleButtonDown);
+            messageHandler.Handlers.Add(typeof(InformPosition), HandleInformPosition);
         }
 
         private void HandleInformPosition(object message)
@@ -115,14 +115,13 @@ namespace SeaBattles
                 case InputVirtualKey.AxisDown:
                     break;
                 case InputVirtualKey.Action1:
-                    ShootSide(Side.Rear);
-                    
-                    break;
-                case InputVirtualKey.Action2:
                     ShootSide(Side.Left);
                     break;
-                case InputVirtualKey.Action3:
+                case InputVirtualKey.Action2:
                     ShootSide(Side.Right);
+                    break;
+                case InputVirtualKey.Action3:
+                    ShootSide(Side.Rear);    
                     break;
                 case InputVirtualKey.Action4:
                     break;

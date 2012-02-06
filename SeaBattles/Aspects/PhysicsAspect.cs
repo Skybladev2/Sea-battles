@@ -82,9 +82,9 @@ namespace SeaBattles
         private PhysicsAspect(object owner)
             : base(owner)
         {
-            handlers.Add(typeof(SetSpeed), HandleSetSpeed);
-            handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
-            handlers.Add(typeof(ButtonHold), HandleButtonHold);
+            messageHandler.Handlers.Add(typeof(SetSpeed), HandleSetSpeed);
+            messageHandler.Handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
+            messageHandler.Handlers.Add(typeof(ButtonHold), HandleButtonHold);
         }
 
         private PhysicsAspect(object owner, Vector3 position, Vector2 facing)

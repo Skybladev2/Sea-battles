@@ -52,7 +52,7 @@ namespace SeaBattles
 
             this.diagonalLength = (float)Math.Sqrt(Math.Pow(height / 2, 2) + Math.Pow(width / 2, 2));
 
-            handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
+            messageHandler.Handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
         }
 
         public override bool IntersectsWith(Vector2 point)

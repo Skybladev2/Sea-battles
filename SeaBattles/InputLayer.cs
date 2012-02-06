@@ -262,15 +262,15 @@ namespace SeaBattles
             {
                 // Крест
                 case JoystickButton.Button0:
-                    key = InputVirtualKey.Action1;
+                    key = InputVirtualKey.Action3;
                     break;
                 // Квадрат
                 case JoystickButton.Button1:
-                    key = InputVirtualKey.Action2;
+                    key = InputVirtualKey.Action1;
                     break;
                 // Круг
                 case JoystickButton.Button2:
-                    key = InputVirtualKey.Action3;
+                    key = InputVirtualKey.Action2;
                     break;
                 // Треугольник
                 case JoystickButton.Button3:

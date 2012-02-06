@@ -22,7 +22,7 @@ namespace SeaBattles
         private VehicleWithGearboxAspect(object owner)
             : base(owner)
         {
-            handlers.Add(typeof(ButtonDown), HandleButtonDown);
+            messageHandler.Handlers.Add(typeof(ButtonDown), HandleButtonDown);
         }
 
         private void HandleButtonDown(object message)

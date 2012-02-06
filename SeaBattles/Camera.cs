@@ -4,14 +4,17 @@ using System.Text;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using SeaBattles.Messages;
 
 namespace SeaBattles
 {
     /// <summary>
     /// Based on flipcode Camera class: http://www.flipcode.com/archives/OpenGL_Camera.shtml
     /// </summary>
-    class Camera
+    class Camera : IMessageHandler
     {
+        protected MessageHandler messageHandler = new MessageHandler();
+
         private float viewport_width;
         private float viewport_height;
         private float zoom = 1;
@@ -51,6 +54,9 @@ namespace SeaBattles
             //up = transform[4];
             //forward = transform[8];
             //position = transform[12];
+
+            messageHandler.Handlers.Add(typeof(ButtonHold), HandleButtonHold); // регистрируем потенциальный обработчик
+            MessageDispatcher.RegisterHandler(typeof(ButtonHold), messageHandler); // говорим, кто будет принимать сообщения данного типа
         }
 
         internal void SetView()
@@ -148,5 +154,68 @@ namespace SeaBattles
         {
             zoom *= speed;
         }
+
+        public void HandleButtonHold(object message)
+        {
+            ButtonHold buttonHold = (ButtonHold)message;
+            switch (buttonHold.Button)
+            {
+                case InputVirtualKey.Unknown:
+                    break;
+                case InputVirtualKey.AxisLeft:
+                    break;
+                case InputVirtualKey.AxisRight:
+                    break;
+                case InputVirtualKey.AxisUp:
+                    break;
+                case InputVirtualKey.AxisDown:
+                    break;
+                case InputVirtualKey.Action1:
+                    break;
+                case InputVirtualKey.Action2:
+                    break;
+                case InputVirtualKey.Action3:
+                    break;
+                case InputVirtualKey.Action4:
+                    break;
+                case InputVirtualKey.Action5:
+                    break;
+                case InputVirtualKey.Action6:
+                    break;
+                case InputVirtualKey.Action7:
+                    ZoomIn(1.01f);
+                    break;
+                case InputVirtualKey.Action8:
+                    ZoomOut(1.01f);
+                    break;
+                case InputVirtualKey.Action9:
+                    break;
+                case InputVirtualKey.Action10:
+                    break;
+                case InputVirtualKey.Action11:
+                    break;
+                case InputVirtualKey.Action12:
+                    break;
+                case InputVirtualKey.Action13:
+                    break;
+                case InputVirtualKey.Action14:
+                    break;
+                case InputVirtualKey.Action15:
+                    break;
+                case InputVirtualKey.Action16:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        #region IMessageHandler Members
+
+        public void ProcessMessage(object message)
+        {
+            messageHandler.ProcessMessage(message);
+        }
+
+        #endregion
     }
 }

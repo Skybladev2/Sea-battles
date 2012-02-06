@@ -34,7 +34,7 @@ namespace SeaBattles
             this.position = position;
             this.radius = radius;
 
-            handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
+            messageHandler.Handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
 
             //RegisterAllStuff();
         }

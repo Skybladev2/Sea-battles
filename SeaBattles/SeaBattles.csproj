@@ -56,6 +56,7 @@
     <Compile Include="CircularLinkedList.cs" />
     <Compile Include="CollisionManager.cs" />
     <Compile Include="IReflectionAttributes.cs" />
+    <Compile Include="MessageHandler.cs" />
     <Compile Include="Messages\BoundSetCollision.cs" />
     <Compile Include="Messages\BoundSetNotCollision.cs" />
     <Compile Include="Messages\ButtonHold.cs" />

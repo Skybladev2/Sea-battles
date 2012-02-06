@@ -80,7 +80,7 @@ namespace SeaBattles
                 this.bounds = TriangulateFan(vertices);
                 RecomputeBounds();
             }
-            handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
+            messageHandler.Handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
         }
 
         internal void AddBound(BoundsAspect bound)

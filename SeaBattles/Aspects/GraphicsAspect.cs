@@ -43,9 +43,9 @@ namespace SeaBattles
             this.notCollisionColor = notCollisionColor;
             this.collisionColor = collisionColor;
 
-            handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
-            handlers.Add(typeof(BoundSetCollision), new HandlerMethodDelegate(HandleCollision));
-            handlers.Add(typeof(BoundSetNotCollision), new HandlerMethodDelegate(HandleNotCollision));
+            messageHandler.Handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
+            messageHandler.Handlers.Add(typeof(BoundSetCollision), new HandlerMethodDelegate(HandleCollision));
+            messageHandler.Handlers.Add(typeof(BoundSetNotCollision), new HandlerMethodDelegate(HandleNotCollision));
         }
 
         private GraphicsAspect(object owner, List<Vector3> vertices, Vector3 position, float lineWidth, Color notCollisionColor, Color collisionColor)

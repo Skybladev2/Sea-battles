@@ -283,12 +283,6 @@ namespace SeaBattles
                     holdingKeyNode = holdingKeyNode.Next;
                 }
 
-                if (input.Pressed(InputVirtualKey.Action7))
-                    mainCamera.ZoomIn(1.01f);
-
-                if (input.Pressed(InputVirtualKey.Action8))
-                    mainCamera.ZoomOut(1.01f);
-
                 foreach (PhysicsAspect p in AspectLists.GetAspects(typeof(PhysicsAspect)))
                 {
                     p.Update(dt);
