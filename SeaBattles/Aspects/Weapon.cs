@@ -115,13 +115,14 @@ namespace SeaBattles
                 case InputVirtualKey.AxisDown:
                     break;
                 case InputVirtualKey.Action1:
-                    ShootSide(Side.Left);
+                    ShootSide(Side.Rear);
+                    
                     break;
                 case InputVirtualKey.Action2:
-                    ShootSide(Side.Right);
+                    ShootSide(Side.Left);
                     break;
                 case InputVirtualKey.Action3:
-                    ShootSide(Side.Rear);
+                    ShootSide(Side.Right);
                     break;
                 case InputVirtualKey.Action4:
                     break;

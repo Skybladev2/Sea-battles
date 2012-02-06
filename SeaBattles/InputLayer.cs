@@ -178,7 +178,7 @@ namespace SeaBattles
             {
                 holdingButtonsList.Remove(key);
                 pressed[key] = false;
-                
+
                 //MessageDispatcher.Post(new ButtonPress(key));
             }
             MessageDispatcher.Post(new ButtonUp(key));
