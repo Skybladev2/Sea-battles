@@ -1,0 +1,12 @@
+0 - Cross
+1 - Square
+2 - Circle
+3 - Triangle
+4 - L1
+5 - L2
+6 - R1
+7 - R2
+8 - Bottom L
+9 - Bottom R
+10 - L3
+11 - R3
