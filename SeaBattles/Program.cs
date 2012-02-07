@@ -24,13 +24,13 @@ namespace SeaBattles
 
         private static void RunTests()
         {
-            using (StreamWriter writer = new StreamWriter(Path.Combine(Application.StartupPath, "Controls.txt")))
-            {
-                foreach (Key key in Enum.GetValues(typeof(Key)))
-                {
-                    writer.WriteLine(Enum.GetName(typeof(Key), key) + "=");
-                }
-            }
+            //using (StreamWriter writer = new StreamWriter(Path.Combine(Application.StartupPath, "Controls.txt")))
+            //{
+            //    foreach (Key key in Enum.GetValues(typeof(Key)))
+            //    {
+            //        writer.WriteLine(Enum.GetName(typeof(Key), key) + "=");
+            //    }
+            //}
         }
     }
 }
