@@ -14,7 +14,7 @@ namespace SeaBattles
         [STAThread]
         static void Main()
         {
-            //RunTests();
+            RunTests();
 
             using (MainGameWindow example = new MainGameWindow())
             {
@@ -24,6 +24,8 @@ namespace SeaBattles
 
         private static void RunTests()
         {
+            IniProcessor ini = new IniProcessor (Path.Combine(Application.StartupPath, "Controls.txt"));
+            ini.ReadFile();
             //using (StreamWriter writer = new StreamWriter(Path.Combine(Application.StartupPath, "Controls.txt")))
             //{
             //    foreach (Key key in Enum.GetValues(typeof(Key)))

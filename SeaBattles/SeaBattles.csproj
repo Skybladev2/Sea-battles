@@ -55,6 +55,7 @@
     <Compile Include="Camera.cs" />
     <Compile Include="CircularLinkedList.cs" />
     <Compile Include="CollisionManager.cs" />
+    <Compile Include="IniProcessor.cs" />
     <Compile Include="IReflectionAttributes.cs" />
     <Compile Include="MessageHandler.cs" />
     <Compile Include="Messages\BoundSetCollision.cs" />

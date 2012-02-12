@@ -276,7 +276,6 @@ namespace SeaBattles
                     // быстрый - быстрый
                     //
                     return IntersectFastAndFastBounds(this, boundSet);
-
                 }
                 else // непонятно, какой тип - считаем обычными дискретными объектами
                 {
@@ -643,7 +642,7 @@ namespace SeaBattles
             {
                 CircleBoundsAspect circle = (CircleBoundsAspect)this.bounds.First.Value;
 
-                Vector2 firstPoint =  transfer.PerpendicularRight;
+                Vector2 firstPoint = transfer.PerpendicularRight;
                 firstPoint.Normalize();
                 Vector2 firstTriangleFirstPoint = circle.Position + Vector2.Multiply(firstPoint, circle.Radius);
 

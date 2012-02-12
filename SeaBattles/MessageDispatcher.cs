@@ -45,9 +45,6 @@ namespace SeaBattles
             {
                 if (handlers.ContainsKey(type))
                 {
-                    //if (true)
-                        //Console.WriteLine();
-
                     //Console.WriteLine("Type found - checking handlers list");
                     LinkedList<IMessageHandler> typeHandlers = handlers[type];
                     typeHandlers.Remove(handlerObject);
@@ -79,6 +76,7 @@ namespace SeaBattles
                     if (typeHandlers != null)
                         foreach (IMessageHandler handler in typeHandlers)
                         {
+                            //ThreadPool.QueueUserWorkItem(handler.ProcessMessage, message);
                             handler.ProcessMessage(message);
                         }
                     else
