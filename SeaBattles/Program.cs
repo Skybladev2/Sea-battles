@@ -14,7 +14,7 @@ namespace SeaBattles
         [STAThread]
         static void Main()
         {
-            RunTests();
+            //RunTests();
 
             using (MainGameWindow example = new MainGameWindow())
             {

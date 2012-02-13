@@ -91,19 +91,35 @@ namespace SeaBattles
 
         private bool FindKey(KeyValuePair<string, string> element)
         {
-            if (element.Key == currentKey)
+            if (String.Compare(element.Key, currentKey, true) == 0)
                 return true;
             else
                 return false;
-
         }
 
         private bool FindSection(KeyValuePair<string, List<KeyValuePair<string, string>>> section)
         {
-            if (section.Key == currentSectionName)
+            if (String.Compare(section.Key, currentSectionName, true) == 0)
                 return true;
             else
                 return false;
+        }
+
+        public string GetValue(string sectionName, string key, string defaultValue)
+        {
+            List<KeyValuePair<string, string>> keyValueList;
+            this.currentSectionName = sectionName;
+
+            if (!sections.Exists(FindSection))
+                return defaultValue;
+
+            keyValueList = sections.Find(FindSection).Value; // знаю, это медленный и унылый способ поиска, но я не знаю, какое значение может быть у KeyValuePair<string, List<KeyValuePair<string, string>>> по умолчанию
+
+            this.currentKey = key;
+            if (!keyValueList.Exists(FindKey))
+                return defaultValue;
+
+            return keyValueList.Find(FindKey).Value;
         }
     }
 }

@@ -15,6 +15,10 @@ namespace SeaBattles
         private LinkedList<InputVirtualKey> holdingButtonsList = new LinkedList<InputVirtualKey>();
         private List<InputVirtualKey> buttonsToHold = new List<InputVirtualKey>();
 
+        private Dictionary<Key, List<string>> keyToKeyName = new Dictionary<Key, List<string>>();
+        private Dictionary<string, string> keyNameTofunctionName = new Dictionary<string, string>();
+        private Dictionary<string, InputVirtualKey> functionNameToInputVirtualKey = new Dictionary<string, InputVirtualKey>();
+
         public LinkedListNode<InputVirtualKey> FirstHoldingButton
         {
             get { return holdingButtonsList.First; }
@@ -48,7 +52,45 @@ namespace SeaBattles
             buttonsToHold.Add(InputVirtualKey.AxisRight);
             buttonsToHold.Add(InputVirtualKey.Action7);
             buttonsToHold.Add(InputVirtualKey.Action8);
+
+            CreateButtonsMapping("Config/Controls.ini");
         }
+
+        private void CreateButtonsMapping(string path)
+        {
+            foreach (string keyName in Enum.GetNames(typeof(Key)))
+            {
+                Key key = (Key)Enum.Parse(typeof(Key), keyName);
+
+                if (!keyToKeyName.ContainsKey(key))
+                {
+                    List<string> keyNames = new List<string>();
+                    keyNames.Add(keyName);
+                    keyToKeyName.Add(key, keyNames);
+                }
+                else
+                {
+                    List<string> keyNames = keyToKeyName[key];
+                    keyNames.Add(keyName);
+                }
+            }
+
+            IniProcessor ini = new IniProcessor(path);
+            ini.ReadFile();
+
+            Dictionary<Key, List<string>>.ValueCollection keyLists = keyToKeyName.Values;
+            foreach (List<string> keyNames in keyLists)
+            {
+                foreach (string keyName in keyNames)
+                {
+                    string functionName = ini.GetValue("Controls.Keyboard", keyName, "");
+
+                    if (!String.IsNullOrEmpty(functionName))
+                        keyNameTofunctionName.Add(keyName, functionName);
+                }
+            }
+        }
+
         /// <summary>
         /// Обрабатывает события отпускания клавиши на клавиатуре.
         /// </summary>
