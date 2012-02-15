@@ -55,6 +55,7 @@ namespace SeaBattles
             };
 
             handlers.Add(typeof(TraceText), new HandlerMethodDelegate(WriteTitle));
+            handlers.Add(typeof(ButtonUp), new HandlerMethodDelegate(HandleButtonUp));
             mainCamera = new Camera(0, 0, 1, 800, 600);
             input = new InputLayer(this);
 
@@ -91,6 +92,7 @@ namespace SeaBattles
             ////MessageDispatcher.RegisterHandler(typeof(SetPosition), anotherShip);
 
             MessageDispatcher.RegisterHandler(typeof(TraceText), this);
+            MessageDispatcher.RegisterHandler(typeof(ButtonUp), this);
 
             //timer = new System.Threading.Timer(new TimerCallback(timer_Tick), null, 1000, 1000);
         }
@@ -416,6 +418,13 @@ namespace SeaBattles
         {
             TraceText text = (TraceText)message;
             this.Title = text.Text;
+        }
+
+        private void HandleButtonUp(object message)
+        {
+            ButtonUp buttonUp = (ButtonUp)message;
+            if (buttonUp.Button == InputVirtualKey.Action17)
+                Exit();
         }
     }
 }

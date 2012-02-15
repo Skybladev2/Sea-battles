@@ -15,8 +15,8 @@ namespace SeaBattles
         private LinkedList<InputVirtualKey> holdingButtonsList = new LinkedList<InputVirtualKey>();
         private List<InputVirtualKey> buttonsToHold = new List<InputVirtualKey>();
 
-        private Dictionary<Key, List<string>> keyToKeyName = new Dictionary<Key, List<string>>();
-        private Dictionary<string, string> keyNameTofunctionName = new Dictionary<string, string>();
+        private Dictionary<Key, string> keyToKeyName = new Dictionary<Key, string>();
+        private Dictionary<string, string> keyNameToFunctionName = new Dictionary<string, string>();
         private Dictionary<string, InputVirtualKey> functionNameToInputVirtualKey = new Dictionary<string, InputVirtualKey>();
 
         public LinkedListNode<InputVirtualKey> FirstHoldingButton
@@ -58,27 +58,29 @@ namespace SeaBattles
 
         private void CreateButtonsMapping(string path)
         {
+            Dictionary<Key, List<string>> tempKeyToKeyNameList = new Dictionary<Key, List<string>>();
+
             foreach (string keyName in Enum.GetNames(typeof(Key)))
             {
                 Key key = (Key)Enum.Parse(typeof(Key), keyName);
 
-                if (!keyToKeyName.ContainsKey(key))
+                if (!tempKeyToKeyNameList.ContainsKey(key))
                 {
                     List<string> keyNames = new List<string>();
-                    keyNames.Add(keyName);
-                    keyToKeyName.Add(key, keyNames);
+                    keyNames.Add(keyName.ToLower());
+                    tempKeyToKeyNameList.Add(key, keyNames);
                 }
                 else
                 {
-                    List<string> keyNames = keyToKeyName[key];
-                    keyNames.Add(keyName);
+                    List<string> keyNames = tempKeyToKeyNameList[key];
+                    keyNames.Add(keyName.ToLower());
                 }
             }
 
             IniProcessor ini = new IniProcessor(path);
             ini.ReadFile();
 
-            Dictionary<Key, List<string>>.ValueCollection keyLists = keyToKeyName.Values;
+            Dictionary<Key, List<string>>.ValueCollection keyLists = tempKeyToKeyNameList.Values;
             foreach (List<string> keyNames in keyLists)
             {
                 foreach (string keyName in keyNames)
@@ -86,9 +88,31 @@ namespace SeaBattles
                     string functionName = ini.GetValue("Controls.Keyboard", keyName, "");
 
                     if (!String.IsNullOrEmpty(functionName))
-                        keyNameTofunctionName.Add(keyName, functionName);
+                        keyNameToFunctionName.Add(keyName.ToLower(), functionName.ToLower());
                 }
             }
+
+            // теперь заполняем словарь соответствия кнопок названию кнопки только для тех кнопок, которые обозначены в настройках
+            // другие кнопки будут игнорироваться, поэтому словарь будет содержать не 150 элементов, а пару десятков
+            foreach (Key key in tempKeyToKeyNameList.Keys)
+            {
+                foreach (string keyName in tempKeyToKeyNameList[key])
+                {
+                    if (keyNameToFunctionName.ContainsKey(keyName) && !keyToKeyName.ContainsKey(key))
+                        keyToKeyName.Add(key, keyName.ToLower());
+                }
+            }
+
+            functionNameToInputVirtualKey.Add("ShootLeft".ToLower(), InputVirtualKey.Action1);
+            functionNameToInputVirtualKey.Add("ShootBack".ToLower(), InputVirtualKey.Action3);
+            functionNameToInputVirtualKey.Add("ShootRight".ToLower(), InputVirtualKey.Action2);
+            functionNameToInputVirtualKey.Add("IncreaseSpeed".ToLower(), InputVirtualKey.AxisUp);
+            functionNameToInputVirtualKey.Add("DecreaseSpeed".ToLower(), InputVirtualKey.AxisDown);
+            functionNameToInputVirtualKey.Add("TurnLeft".ToLower(), InputVirtualKey.AxisLeft);
+            functionNameToInputVirtualKey.Add("TurnRight".ToLower(), InputVirtualKey.AxisRight);
+            functionNameToInputVirtualKey.Add("ZoomIn".ToLower(), InputVirtualKey.Action7);
+            functionNameToInputVirtualKey.Add("ZoomOut".ToLower(), InputVirtualKey.Action8);
+            functionNameToInputVirtualKey.Add("Escape".ToLower(), InputVirtualKey.Action17);
         }
 
         /// <summary>
@@ -131,8 +155,8 @@ namespace SeaBattles
         /// <param name="e"></param>
         private void KeyboardKeyDown(object sender, KeyboardKeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
-                owner.Exit();
+            //if (e.Key == Key.Escape)
+            //    owner.Exit();
 
             InputVirtualKey key = TranslateInput(e.Key);
 
@@ -360,58 +384,61 @@ namespace SeaBattles
         /// </summary>
         /// <param name="button">Кнопка клавиатуры</param>
         /// <returns>Виртуальная кнопка</returns>
-        private static InputVirtualKey TranslateInput(Key button)
+        private InputVirtualKey TranslateInput(Key button)
         {
             InputVirtualKey key = InputVirtualKey.Unknown;
 
-            switch (button)
-            {
-                #region Movement
-                case Key.W:
-                case Key.Up:
-                    key = InputVirtualKey.AxisUp;
-                    break;
-                case Key.S:
-                case Key.Down:
-                    key = InputVirtualKey.AxisDown;
-                    break;
-                case Key.A:
-                case Key.Left:
-                    key = InputVirtualKey.AxisLeft;
-                    break;
-                case Key.D:
-                case Key.Right:
-                    key = InputVirtualKey.AxisRight;
-                    break;
-                #endregion
+            if (keyToKeyName.ContainsKey(button))
+                return functionNameToInputVirtualKey[keyNameToFunctionName[keyToKeyName[button]]];
 
-                #region Shooting
-                case Key.Z:
-                    key = InputVirtualKey.Action1;
-                    break;
-                case Key.X:
-                    key = InputVirtualKey.Action3;
-                    break;
-                case Key.C:
-                    key = InputVirtualKey.Action2;
-                    break;
-                #endregion
+            //switch (button)
+            //{
+            //    #region Movement
+            //    case Key.W:
+            //    case Key.Up:
+            //        key = InputVirtualKey.AxisUp;
+            //        break;
+            //    case Key.S:
+            //    case Key.Down:
+            //        key = InputVirtualKey.AxisDown;
+            //        break;
+            //    case Key.A:
+            //    case Key.Left:
+            //        key = InputVirtualKey.AxisLeft;
+            //        break;
+            //    case Key.D:
+            //    case Key.Right:
+            //        key = InputVirtualKey.AxisRight;
+            //        break;
+            //    #endregion
 
-                #region Camera
-                case Key.PageDown:
-                    key = InputVirtualKey.Action7;
-                    break;
-                case Key.PageUp:
-                    key = InputVirtualKey.Action8;
-                    break;
-                #endregion
-                case Key.G:
-                    //key = InputVirtualKey.Action16;
-                    //GC.Collect();
-                    MessageDispatcher.Post(new TraceText(""));
-                    break;
+            //    #region Shooting
+            //    case Key.Z:
+            //        key = InputVirtualKey.Action1;
+            //        break;
+            //    case Key.X:
+            //        key = InputVirtualKey.Action3;
+            //        break;
+            //    case Key.C:
+            //        key = InputVirtualKey.Action2;
+            //        break;
+            //    #endregion
 
-            }
+            //    #region Camera
+            //    case Key.PageDown:
+            //        key = InputVirtualKey.Action7;
+            //        break;
+            //    case Key.PageUp:
+            //        key = InputVirtualKey.Action8;
+            //        break;
+            //    #endregion
+            //    case Key.G:
+            //        //key = InputVirtualKey.Action16;
+            //        //GC.Collect();
+            //        MessageDispatcher.Post(new TraceText(""));
+            //        break;
+
+            //}
 
             return key;
         }

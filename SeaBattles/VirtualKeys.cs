@@ -47,6 +47,10 @@ namespace SeaBattles
         Action13,
         Action14,
         Action15,
-        Action16
+        Action16,
+        /// <summary>
+        /// Pause/Escape
+        /// </summary>
+        Action17
     }
 }
