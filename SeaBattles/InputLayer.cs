@@ -15,7 +15,18 @@ namespace SeaBattles
         private LinkedList<InputVirtualKey> holdingButtonsList = new LinkedList<InputVirtualKey>();
         private List<InputVirtualKey> buttonsToHold = new List<InputVirtualKey>();
 
+        /// <summary>
+        /// Кнопки клавиатуры.
+        /// </summary>
         private Dictionary<Key, string> keyToKeyName = new Dictionary<Key, string>();
+        /// <summary>
+        /// Оси геймпада.
+        /// </summary>
+        private Dictionary<JoystickAxis, string> axisToKeyName = new Dictionary<JoystickAxis, string>();
+        /// <summary>
+        /// Кнопки геймпада.
+        /// </summary>
+        private Dictionary<JoystickButton, string> buttonToKeyName = new Dictionary<JoystickButton, string>();
         private Dictionary<string, string> keyNameToFunctionName = new Dictionary<string, string>();
         private Dictionary<string, InputVirtualKey> functionNameToInputVirtualKey = new Dictionary<string, InputVirtualKey>();
 
@@ -58,11 +69,32 @@ namespace SeaBattles
 
         private void CreateButtonsMapping(string path)
         {
-            Dictionary<Key, List<string>> tempKeyToKeyNameList = new Dictionary<Key, List<string>>();
+            IniProcessor ini = new IniProcessor(path);
+            ini.ReadFile();
 
-            foreach (string keyName in Enum.GetNames(typeof(Key)))
+            GetDeviceButtonMapping<JoystickAxis>(JoystickAxis.Axis0, ini, "Controls.Gamepad");
+            GetDeviceButtonMapping<JoystickButton>(JoystickButton.Button0, ini, "Controls.Gamepad");
+            GetDeviceButtonMapping<Key>(Key.A, ini, "Controls.Keyboard");
+
+            functionNameToInputVirtualKey.Add("ShootLeft".ToLower(), InputVirtualKey.Action1);
+            functionNameToInputVirtualKey.Add("ShootBack".ToLower(), InputVirtualKey.Action3);
+            functionNameToInputVirtualKey.Add("ShootRight".ToLower(), InputVirtualKey.Action2);
+            functionNameToInputVirtualKey.Add("IncreaseSpeed".ToLower(), InputVirtualKey.AxisUp);
+            functionNameToInputVirtualKey.Add("DecreaseSpeed".ToLower(), InputVirtualKey.AxisDown);
+            functionNameToInputVirtualKey.Add("TurnLeft".ToLower(), InputVirtualKey.AxisLeft);
+            functionNameToInputVirtualKey.Add("TurnRight".ToLower(), InputVirtualKey.AxisRight);
+            functionNameToInputVirtualKey.Add("ZoomIn".ToLower(), InputVirtualKey.Action7);
+            functionNameToInputVirtualKey.Add("ZoomOut".ToLower(), InputVirtualKey.Action8);
+            functionNameToInputVirtualKey.Add("Escape".ToLower(), InputVirtualKey.Action17);
+        }
+
+        private void GetDeviceButtonMapping<T>(T buttonsType, IniProcessor ini, string section)
+        {
+            Type t = typeof(T);
+            Dictionary<T, List<string>> tempKeyToKeyNameList = new Dictionary<T, List<string>>();
+            foreach (string keyName in Enum.GetNames(typeof(T)))
             {
-                Key key = (Key)Enum.Parse(typeof(Key), keyName);
+                T key = (T)Enum.Parse(typeof(T), keyName);
 
                 if (!tempKeyToKeyNameList.ContainsKey(key))
                 {
@@ -77,15 +109,12 @@ namespace SeaBattles
                 }
             }
 
-            IniProcessor ini = new IniProcessor(path);
-            ini.ReadFile();
-
-            Dictionary<Key, List<string>>.ValueCollection keyLists = tempKeyToKeyNameList.Values;
+            Dictionary<T, List<string>>.ValueCollection keyLists = tempKeyToKeyNameList.Values;
             foreach (List<string> keyNames in keyLists)
             {
                 foreach (string keyName in keyNames)
                 {
-                    string functionName = ini.GetValue("Controls.Keyboard", keyName, "");
+                    string functionName = ini.GetValue(section, keyName, "");
 
                     if (!String.IsNullOrEmpty(functionName))
                         keyNameToFunctionName.Add(keyName.ToLower(), functionName.ToLower());
@@ -94,25 +123,27 @@ namespace SeaBattles
 
             // теперь заполняем словарь соответствия кнопок названию кнопки только для тех кнопок, которые обозначены в настройках
             // другие кнопки будут игнорироваться, поэтому словарь будет содержать не 150 элементов, а пару десятков
-            foreach (Key key in tempKeyToKeyNameList.Keys)
+            foreach (T key in tempKeyToKeyNameList.Keys)
             {
                 foreach (string keyName in tempKeyToKeyNameList[key])
                 {
-                    if (keyNameToFunctionName.ContainsKey(keyName) && !keyToKeyName.ContainsKey(key))
-                        keyToKeyName.Add(key, keyName.ToLower());
+                    if (keyNameToFunctionName.ContainsKey(keyName))
+                    {
+                        if(t == typeof(Key))
+                            if(!keyToKeyName.ContainsKey((Key)(object)key))
+                                keyToKeyName.Add((Key)(object)key, keyName.ToLower());
+
+                        if(t == typeof(JoystickAxis))
+                            if (!axisToKeyName.ContainsKey((JoystickAxis)(object)key))
+                                axisToKeyName.Add((JoystickAxis)(object)key, keyName.ToLower());
+
+                        if (t == typeof(JoystickButton))
+                            if (!buttonToKeyName.ContainsKey((JoystickButton)(object)key))
+                                buttonToKeyName.Add((JoystickButton)(object)key, keyName.ToLower());
+                    }
+                    
                 }
             }
-
-            functionNameToInputVirtualKey.Add("ShootLeft".ToLower(), InputVirtualKey.Action1);
-            functionNameToInputVirtualKey.Add("ShootBack".ToLower(), InputVirtualKey.Action3);
-            functionNameToInputVirtualKey.Add("ShootRight".ToLower(), InputVirtualKey.Action2);
-            functionNameToInputVirtualKey.Add("IncreaseSpeed".ToLower(), InputVirtualKey.AxisUp);
-            functionNameToInputVirtualKey.Add("DecreaseSpeed".ToLower(), InputVirtualKey.AxisDown);
-            functionNameToInputVirtualKey.Add("TurnLeft".ToLower(), InputVirtualKey.AxisLeft);
-            functionNameToInputVirtualKey.Add("TurnRight".ToLower(), InputVirtualKey.AxisRight);
-            functionNameToInputVirtualKey.Add("ZoomIn".ToLower(), InputVirtualKey.Action7);
-            functionNameToInputVirtualKey.Add("ZoomOut".ToLower(), InputVirtualKey.Action8);
-            functionNameToInputVirtualKey.Add("Escape".ToLower(), InputVirtualKey.Action17);
         }
 
         /// <summary>
@@ -320,61 +351,63 @@ namespace SeaBattles
         /// </summary>
         /// <param name="button">Кнопка джойстика</param>
         /// <returns>Виртуальная кнопка</returns>
-        private static InputVirtualKey TranslateInput(JoystickButton button)
+        private InputVirtualKey TranslateInput(JoystickButton button)
         {
             InputVirtualKey key = InputVirtualKey.Unknown;
 
-            switch (button)
-            {
-                // Крест
-                case JoystickButton.Button0:
-                    key = InputVirtualKey.Action3;
-                    break;
-                // Квадрат
-                case JoystickButton.Button1:
-                    key = InputVirtualKey.Action1;
-                    break;
-                // Круг
-                case JoystickButton.Button2:
-                    key = InputVirtualKey.Action2;
-                    break;
-                // Треугольник
-                case JoystickButton.Button3:
-                    key = InputVirtualKey.Action4;
-                    break;
-                // L1
-                case JoystickButton.Button4:
-                    key = InputVirtualKey.Action5;
-                    break;
-                // L2
-                case JoystickButton.Button5:
-                    key = InputVirtualKey.Action6;
-                    break;
-                // R1
-                case JoystickButton.Button6:
-                    key = InputVirtualKey.Action7;
-                    break;
-                // R2
-                case JoystickButton.Button7:
-                    key = InputVirtualKey.Action8;
-                    break;
-                // Нижний левый шифт
-                case JoystickButton.Button8:
-                    key = InputVirtualKey.Action9;
-                    break;
-                // Нижний правый шифт
-                case JoystickButton.Button9:
-                    key = InputVirtualKey.Action10;
-                    break;
-                // L3
-                case JoystickButton.Button10:
-                    key = InputVirtualKey.Action11;
-                    break;
-                // R3
-                case JoystickButton.Button11:
-                    key = InputVirtualKey.Action12;
-                    break;
-            }
+            if (buttonToKeyName.ContainsKey(button))
+                return functionNameToInputVirtualKey[keyNameToFunctionName[buttonToKeyName[button]]];
+            //switch (button)
+            //{
+            //    // Крест
+            //    case JoystickButton.Button0:
+            //        key = InputVirtualKey.Action3;
+            //        break;
+            //    // Квадрат
+            //    case JoystickButton.Button1:
+            //        key = InputVirtualKey.Action1;
+            //        break;
+            //    // Круг
+            //    case JoystickButton.Button2:
+            //        key = InputVirtualKey.Action2;
+            //        break;
+            //    // Треугольник
+            //    case JoystickButton.Button3:
+            //        key = InputVirtualKey.Action4;
+            //        break;
+            //    // L1
+            //    case JoystickButton.Button4:
+            //        key = InputVirtualKey.Action5;
+            //        break;
+            //    // L2
+            //    case JoystickButton.Button5:
+            //        key = InputVirtualKey.Action6;
+            //        break;
+            //    // R1
+            //    case JoystickButton.Button6:
+            //        key = InputVirtualKey.Action7;
+            //        break;
+            //    // R2
+            //    case JoystickButton.Button7:
+            //        key = InputVirtualKey.Action8;
+            //        break;
+            //    // Нижний левый шифт
+            //    case JoystickButton.Button8:
+            //        key = InputVirtualKey.Action9;
+            //        break;
+            //    // Нижний правый шифт
+            //    case JoystickButton.Button9:
+            //        key = InputVirtualKey.Action10;
+            //        break;
+            //    // L3
+            //    case JoystickButton.Button10:
+            //        key = InputVirtualKey.Action11;
+            //        break;
+            //    // R3
+            //    case JoystickButton.Button11:
+            //        key = InputVirtualKey.Action12;
+            //        break;
+            //}
 
             return key;
         }
