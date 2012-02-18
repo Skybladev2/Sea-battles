@@ -22,7 +22,7 @@ namespace SeaBattles
         /// <summary>
         /// Оси геймпада.
         /// </summary>
-        private Dictionary<JoystickAxis, string> axisToKeyName = new Dictionary<JoystickAxis, string>();
+        private Dictionary<KeyValuePair<JoystickAxis, int>, string> axisToKeyName = new Dictionary<KeyValuePair<JoystickAxis, int>, string>();
         /// <summary>
         /// Кнопки геймпада.
         /// </summary>
@@ -72,9 +72,10 @@ namespace SeaBattles
             IniProcessor ini = new IniProcessor(path);
             ini.ReadFile();
 
-            GetDeviceButtonMapping<JoystickAxis>(JoystickAxis.Axis0, ini, "Controls.Gamepad");
-            GetDeviceButtonMapping<JoystickButton>(JoystickButton.Button0, ini, "Controls.Gamepad");
-            GetDeviceButtonMapping<Key>(Key.A, ini, "Controls.Keyboard");
+            GetDeviceAxisMapping<JoystickAxis>(JoystickAxis.Axis0, ini, "Controls.Gamepad", "Positive");
+            GetDeviceAxisMapping<JoystickAxis>(JoystickAxis.Axis0, ini, "Controls.Gamepad", "Negative");
+            GetDeviceAxisMapping<JoystickButton>(JoystickButton.Button0, ini, "Controls.Gamepad", "");
+            GetDeviceAxisMapping<Key>(Key.A, ini, "Controls.Keyboard", "");
 
             functionNameToInputVirtualKey.Add("ShootLeft".ToLower(), InputVirtualKey.Action1);
             functionNameToInputVirtualKey.Add("ShootBack".ToLower(), InputVirtualKey.Action3);
@@ -88,7 +89,7 @@ namespace SeaBattles
             functionNameToInputVirtualKey.Add("Escape".ToLower(), InputVirtualKey.Action17);
         }
 
-        private void GetDeviceButtonMapping<T>(T buttonsType, IniProcessor ini, string section)
+        private void GetDeviceAxisMapping<T>(T buttonsType, IniProcessor ini, string section, string suffix)
         {
             Type t = typeof(T);
             Dictionary<T, List<string>> tempKeyToKeyNameList = new Dictionary<T, List<string>>();
@@ -99,13 +100,13 @@ namespace SeaBattles
                 if (!tempKeyToKeyNameList.ContainsKey(key))
                 {
                     List<string> keyNames = new List<string>();
-                    keyNames.Add(keyName.ToLower());
+                    keyNames.Add(keyName.ToLower() + suffix.ToLower());
                     tempKeyToKeyNameList.Add(key, keyNames);
                 }
                 else
                 {
                     List<string> keyNames = tempKeyToKeyNameList[key];
-                    keyNames.Add(keyName.ToLower());
+                    keyNames.Add(keyName.ToLower() + suffix.ToLower());
                 }
             }
 
@@ -129,19 +130,22 @@ namespace SeaBattles
                 {
                     if (keyNameToFunctionName.ContainsKey(keyName))
                     {
-                        if(t == typeof(Key))
-                            if(!keyToKeyName.ContainsKey((Key)(object)key))
+                        if (t == typeof(Key))
+                            if (!keyToKeyName.ContainsKey((Key)(object)key))
                                 keyToKeyName.Add((Key)(object)key, keyName.ToLower());
 
-                        if(t == typeof(JoystickAxis))
-                            if (!axisToKeyName.ContainsKey((JoystickAxis)(object)key))
-                                axisToKeyName.Add((JoystickAxis)(object)key, keyName.ToLower());
+                        if (t == typeof(JoystickAxis))
+                        {
+                            KeyValuePair<JoystickAxis, int> pair = new KeyValuePair<JoystickAxis, int>((JoystickAxis)(object)key, suffix == "Positive" ? 1 : -1);
+                            if (!axisToKeyName.ContainsKey(pair))
+                                axisToKeyName.Add(pair, keyName.ToLower());
+                        }
 
                         if (t == typeof(JoystickButton))
                             if (!buttonToKeyName.ContainsKey((JoystickButton)(object)key))
                                 buttonToKeyName.Add((JoystickButton)(object)key, keyName.ToLower());
                     }
-                    
+
                 }
             }
         }
@@ -216,23 +220,6 @@ namespace SeaBattles
             InputVirtualKey axisDown = JoystickAxisDown(e.Axis, e.Value);
             InputVirtualKey axisUp = JoystickAxisUp(e.Axis, e.Value);
 
-            // выключаем противоположное направление
-            switch (axisDown)
-            {
-                case InputVirtualKey.AxisLeft:
-                    pressed[InputVirtualKey.AxisRight] = false;
-                    break;
-                case InputVirtualKey.AxisRight:
-                    pressed[InputVirtualKey.AxisLeft] = false;
-                    break;
-                case InputVirtualKey.AxisUp:
-                    pressed[InputVirtualKey.AxisDown] = false;
-                    break;
-                case InputVirtualKey.AxisDown:
-                    pressed[InputVirtualKey.AxisUp] = false;
-                    break;
-            }
-
             if (axisDown != InputVirtualKey.Unknown && !pressed[axisDown])
                 MessageDispatcher.Post(new ButtonDown(axisDown));
 
@@ -285,27 +272,14 @@ namespace SeaBattles
         private InputVirtualKey JoystickAxisDown(JoystickAxis axis, float value)
         {
             if (value != 0)
-                switch (axis)
-                {
-                    // горизонтальная ось
-                    case JoystickAxis.Axis0:
-                        joystickPos.X = value;
-                        if (value > 0)
-                            return InputVirtualKey.AxisRight;
-                        else
-                            if (value < 0)
-                                return InputVirtualKey.AxisLeft;
-                        break;
-                    // вертикальная ось
-                    case JoystickAxis.Axis1:
-                        joystickPos.Y = value;
-                        if (value > 0)
-                            return InputVirtualKey.AxisUp;
-                        else
-                            if (value < 0)
-                                return InputVirtualKey.AxisDown;
-                        break;
-                }
+            {
+                int sign = Math.Sign(value);
+                KeyValuePair<JoystickAxis, int> pair = new KeyValuePair<JoystickAxis, int>(axis, sign);
+                if (axisToKeyName.ContainsKey(pair))
+                    return functionNameToInputVirtualKey[keyNameToFunctionName[axisToKeyName[pair]]];
+                else
+                    return InputVirtualKey.Unknown;
+            }
 
             return InputVirtualKey.Unknown;
         }
@@ -313,36 +287,22 @@ namespace SeaBattles
         private InputVirtualKey JoystickAxisUp(JoystickAxis axis, float value)
         {
             if (value == 0)
-                switch (axis)
-                {
-                    // горизонтальная ось
-                    case JoystickAxis.Axis0:
-                        if (joystickPos.X < 0)
-                        {
-                            joystickPos.X = value;
-                            return InputVirtualKey.AxisLeft; // отпустили левую стрелку
-                        }
-                        else if (joystickPos.X > 0)
-                        {
-                            joystickPos.X = value;
-                            return InputVirtualKey.AxisRight; // отпустили правую стрелку
-                        }
+            {
+                KeyValuePair<JoystickAxis, int> positivePair = new KeyValuePair<JoystickAxis, int>(axis, 1);
+                KeyValuePair<JoystickAxis, int> negativePair = new KeyValuePair<JoystickAxis, int>(axis, -1);
+                if (axisToKeyName.ContainsKey(positivePair) &&
+                    pressed[functionNameToInputVirtualKey[keyNameToFunctionName[axisToKeyName[positivePair]]]]
+                    ) // отпустили положительое направление
+                    return functionNameToInputVirtualKey[keyNameToFunctionName[axisToKeyName[positivePair]]];
+                else
+                    if (axisToKeyName.ContainsKey(negativePair) &&
+                        pressed[functionNameToInputVirtualKey[keyNameToFunctionName[axisToKeyName[negativePair]]]]
+                        )
+                        return functionNameToInputVirtualKey[keyNameToFunctionName[axisToKeyName[negativePair]]]; // отпустили отрицательное направление
+                    else
+                        return InputVirtualKey.Unknown;
+            }
 
-                        break;
-                    // вертикальная ось
-                    case JoystickAxis.Axis1:
-                        if (joystickPos.Y < 0)
-                        {
-                            joystickPos.Y = value;
-                            return InputVirtualKey.AxisDown; // отпустили стрелку вниз
-                        }
-                        else if (joystickPos.Y > 0)
-                        {
-                            joystickPos.Y = value;
-                            return InputVirtualKey.AxisUp; // отпустили стрелку вверх
-                        }
-                        break;
-                }
             return InputVirtualKey.Unknown;
         }
 
@@ -357,6 +317,7 @@ namespace SeaBattles
 
             if (buttonToKeyName.ContainsKey(button))
                 return functionNameToInputVirtualKey[keyNameToFunctionName[buttonToKeyName[button]]];
+
             //switch (button)
             //{
             //    // Крест
@@ -423,55 +384,6 @@ namespace SeaBattles
 
             if (keyToKeyName.ContainsKey(button))
                 return functionNameToInputVirtualKey[keyNameToFunctionName[keyToKeyName[button]]];
-
-            //switch (button)
-            //{
-            //    #region Movement
-            //    case Key.W:
-            //    case Key.Up:
-            //        key = InputVirtualKey.AxisUp;
-            //        break;
-            //    case Key.S:
-            //    case Key.Down:
-            //        key = InputVirtualKey.AxisDown;
-            //        break;
-            //    case Key.A:
-            //    case Key.Left:
-            //        key = InputVirtualKey.AxisLeft;
-            //        break;
-            //    case Key.D:
-            //    case Key.Right:
-            //        key = InputVirtualKey.AxisRight;
-            //        break;
-            //    #endregion
-
-            //    #region Shooting
-            //    case Key.Z:
-            //        key = InputVirtualKey.Action1;
-            //        break;
-            //    case Key.X:
-            //        key = InputVirtualKey.Action3;
-            //        break;
-            //    case Key.C:
-            //        key = InputVirtualKey.Action2;
-            //        break;
-            //    #endregion
-
-            //    #region Camera
-            //    case Key.PageDown:
-            //        key = InputVirtualKey.Action7;
-            //        break;
-            //    case Key.PageUp:
-            //        key = InputVirtualKey.Action8;
-            //        break;
-            //    #endregion
-            //    case Key.G:
-            //        //key = InputVirtualKey.Action16;
-            //        //GC.Collect();
-            //        MessageDispatcher.Post(new TraceText(""));
-            //        break;
-
-            //}
 
             return key;
         }
