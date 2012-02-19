@@ -10,13 +10,14 @@ namespace SeaBattles
     /// <summary>
     /// Снаряд. То, чем стреляют пушки корабля.
     /// </summary>
-    internal class Shell : Aspect
+    internal class Shell : Aspect, IDamageable
     {
         private GraphicsAspect graphics = null;
         private PhysicsAspect physics = null;
         private DestroyByTimerAspect timer = null;
         private BoundSetAspect bounds = null;
         private float radius = 0.76f; // калибр 152 мм
+        private DamageAspect damage = null;
 
         // какому кораблю принадлежит снаряд
         private object shellOwner = null;
@@ -55,7 +56,8 @@ namespace SeaBattles
             bounds.AddBound(bound);
             // снаряд будет быстродвижущимся объектом, для него особый алгоритм определения столкновений
             bounds.SetAttribute(Strings.CollisionDetectionSpeedType, Strings.CollisionDetectionSpeedTypeFast);
-            
+            damage = DamageAspect.Create(this, 1);
+
             //physics = new PhysicsAspect(this, position, Vector2.Zero, 0);
             //timer = DestroyByTimerAspect.Create(this, new TimeSpan(0, 0, 0, 2, 500));
             timer = DestroyByTimerAspect.Create(this, new TimeSpan(0, 0, 0, 1, 0));
@@ -65,6 +67,9 @@ namespace SeaBattles
             MessageDispatcher.RegisterHandler(typeof(SetPosition), bounds);
             MessageDispatcher.RegisterHandler(typeof(SetPosition), graphics);
             MessageDispatcher.RegisterHandler(typeof(DestroyChildrenOf), this);
+            MessageDispatcher.RegisterHandler(typeof(Kill), this);
+
+            messageHandler.Handlers.Add(typeof(Kill), HandleKill);
         }
 
         protected override void Cleanup()
@@ -73,7 +78,28 @@ namespace SeaBattles
             MessageDispatcher.UnRegisterHandler(typeof(DestroyChildrenOf), this);
             MessageDispatcher.UnRegisterHandler(typeof(SetPosition), graphics);
             MessageDispatcher.UnRegisterHandler(typeof(SetPosition), bounds);
+            MessageDispatcher.UnRegisterHandler(typeof(Kill), this);
         }
+
+        public bool HandleKill(object message)
+        {
+            Kill kill = (Kill)message;
+            if (kill.Target == this)
+            {
+                MessageDispatcher.Post(new DestroySelf(this));
+            }
+
+            return true;
+        }
+
+        #region IDamageable Members
+
+        public bool ApplyDamage(int amount)
+        {
+            return this.damage.ApplyDamage(amount);
+        }
+
+        #endregion
     }
 }
 

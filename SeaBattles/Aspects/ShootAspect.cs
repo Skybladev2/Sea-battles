@@ -25,10 +25,10 @@ namespace SeaBattles
         private ShootAspect(object owner)
             : base(owner)
         {
-            messageHandler.Handlers.Add(typeof(Shoot), new HandlerMethodDelegate(Shoot));
+            messageHandler.Handlers.Add(typeof(Shoot), Shoot);
         }
 
-        private void Shoot(object message)
+        private bool Shoot(object message)
         {
             Shoot shoot = (Shoot)message;
             if (shoot.Owner != null && shoot.Owner.Equals(this.owner))
@@ -39,6 +39,8 @@ namespace SeaBattles
                 Shell shell = new Shell(shoot.From, shoot.Direction, shoot.ShooterVelocity, 400, ownShip);
             }
             //Shell shell = new Shell(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.0001f);
+
+            return true;
         }
     }
 }

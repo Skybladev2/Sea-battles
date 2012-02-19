@@ -40,7 +40,7 @@ namespace SeaBattles
             messageHandler.Handlers.Add(typeof(InformPosition), HandleInformPosition);
         }
 
-        private void HandleInformPosition(object message)
+        private bool HandleInformPosition(object message)
         {
             InformPosition position = (InformPosition)message;
 
@@ -50,7 +50,7 @@ namespace SeaBattles
                 position.Target != this
                 ||
                 ((Weapon)position.Target).shipSide != this.shipSide) // если пришло сообщение для другого борта
-                return;
+                return true;
 
             if (waitForWeaponCoords)
             {
@@ -95,9 +95,11 @@ namespace SeaBattles
                 MessageDispatcher.Post(new Shoot(this, new Vector3(position.Position.X, position.Position.Y, -1), weaponFacing, lastFrameWeaponVelocity));
                 //Shell shell = new Shell(position.Position, weaponFacing, new Vector3(lastFrameWeaponVelocity), 1);
             }
+
+            return true;
         }
 
-        private void HandleButtonDown(object message)
+        private bool HandleButtonDown(object message)
         {
             ButtonDown butttonDown = (ButtonDown)message;
             InputVirtualKey key = butttonDown.Button;
@@ -152,6 +154,8 @@ namespace SeaBattles
                 default:
                     break;
             }
+
+            return true;
         }
 
         /// <summary>

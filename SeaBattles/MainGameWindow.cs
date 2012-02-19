@@ -54,8 +54,8 @@ namespace SeaBattles
                 }
             };
 
-            handlers.Add(typeof(TraceText), new HandlerMethodDelegate(WriteTitle));
-            handlers.Add(typeof(ButtonUp), new HandlerMethodDelegate(HandleButtonUp));
+            handlers.Add(typeof(TraceText), WriteTitle);
+            handlers.Add(typeof(ButtonUp), HandleButtonUp);
             mainCamera = new Camera(0, 0, 1, 800, 600);
             input = new InputLayer(this);
 
@@ -414,17 +414,20 @@ namespace SeaBattles
 
         #endregion
 
-        private void WriteTitle(object message)
+        private bool WriteTitle(object message)
         {
             TraceText text = (TraceText)message;
             this.Title = text.Text;
+            return true;
         }
 
-        private void HandleButtonUp(object message)
+        private bool HandleButtonUp(object message)
         {
             ButtonUp buttonUp = (ButtonUp)message;
             if (buttonUp.Button == InputVirtualKey.Action17)
                 Exit();
+
+            return true;
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace SeaBattles
 {
-    public delegate void HandlerMethodDelegate(object message);
+    public delegate bool HandlerMethodDelegate(object message);
 
     internal class MessageDispatcher
     {

@@ -52,7 +52,7 @@ namespace SeaBattles
 
             this.diagonalLength = (float)Math.Sqrt(Math.Pow(height / 2, 2) + Math.Pow(width / 2, 2));
 
-            messageHandler.Handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
+            messageHandler.Handlers.Add(typeof(SetPosition), HandleUpdatePosition);
         }
 
         public override bool IntersectsWith(Vector2 point)
@@ -81,7 +81,7 @@ namespace SeaBattles
         //    return this.owner;
         //}
 
-        private void HandleUpdatePosition(object message)
+        private bool HandleUpdatePosition(object message)
         {
             SetPosition setPosition = (SetPosition)message;
             if (this.owner == setPosition.Target)
@@ -89,6 +89,8 @@ namespace SeaBattles
                 this.angle = setPosition.Angle;
                 this.position = setPosition.Position.Xy;
             }
+
+            return true;
         }
 
         public override bool IntersectsWith(CircleBoundsAspect circle)

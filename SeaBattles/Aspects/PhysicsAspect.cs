@@ -100,16 +100,17 @@ namespace SeaBattles
             this.speed = speed;
         }
 
-        private void HandleSetSpeed(object message)
+        private bool HandleSetSpeed(object message)
         {
             SetSpeed setSpeed = (SetSpeed)message;
             if (setSpeed.Owner == this.owner)
                 this.speed = setSpeed.Speed;
 
             //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
+            return true;
         }
 
-        private void HandleGetPosition(object message)
+        private bool HandleGetPosition(object message)
         {
             GetOwnerPosition getPosition = (GetOwnerPosition)message;
 
@@ -127,14 +128,18 @@ namespace SeaBattles
                                                             this.prevPosition,
                                                             this.lastDT));
             }
+
+            return true;
         }
 
-        private void HandleButtonHold(object message)
+        private bool HandleButtonHold(object message)
         {
             ButtonHold buttonHold = (ButtonHold)message;
             // кагбе тут должно стоять условие, а что же делать, когда удерживается кнопка
             // но мы пока безусловно поворачиваем физику
             UpdateRotation(buttonHold.Button, buttonHold.DT);
+
+            return true;
         }
 
         internal void UpdateRotation(InputVirtualKey inputVirtualKey, double dt)

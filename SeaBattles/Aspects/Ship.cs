@@ -10,16 +10,18 @@ namespace SeaBattles
     /// <summary>
     /// Корабль. Может управляться игроком или ИИ.
     /// </summary>
-    internal class Ship : Aspect
+    internal class Ship : Aspect, IDamageable
     {
         private PhysicsAspect physics;
         private VehicleWithGearboxAspect mechanics;
         private GraphicsAspect graphics;
         private BoundSetAspect bounds;
+        private DamageAspect damage;
 
         private Weapon leftCannon;
         private Weapon rightCannon;
         private Weapon rearCannon;
+        private DestroyByTimerAspect timer = null;
 
         internal VehicleWithGearboxAspect Mechanics
         {
@@ -57,6 +59,8 @@ namespace SeaBattles
             MessageDispatcher.RegisterHandler(typeof(Shoot), aspect);
             MessageDispatcher.RegisterHandler(typeof(BoundSetCollision), aspect);
             MessageDispatcher.RegisterHandler(typeof(BoundSetNotCollision), aspect);
+            MessageDispatcher.RegisterHandler(typeof(Ship), aspect);
+            MessageDispatcher.RegisterHandler(typeof(Kill), aspect);
 
             aspect.RegisterAllStuff();
 
@@ -88,6 +92,76 @@ namespace SeaBattles
             rearCannon = Weapon.Create(this, Side.Rear);
             leftCannon = Weapon.Create(this, Side.Left);
             rightCannon = Weapon.Create(this, Side.Right);
+            damage = DamageAspect.Create(this, 100);
+
+            messageHandler.Handlers.Add(typeof(Kill), HandleKill);
+            messageHandler.Handlers.Add(typeof(BoundSetCollision), HandleBoundSetCollision);
         }
+
+        private bool HandleBoundSetCollision(object message)
+        {
+            BoundSetCollision boundSetCollision = (BoundSetCollision)message;
+
+            if (boundSetCollision.Objects[0] == this.bounds && boundSetCollision.Objects[1].GetOwner().GetType() == typeof(Shell))
+            {
+                DamageManager.ApplyDamage(this, (IDamageable)boundSetCollision.Objects[1].GetOwner());
+            }
+
+            if (boundSetCollision.Objects[1] == this.bounds && boundSetCollision.Objects[0].GetOwner().GetType() == typeof(Shell))
+            {
+                DamageManager.ApplyDamage(this, (IDamageable)boundSetCollision.Objects[0].GetOwner());
+            }
+            //bool killed = this.damage.ApplyDamage(20);
+            MessageDispatcher.Post(new TraceText(damage.CurrentDamage.ToString()));
+
+            //if (killed)
+            //    MessageDispatcher.Post(new Kill(this)); // возможно, это неправильно, что сам объект решает, мёртв он или нет, так как он сам вызывает и сам обрабатывает событие уничтожения, хотя событие вызова уничтожения ещё не вернуло управление
+
+            return true;
+        }
+
+        private bool HandleKill(object message)
+        {
+            Kill kill = (Kill)message;
+            if (kill.Target == this)
+            {
+                // убираем все аспекты, кроме графического, чтобы показать анимацию уничтожения
+                MessageDispatcher.Post(new DestroySelf(mechanics));
+                MessageDispatcher.Post(new DestroySelf(physics));
+                MessageDispatcher.Post(new DestroySelf(bounds));
+                MessageDispatcher.Post(new DestroySelf(damage));
+                MessageDispatcher.Post(new DestroySelf(leftCannon));
+                MessageDispatcher.Post(new DestroySelf(rightCannon));
+                MessageDispatcher.Post(new DestroySelf(rearCannon));
+
+                timer = DestroyByTimerAspect.Create(this, new TimeSpan(0, 0, 0, 2, 0));
+            }
+
+            return true;
+        }
+
+        protected override void Cleanup()
+        {
+            base.Cleanup();
+
+            MessageDispatcher.UnRegisterHandler(typeof(SetPosition), this);
+            MessageDispatcher.UnRegisterHandler(typeof(SetSpeed), this);
+            MessageDispatcher.UnRegisterHandler(typeof(GetOwnerPosition), this);
+            MessageDispatcher.UnRegisterHandler(typeof(InformPosition), this);
+            MessageDispatcher.UnRegisterHandler(typeof(Shoot), this);
+            MessageDispatcher.UnRegisterHandler(typeof(BoundSetCollision), this);
+            MessageDispatcher.UnRegisterHandler(typeof(BoundSetNotCollision), this);
+            MessageDispatcher.UnRegisterHandler(typeof(Ship), this);
+            MessageDispatcher.UnRegisterHandler(typeof(Kill), this);
+        }
+
+        #region IDamageable Members
+
+        public bool ApplyDamage(int amount)
+        {
+            return this.damage.ApplyDamage(amount);
+        }
+
+        #endregion
     }
 }

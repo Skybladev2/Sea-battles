@@ -25,7 +25,7 @@ namespace SeaBattles
             messageHandler.Handlers.Add(typeof(ButtonDown), HandleButtonDown);
         }
 
-        private void HandleButtonDown(object message)
+        private bool HandleButtonDown(object message)
         {
             ButtonDown butttonDown = (ButtonDown)message;
             InputVirtualKey key = butttonDown.Button;
@@ -79,6 +79,8 @@ namespace SeaBattles
                 default:
                     break;
             }
+
+            return true;
         }
 
         private void DecreaseSpeed()

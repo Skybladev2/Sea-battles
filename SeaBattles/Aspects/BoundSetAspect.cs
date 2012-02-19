@@ -80,7 +80,7 @@ namespace SeaBattles
                 this.bounds = TriangulateFan(vertices);
                 RecomputeBounds();
             }
-            messageHandler.Handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
+            messageHandler.Handlers.Add(typeof(SetPosition), HandleUpdatePosition);
         }
 
         internal void AddBound(BoundsAspect bound)
@@ -437,7 +437,7 @@ namespace SeaBattles
             return this.owner;
         }
 
-        private void HandleUpdatePosition(object message)
+        private bool HandleUpdatePosition(object message)
         {
             SetPosition setPosition = (SetPosition)message;
             if (this.owner == setPosition.Target)
@@ -483,6 +483,8 @@ namespace SeaBattles
                 if (AmIFastMovingObject())
                     BuildOuterContour();
             }
+
+            return true;
         }
 
         /// <summary>

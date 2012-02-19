@@ -5,7 +5,7 @@ using System.Text;
 namespace SeaBattles.Messages
 {
     /// <summary>
-    /// Тестовое сообщение, чтобы при прекращении столкновения рисовать примитивы прежним цветом.
+    /// Сообщение о том, что два набора примитивов столкнулись.
     /// </summary>
     internal class BoundSetCollision
     {

@@ -78,7 +78,7 @@ namespace SeaBattles
             RegisterSelf();
         }
 
-        protected void DestroyByOwner(object message)
+        protected bool DestroyByOwner(object message)
         {
             DestroyChildrenOf destroy = (DestroyChildrenOf)message;
 
@@ -103,9 +103,11 @@ namespace SeaBattles
                         Cleanup();
                     }
             // иначе игнорируем
+
+            return true;
         }
 
-        protected void Destroy(object message)
+        protected bool Destroy(object message)
         {
             DestroySelf destroy = (DestroySelf)message;
 
@@ -118,6 +120,8 @@ namespace SeaBattles
                 // поэтому все аспекты не должны полагаться на то, что owner не будет null и вообще как-то пытаться зависеть от владельца
                 Cleanup();
             }
+
+            return true;
         }
 
         /// <summary>

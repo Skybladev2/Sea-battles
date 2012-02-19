@@ -27,12 +27,13 @@ namespace SeaBattles
         {
             Type type = message.GetType();
 
+            bool continueToHandle = true;
             // так как данный класс выступает и как аспект, и как агрегация аспектов,
             // то у него 2 списка обработчиков -
             // собственные методы и объекты-аспекты.
             // Сначала сообщения проходят через собственные методы
             if (handlers.ContainsKey(type))
-                handlers[type](message);
+                continueToHandle = continueToHandle && handlers[type](message);
 
             if (handlersMap.ContainsKey(type))
                 foreach (IMessageHandler handler in handlersMap[type])

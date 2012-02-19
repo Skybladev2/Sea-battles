@@ -19,6 +19,7 @@ namespace SeaBattles
         internal Color color = Color.White;
         internal Color notCollisionColor = Color.White;
         internal Color collisionColor = Color.Red;
+        internal Color killColor = Color.Black;
 
         public static GraphicsAspect Create(object owner, List<Vector3> vertices, float lineWidth, Color notCollisionColor, Color collisionColor)
         {
@@ -43,9 +44,10 @@ namespace SeaBattles
             this.notCollisionColor = notCollisionColor;
             this.collisionColor = collisionColor;
 
-            messageHandler.Handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
-            messageHandler.Handlers.Add(typeof(BoundSetCollision), new HandlerMethodDelegate(HandleCollision));
-            messageHandler.Handlers.Add(typeof(BoundSetNotCollision), new HandlerMethodDelegate(HandleNotCollision));
+            messageHandler.Handlers.Add(typeof(SetPosition), HandleUpdatePosition);
+            messageHandler.Handlers.Add(typeof(BoundSetCollision), HandleCollision);
+            messageHandler.Handlers.Add(typeof(BoundSetNotCollision), HandleNotCollision);
+            messageHandler.Handlers.Add(typeof(Kill), HandleKill);
         }
 
         private GraphicsAspect(object owner, List<Vector3> vertices, Vector3 position, float lineWidth, Color notCollisionColor, Color collisionColor)
@@ -54,7 +56,7 @@ namespace SeaBattles
             this.translation = position;
         }
 
-        private void HandleUpdatePosition(object message)
+        private bool HandleUpdatePosition(object message)
         {
             SetPosition setPosition = (SetPosition)message;
             if (this.owner == setPosition.Target)
@@ -67,9 +69,11 @@ namespace SeaBattles
                 //if (this.owner.GetType() == typeof(Shell))
                 //    MessageDispatcher.Post(new TraceText(this.translation.ToString()));
             }
+
+            return true;
         }
 
-        private void HandleCollision(object message)
+        private bool HandleCollision(object message)
         {
             BoundSetCollision collision = (BoundSetCollision)message;
             for (int i = 0; i < collision.Objects.Length; i++)
@@ -79,9 +83,11 @@ namespace SeaBattles
                     this.color = collisionColor;
                 }
             }
+
+            return true;
         }
 
-        private void HandleNotCollision(object message)
+        private bool HandleNotCollision(object message)
         {
             BoundSetNotCollision collision = (BoundSetNotCollision)message;
             for (int i = 0; i < collision.Objects.Length; i++)
@@ -91,6 +97,18 @@ namespace SeaBattles
                     this.color = notCollisionColor;
                 }
             }
+
+            return true;
+        }
+
+        private bool HandleKill(object message)
+        {
+            Kill kill = (Kill)message;
+            if (kill.Target == this.owner)
+            {
+                this.color = killColor;
+            }
+            return true;
         }
     }
 }

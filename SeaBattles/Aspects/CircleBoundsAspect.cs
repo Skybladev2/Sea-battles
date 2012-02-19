@@ -34,7 +34,7 @@ namespace SeaBattles
             this.position = position;
             this.radius = radius;
 
-            messageHandler.Handlers.Add(typeof(SetPosition), new HandlerMethodDelegate(HandleUpdatePosition));
+            messageHandler.Handlers.Add(typeof(SetPosition), HandleUpdatePosition);
 
             //RegisterAllStuff();
         }
@@ -60,13 +60,15 @@ namespace SeaBattles
         //    return this.owner;
         //}
 
-        private void HandleUpdatePosition(object message)
+        private bool HandleUpdatePosition(object message)
         {
             SetPosition setPosition = (SetPosition)message;
             if (this.owner == setPosition.Target)
             {
                 this.position = setPosition.Position.Xy;
             }
+
+            return true;
         }
 
         public override bool IntersectsWith(TriangleBoundsAspect triangle)

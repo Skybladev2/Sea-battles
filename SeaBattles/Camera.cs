@@ -155,7 +155,7 @@ namespace SeaBattles
             zoom *= speed;
         }
 
-        public void HandleButtonHold(object message)
+        public bool HandleButtonHold(object message)
         {
             ButtonHold buttonHold = (ButtonHold)message;
             switch (buttonHold.Button)
@@ -207,6 +207,8 @@ namespace SeaBattles
                 default:
                     break;
             }
+
+            return true;
         }
 
         #region IMessageHandler Members
