@@ -106,6 +106,8 @@ namespace SeaBattles
             Kill kill = (Kill)message;
             if (kill.Target == this.owner)
             {
+                messageHandler.Handlers.Remove(typeof(BoundSetCollision));
+                messageHandler.Handlers.Remove(typeof(BoundSetNotCollision));
                 this.color = killColor;
             }
             return true;

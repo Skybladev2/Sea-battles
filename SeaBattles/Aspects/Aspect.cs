@@ -45,6 +45,19 @@ namespace SeaBattles
         //    this.aspects.AddLast(child);
         //}
 
+        protected void UnRegisterHandlerInParent(Type type)
+        {
+            if (owner != null)
+            {
+                Aspect ownerAspect = owner as Aspect;
+                if (ownerAspect != null)
+                {
+                    ownerAspect.messageHandler.Handlers.Remove(type);
+                    ownerAspect.messageHandler.HandlersMap.Remove(type);
+                    ownerAspect.UnRegisterHandlerInParent(type);
+                }
+            }
+        }
 
         protected void RegisterHandlersInParent()
         {
