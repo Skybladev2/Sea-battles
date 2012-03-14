@@ -52,6 +52,7 @@ namespace SeaBattles
 
             MessageDispatcher.RegisterHandler(typeof(SetPosition), aspect);
             MessageDispatcher.RegisterHandler(typeof(SetSpeed), aspect);
+            MessageDispatcher.RegisterHandler(typeof(SetAcceleration), aspect);
             // нужно для определения координат и скорости корабля в момент выстрела
             // в данном случае owner-ом является ship
             MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), aspect);
@@ -146,6 +147,7 @@ namespace SeaBattles
 
             MessageDispatcher.UnRegisterHandler(typeof(SetPosition), this);
             MessageDispatcher.UnRegisterHandler(typeof(SetSpeed), this);
+            MessageDispatcher.UnRegisterHandler(typeof(SetAcceleration), this);
             MessageDispatcher.UnRegisterHandler(typeof(GetOwnerPosition), this);
             MessageDispatcher.UnRegisterHandler(typeof(InformPosition), this);
             MessageDispatcher.UnRegisterHandler(typeof(Shoot), this);

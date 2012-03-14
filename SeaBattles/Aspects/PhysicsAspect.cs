@@ -28,10 +28,36 @@ namespace SeaBattles
         private readonly float speedMultiplier = 1;
 
         /// <summary>
+        /// Глобальный коэффициент, влияющий на ускорение движения всех объектов в игре.
+        /// По идее, должен задаваться извне.
+        /// </summary>
+        private readonly float accelerationMultiplier = 1;
+
+        /// <summary>
         /// Скорость текущего объекта (вектор направления всегда единичный)
         /// </summary>
         private float speed = 0;
+        /// <summary>
+        /// Ускорение текущего объекта (пока что вектор ускорения совпадает с вектором скорости)
+        /// </summary>
+        private float acceleration = 0;
         private Vector2 facing = new Vector2(0, 1);
+
+        internal float Speed
+        {
+            get
+            {
+                return speed;
+            }
+        }
+
+        internal float Acceleration
+        {
+            get
+            {
+                return acceleration;
+            }
+        }
 
         internal Vector2 Velocity
         {
@@ -83,6 +109,7 @@ namespace SeaBattles
             : base(owner)
         {
             messageHandler.Handlers.Add(typeof(SetSpeed), HandleSetSpeed);
+            messageHandler.Handlers.Add(typeof(SetAcceleration), HandleSetAcceleration);
             messageHandler.Handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
             messageHandler.Handlers.Add(typeof(ButtonHold), HandleButtonHold);
         }
@@ -110,6 +137,20 @@ namespace SeaBattles
             return true;
         }
 
+        private bool HandleSetAcceleration(object message)
+        {
+            SetAcceleration setAcceleration = (SetAcceleration)message;
+            if (setAcceleration.Owner == this.owner)
+            {
+                this.acceleration = setAcceleration.Acceleration;
+                if (setAcceleration.TargetSpeed != null)
+                    PhysicsManager.AddTargetSpeedAspect(this, setAcceleration.TargetSpeed.Value);
+            }
+
+            //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
+            return true;
+        }
+
         private bool HandleGetPosition(object message)
         {
             GetOwnerPosition getPosition = (GetOwnerPosition)message;
@@ -117,8 +158,10 @@ namespace SeaBattles
             // аспект, запрашивающий положение родителя, должен принадлежать тому же родителю, что и физика
             if (getPosition.Target.Equals(this.owner))
             {
-                float newX = facing.X * (float)Math.Cos(angle / 180 * Math.PI) - facing.Y * (float)Math.Sin(angle / 180 * Math.PI);
-                float newY = facing.X * (float)Math.Sin(angle / 180 * Math.PI) + facing.Y * (float)Math.Cos(angle / 180 * Math.PI);
+                float newX = facing.X * (float)Math.Cos(angle / 180 * Math.PI) -
+                             facing.Y * (float)Math.Sin(angle / 180 * Math.PI);
+                float newY = facing.X * (float)Math.Sin(angle / 180 * Math.PI) +
+                             facing.Y * (float)Math.Cos(angle / 180 * Math.PI);
 
                 MessageDispatcher.Post(new InformPosition(getPosition.Caller,
                                                             this.owner,
@@ -169,10 +212,37 @@ namespace SeaBattles
             this.prevPosition.Y = position.Y;
             this.lastDT = (float)dt;
 
-            position = Vector3.Add(position, new Vector3(Vector2.Multiply(this.Velocity, (float)dt)));
+            this.speed += acceleration * accelerationMultiplier * (float)dt;
+
+            //Vector2 currentFacing = this.Velocity;
+            //if (currentFacing != Vector2.Zero)
+            //    currentFacing.Normalize();
+
+            position = Vector3.Add(position,
+                                    new Vector3(
+                //Vector2.Multiply(currentFacing, acceleration * (float)Math.Pow(dt, 2)) +
+                                                Vector2.Multiply(this.Velocity,
+                                                                (float)dt)
+                                               )
+                                    );
             MessageDispatcher.Post(new SetPosition(this.owner, this.Velocity, this.position, this.angle, (float)dt));
-            //if (this.owner.GetType() == typeof(Shell))
-            //    MessageDispatcher.Post(new TraceText(this.Velocity.ToString()));
+            if (((Aspect)this.owner).Name == "player")
+                MessageDispatcher.Post(new TraceText(this.Velocity.ToString()));
         }
+
+        internal object GetOwner()
+        {
+            return this.owner;
+        }
+
+        //internal void StopAcceleration()
+        //{
+        //    acceleration = 0;
+        //}
+
+        //internal void SetSpeed(float speed)
+        //{
+        //    this.speed = speed;
+        //}
     }
 }

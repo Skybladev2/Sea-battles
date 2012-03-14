@@ -7,9 +7,16 @@ namespace SeaBattles
 {
     public abstract class Aspect : IMessageHandler
     {
+        protected string name = null;
         protected object owner = null;
         protected MessageHandler messageHandler = new MessageHandler();
         //protected LinkedList<Aspect> aspects = new LinkedList<Aspect>();
+
+        internal string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
 
         public Aspect()
         {
@@ -44,20 +51,6 @@ namespace SeaBattles
         //{
         //    this.aspects.AddLast(child);
         //}
-
-        protected void UnRegisterHandlerInParent(Type type)
-        {
-            if (owner != null)
-            {
-                Aspect ownerAspect = owner as Aspect;
-                if (ownerAspect != null)
-                {
-                    ownerAspect.messageHandler.Handlers.Remove(type);
-                    ownerAspect.messageHandler.HandlersMap.Remove(type);
-                    ownerAspect.UnRegisterHandlerInParent(type);
-                }
-            }
-        }
 
         protected void RegisterHandlersInParent()
         {
