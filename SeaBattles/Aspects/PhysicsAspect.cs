@@ -144,7 +144,7 @@ namespace SeaBattles
             {
                 this.acceleration = setAcceleration.Acceleration;
                 if (setAcceleration.TargetSpeed != null)
-                    PhysicsManager.AddTargetSpeedAspect(this, setAcceleration.TargetSpeed.Value);
+                    PhysicsManager.AddTargetSpeedAspect(this, setAcceleration.TargetSpeed.Value, setAcceleration.Acceleration);
             }
 
             //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
