@@ -10,9 +10,9 @@ namespace SeaBattles
         // (целевая) скорость на каждой передаче в м/с
         private float[] gears = new float[] { 0, 10, 20, 30 };
         // ускорения при переключении с 1 на 2, со 2 на 3 и т.д. передачу
-        private float[] accelerations = new float[] { 1, 10, 10 };
+        private float[] accelerations = new float[] { 2, 10, 2 };
         // ускорения при переключении со 2 на 1, с 3 на 2 и т.д. передачу
-        private float[] decelerations = new float[] { -1, -10, -10 };
+        private float[] decelerations = new float[] { -2, -10, -2 };
         // индекс передачи в массиве gears
         private int currentGear = 0;
 
@@ -92,7 +92,7 @@ namespace SeaBattles
             if (currentGear > 0)
                 currentGear--;
 
-            MessageDispatcher.Post(new SetAcceleration(owner, gears[currentGear], decelerations[currentGear]));
+            MessageDispatcher.Post(new SetTargetAcceleration(owner, gears[currentGear], decelerations[currentGear]));
             //MessageDispatcher.Post(new SetSpeed(owner, gears[currentGear]));
             //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
         }
@@ -102,7 +102,7 @@ namespace SeaBattles
             if (currentGear < gears.Length - 1)
                 currentGear++;
 
-            MessageDispatcher.Post(new SetAcceleration(owner, gears[currentGear], accelerations[currentGear - 1]));
+            MessageDispatcher.Post(new SetTargetAcceleration(owner, gears[currentGear], accelerations[currentGear - 1]));
             //MessageDispatcher.Post(new SetSpeed(owner, gears[currentGear]));
             //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
         }

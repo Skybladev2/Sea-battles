@@ -64,6 +64,7 @@
     <Compile Include="Messages\BoundSetCollision.cs" />
     <Compile Include="Messages\BoundSetNotCollision.cs" />
     <Compile Include="Messages\ButtonHold.cs" />
+    <Compile Include="Messages\SetTargetAcceleration.cs" />
     <Compile Include="Messages\SetAcceleration.cs" />
     <Compile Include="Messages\Kill.cs" />
     <Compile Include="Messages\NotCollision.cs" />

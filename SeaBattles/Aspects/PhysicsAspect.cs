@@ -110,6 +110,7 @@ namespace SeaBattles
         {
             messageHandler.Handlers.Add(typeof(SetSpeed), HandleSetSpeed);
             messageHandler.Handlers.Add(typeof(SetAcceleration), HandleSetAcceleration);
+            messageHandler.Handlers.Add(typeof(SetTargetAcceleration), HandleSetTargetAcceleration);
             messageHandler.Handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
             messageHandler.Handlers.Add(typeof(ButtonHold), HandleButtonHold);
         }
@@ -137,17 +138,26 @@ namespace SeaBattles
             return true;
         }
 
+        private bool HandleSetTargetAcceleration(object message)
+        {
+            SetTargetAcceleration setAcceleration = (SetTargetAcceleration)message;
+            if (setAcceleration.Owner == this.owner)
+            {
+                //this.acceleration = setAcceleration.Acceleration;
+                if (setAcceleration.TargetSpeed != null)
+                    PhysicsManager.AddTargetSpeedAspect(this, setAcceleration.TargetSpeed.Value, setAcceleration.TargetAcceleration);
+            }
+
+            //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
+            return true;
+        }
+
         private bool HandleSetAcceleration(object message)
         {
             SetAcceleration setAcceleration = (SetAcceleration)message;
             if (setAcceleration.Owner == this.owner)
-            {
                 this.acceleration = setAcceleration.Acceleration;
-                if (setAcceleration.TargetSpeed != null)
-                    PhysicsManager.AddTargetSpeedAspect(this, setAcceleration.TargetSpeed.Value, setAcceleration.Acceleration);
-            }
 
-            //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
             return true;
         }
 
@@ -227,7 +237,7 @@ namespace SeaBattles
                                     );
             MessageDispatcher.Post(new SetPosition(this.owner, this.Velocity, this.position, this.angle, (float)dt));
             if (((Aspect)this.owner).Name == "player")
-                MessageDispatcher.Post(new TraceText(this.Velocity.ToString()));
+                MessageDispatcher.Post(new TraceText(this.acceleration + " " + this.Velocity.LengthFast.ToString()));
         }
 
         internal object GetOwner()
