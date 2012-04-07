@@ -38,7 +38,7 @@ namespace SeaBattles
             {
                 // посылаем ускорение, которое будет применяться вдоль вектора направления скорости
                 // за поворот отвечает угловое ускорение
-                MessageDispatcher.Post(new SetForwardAcceleration(this.owner, applyForce.Force / mass));
+                MessageDispatcher.Post(new AddForwardAcceleration(this.owner, applyForce.Force / mass));
             }
 
             //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));

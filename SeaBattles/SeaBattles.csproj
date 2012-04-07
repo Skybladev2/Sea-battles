@@ -69,7 +69,7 @@
     <Compile Include="Messages\ButtonHold.cs" />
     <Compile Include="Messages\ApplyForces.cs" />
     <Compile Include="Messages\ApplyForce.cs" />
-    <Compile Include="Messages\SetForwardAcceleration.cs" />
+    <Compile Include="Messages\AddForwardAcceleration.cs" />
     <Compile Include="Messages\SetTargetAcceleration.cs" />
     <Compile Include="Messages\SetAcceleration.cs" />
     <Compile Include="Messages\Kill.cs" />

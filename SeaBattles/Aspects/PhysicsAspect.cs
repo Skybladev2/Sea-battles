@@ -47,6 +47,7 @@ namespace SeaBattles
         private Vector2 accelerationDt = Vector2.Zero;
         private Vector2 initialFacing = new Vector2(0, 1);
         private Vector2 velocity = Vector2.Zero;
+        private bool accelerationIsSet = false;
 
 
         internal float Speed
@@ -121,7 +122,7 @@ namespace SeaBattles
             : base(owner)
         {
             messageHandler.Handlers.Add(typeof(SetSpeed), HandleSetSpeed);
-            messageHandler.Handlers.Add(typeof(SetForwardAcceleration), HandleSetForwardAcceleration);
+            messageHandler.Handlers.Add(typeof(AddForwardAcceleration), HandleAddForwardAcceleration);
             messageHandler.Handlers.Add(typeof(SetTargetAcceleration), HandleSetTargetAcceleration);
             messageHandler.Handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
             messageHandler.Handlers.Add(typeof(ButtonHold), HandleButtonHold);
@@ -137,7 +138,8 @@ namespace SeaBattles
         private PhysicsAspect(object owner, Vector3 position, Vector2 facing, float speed)
             : this(owner, position, facing)
         {
-            this.speed = speed;
+            this.velocity = facing * speed;
+            //this.speed = speed;
         }
 
         private bool HandleSetSpeed(object message)
@@ -164,11 +166,11 @@ namespace SeaBattles
             return true;
         }
 
-        private bool HandleSetForwardAcceleration(object message)
+        private bool HandleAddForwardAcceleration(object message)
         {
-            SetForwardAcceleration setAcceleration = (SetForwardAcceleration)message;
+            AddForwardAcceleration setAcceleration = (AddForwardAcceleration)message;
             if (setAcceleration.Owner == this.owner)
-                this.acceleration = setAcceleration.TargetAcceleration;
+                this.acceleration += setAcceleration.TargetAcceleration;
 
             return true;
         }
@@ -263,6 +265,9 @@ namespace SeaBattles
                                                 this.angle,
                                                 (float)dt,
                                                 Misc.RotateVector(initialFacing, angle)));
+
+            // после каждого dt все ускорения обнуляются
+            this.acceleration = Vector2.Zero;
 
             if (((Aspect)this.owner).Name == "player")
                 MessageDispatcher.Post(new TraceText(this.acceleration + " " + this.Velocity.LengthFast.ToString()));

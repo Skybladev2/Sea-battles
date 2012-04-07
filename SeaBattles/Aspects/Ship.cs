@@ -65,7 +65,7 @@ namespace SeaBattles
             MessageDispatcher.RegisterHandler(typeof(SetPosition), aspect);
             MessageDispatcher.RegisterHandler(typeof(SetSpeed), aspect);
             MessageDispatcher.RegisterHandler(typeof(SetAcceleration), aspect);
-            MessageDispatcher.RegisterHandler(typeof(SetForwardAcceleration), aspect);
+            MessageDispatcher.RegisterHandler(typeof(AddForwardAcceleration), aspect);
             MessageDispatcher.RegisterHandler(typeof(SetTargetAcceleration), aspect);
             MessageDispatcher.RegisterHandler(typeof(ApplyForce), aspect);
             // нужно для определения координат и скорости корабля в момент выстрела
@@ -169,7 +169,7 @@ namespace SeaBattles
         {
             base.Cleanup();
 
-            MessageDispatcher.UnRegisterHandler(typeof(SetForwardAcceleration), this);
+            MessageDispatcher.UnRegisterHandler(typeof(AddForwardAcceleration), this);
             MessageDispatcher.UnRegisterHandler(typeof(ApplyForce), this);
             MessageDispatcher.UnRegisterHandler(typeof(SetPosition), this);
             MessageDispatcher.UnRegisterHandler(typeof(SetSpeed), this);
