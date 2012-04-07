@@ -40,8 +40,14 @@ namespace SeaBattles
         /// <summary>
         /// Ускорение текущего объекта (пока что вектор ускорения совпадает с вектором скорости)
         /// </summary>
-        private float acceleration = 0;
-        private Vector2 facing = new Vector2(0, 1);
+        private Vector2 acceleration = Vector2.Zero;
+        /// <summary>
+        /// Ускорение за текущий промежуток времени.
+        /// </summary>
+        private Vector2 accelerationDt = Vector2.Zero;
+        private Vector2 initialFacing = new Vector2(0, 1);
+        private Vector2 velocity = Vector2.Zero;
+
 
         internal float Speed
         {
@@ -51,7 +57,7 @@ namespace SeaBattles
             }
         }
 
-        internal float Acceleration
+        internal Vector2 Acceleration
         {
             get
             {
@@ -63,12 +69,18 @@ namespace SeaBattles
         {
             get
             {
-                Vector2 temp = Vector2.Multiply(facing, speed * speedMultiplier);
-                // поворот вектора
-                float newX = temp.X * (float)Math.Cos(angle / 180 * Math.PI) - temp.Y * (float)Math.Sin(angle / 180 * Math.PI);
-                float newY = temp.X * (float)Math.Sin(angle / 180 * Math.PI) + temp.Y * (float)Math.Cos(angle / 180 * Math.PI);
-                return new Vector2(newX, newY);
+                return this.velocity;
+                //Vector2 temp = Vector2.Multiply(initialFacing, speed * speedMultiplier);
+                //// поворот вектора
+                //float newX = temp.X * (float)Math.Cos(angle / 180 * Math.PI) - temp.Y * (float)Math.Sin(angle / 180 * Math.PI);
+                //float newY = temp.X * (float)Math.Sin(angle / 180 * Math.PI) + temp.Y * (float)Math.Cos(angle / 180 * Math.PI);
+                //return new Vector2(newX, newY);
             }
+        }
+
+        internal Vector2 Facing
+        {
+            get { return Misc.RotateVector(initialFacing, angle); }
         }
 
         internal Vector2 PrevFacing
@@ -80,7 +92,7 @@ namespace SeaBattles
                 //float newX = facing.X * (float)Math.Cos(prevAngle / 180 * Math.PI) - facing.Y * (float)Math.Sin(prevAngle / 180 * Math.PI);
                 //float newY = facing.X * (float)Math.Sin(prevAngle / 180 * Math.PI) + facing.Y * (float)Math.Cos(prevAngle / 180 * Math.PI);
                 //return new Vector2(newX, newY);
-                return Misc.RotateVector(facing, prevAngle);
+                return Misc.RotateVector(initialFacing, prevAngle);
             }
         }
 
@@ -109,7 +121,7 @@ namespace SeaBattles
             : base(owner)
         {
             messageHandler.Handlers.Add(typeof(SetSpeed), HandleSetSpeed);
-            messageHandler.Handlers.Add(typeof(SetAcceleration), HandleSetAcceleration);
+            messageHandler.Handlers.Add(typeof(SetForwardAcceleration), HandleSetForwardAcceleration);
             messageHandler.Handlers.Add(typeof(SetTargetAcceleration), HandleSetTargetAcceleration);
             messageHandler.Handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
             messageHandler.Handlers.Add(typeof(ButtonHold), HandleButtonHold);
@@ -119,7 +131,7 @@ namespace SeaBattles
             : this(owner)
         {
             this.position = position;
-            this.facing = facing;
+            this.initialFacing = facing;
         }
 
         private PhysicsAspect(object owner, Vector3 position, Vector2 facing, float speed)
@@ -152,11 +164,11 @@ namespace SeaBattles
             return true;
         }
 
-        private bool HandleSetAcceleration(object message)
+        private bool HandleSetForwardAcceleration(object message)
         {
-            SetAcceleration setAcceleration = (SetAcceleration)message;
+            SetForwardAcceleration setAcceleration = (SetForwardAcceleration)message;
             if (setAcceleration.Owner == this.owner)
-                this.acceleration = setAcceleration.Acceleration;
+                this.acceleration = setAcceleration.TargetAcceleration;
 
             return true;
         }
@@ -168,10 +180,10 @@ namespace SeaBattles
             // аспект, запрашивающий положение родителя, должен принадлежать тому же родителю, что и физика
             if (getPosition.Target.Equals(this.owner))
             {
-                float newX = facing.X * (float)Math.Cos(angle / 180 * Math.PI) -
-                             facing.Y * (float)Math.Sin(angle / 180 * Math.PI);
-                float newY = facing.X * (float)Math.Sin(angle / 180 * Math.PI) +
-                             facing.Y * (float)Math.Cos(angle / 180 * Math.PI);
+                float newX = initialFacing.X * (float)Math.Cos(angle / 180 * Math.PI) -
+                             initialFacing.Y * (float)Math.Sin(angle / 180 * Math.PI);
+                float newY = initialFacing.X * (float)Math.Sin(angle / 180 * Math.PI) +
+                             initialFacing.Y * (float)Math.Cos(angle / 180 * Math.PI);
 
                 MessageDispatcher.Post(new InformPosition(getPosition.Caller,
                                                             this.owner,
@@ -213,6 +225,15 @@ namespace SeaBattles
             if (angle < 0)
                 angle += 360;
 
+            this.velocity = Misc.RotateVector(initialFacing, angle) * this.velocity.Length;
+
+            MessageDispatcher.Post(new SetPosition(this.owner,
+                                                    this.velocity,
+                                                    this.position,
+                                                    this.angle,
+                                                    this.lastDT,
+                                                    Misc.RotateVector(initialFacing, angle)));
+
             //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
         }
 
@@ -222,7 +243,8 @@ namespace SeaBattles
             this.prevPosition.Y = position.Y;
             this.lastDT = (float)dt;
 
-            this.speed += acceleration * accelerationMultiplier * (float)dt;
+            this.velocity += acceleration * accelerationMultiplier * (float)dt;
+            //this.speed += acceleration * accelerationMultiplier * (float)dt;
 
             //Vector2 currentFacing = this.Velocity;
             //if (currentFacing != Vector2.Zero)
@@ -235,7 +257,13 @@ namespace SeaBattles
                                                                 (float)dt)
                                                )
                                     );
-            MessageDispatcher.Post(new SetPosition(this.owner, this.Velocity, this.position, this.angle, (float)dt));
+            MessageDispatcher.Post(new SetPosition(this.owner,
+                                                this.Velocity,
+                                                this.position,
+                                                this.angle,
+                                                (float)dt,
+                                                Misc.RotateVector(initialFacing, angle)));
+
             if (((Aspect)this.owner).Name == "player")
                 MessageDispatcher.Post(new TraceText(this.acceleration + " " + this.Velocity.LengthFast.ToString()));
         }

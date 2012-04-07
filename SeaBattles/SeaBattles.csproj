@@ -49,6 +49,9 @@
     <Compile Include="Aspects\BoundsAspect.cs" />
     <Compile Include="Aspects\BoundSetAspect.cs" />
     <Compile Include="Aspects\CircleBoundsAspect.cs" />
+    <Compile Include="Aspects\ThrusterController.cs" />
+    <Compile Include="Aspects\Thruster.cs" />
+    <Compile Include="Aspects\MassAspect.cs" />
     <Compile Include="Aspects\DamageAspect.cs" />
     <Compile Include="Aspects\TriangleBoundsAspect.cs" />
     <Compile Include="Aspects\RectangleBoundsAspect.cs" />
@@ -64,6 +67,9 @@
     <Compile Include="Messages\BoundSetCollision.cs" />
     <Compile Include="Messages\BoundSetNotCollision.cs" />
     <Compile Include="Messages\ButtonHold.cs" />
+    <Compile Include="Messages\ApplyForces.cs" />
+    <Compile Include="Messages\ApplyForce.cs" />
+    <Compile Include="Messages\SetForwardAcceleration.cs" />
     <Compile Include="Messages\SetTargetAcceleration.cs" />
     <Compile Include="Messages\SetAcceleration.cs" />
     <Compile Include="Messages\Kill.cs" />

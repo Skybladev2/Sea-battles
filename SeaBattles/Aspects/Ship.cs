@@ -13,7 +13,9 @@ namespace SeaBattles
     internal class Ship : Aspect, IDamageable
     {
         private PhysicsAspect physics;
-        private VehicleWithGearboxAspect mechanics;
+        private MassAspect mass;
+        //private VehicleWithGearboxAspect mechanics;
+        private ThrusterController thrusterController;
         private GraphicsAspect graphics;
         private BoundSetAspect bounds;
         private DamageAspect damage;
@@ -23,11 +25,16 @@ namespace SeaBattles
         private Weapon rearCannon;
         private DestroyByTimerAspect timer = null;
 
-        internal VehicleWithGearboxAspect Mechanics
+        internal ThrusterController ThrusterController
         {
-            get { return mechanics; }
-            //set { mechanics = value; }
+            get { return this.thrusterController; }
         }
+
+        //internal VehicleWithGearboxAspect Mechanics
+        //{
+        //    get { return mechanics; }
+        //    //set { mechanics = value; }
+        //}
 
         internal GraphicsAspect Graphics
         {
@@ -39,6 +46,11 @@ namespace SeaBattles
         {
             get { return physics; }
             //set { physics = value; }
+        }
+
+        internal MassAspect Mass
+        {
+            get { return mass; }
         }
 
         internal Weapon RearCannon
@@ -53,7 +65,9 @@ namespace SeaBattles
             MessageDispatcher.RegisterHandler(typeof(SetPosition), aspect);
             MessageDispatcher.RegisterHandler(typeof(SetSpeed), aspect);
             MessageDispatcher.RegisterHandler(typeof(SetAcceleration), aspect);
+            MessageDispatcher.RegisterHandler(typeof(SetForwardAcceleration), aspect);
             MessageDispatcher.RegisterHandler(typeof(SetTargetAcceleration), aspect);
+            MessageDispatcher.RegisterHandler(typeof(ApplyForce), aspect);
             // нужно для определения координат и скорости корабля в момент выстрела
             // в данном случае owner-ом является ship
             MessageDispatcher.RegisterHandler(typeof(GetOwnerPosition), aspect);
@@ -84,8 +98,16 @@ namespace SeaBattles
             shipVerts.Add(new Vector3(1f * width / 2 + position.X, -1f * length / 2 + position.Y, depth));
             shipVerts.Add(new Vector3(-1f * width / 2 + position.X, -1f * length / 2 + position.Y, depth));
 
-            mechanics = VehicleWithGearboxAspect.Create(this);
+
+            //mechanics = VehicleWithGearboxAspect.Create(this);
             physics = PhysicsAspect.Create(this);
+            mass = MassAspect.Create(this);
+            Thruster thruster1 = Thruster.Create(this, physics.Facing);
+            Thruster thruster2 = Thruster.Create(this, physics.Facing);
+            IList<Thruster> thrusters = new List<Thruster>(2);
+            thrusters.Add(thruster1);
+            thrusters.Add(thruster2);
+            thrusterController = ThrusterController.Create(this, thrusters);
             graphics = GraphicsAspect.Create(this, shipVerts, 3, Color.White, Color.Red);
             bounds = BoundSetAspect.Create(this, shipVerts);
             //bounds.GetOuterContour();
@@ -128,7 +150,8 @@ namespace SeaBattles
             if (kill.Target == this)
             {
                 // убираем все аспекты, кроме графического, чтобы показать анимацию уничтожения
-                MessageDispatcher.Post(new DestroySelf(mechanics));
+                //MessageDispatcher.Post(new DestroySelf(mechanics));
+                MessageDispatcher.Post(new DestroySelf(thrusterController));
                 MessageDispatcher.Post(new DestroySelf(physics));
                 MessageDispatcher.Post(new DestroySelf(bounds));
                 MessageDispatcher.Post(new DestroySelf(damage));
@@ -146,6 +169,8 @@ namespace SeaBattles
         {
             base.Cleanup();
 
+            MessageDispatcher.UnRegisterHandler(typeof(SetForwardAcceleration), this);
+            MessageDispatcher.UnRegisterHandler(typeof(ApplyForce), this);
             MessageDispatcher.UnRegisterHandler(typeof(SetPosition), this);
             MessageDispatcher.UnRegisterHandler(typeof(SetSpeed), this);
             MessageDispatcher.UnRegisterHandler(typeof(SetAcceleration), this);

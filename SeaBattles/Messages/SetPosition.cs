@@ -6,6 +6,9 @@ using OpenTK;
 
 namespace SeaBattles.Messages
 {
+    /// <summary>
+    /// Сообщает о том, что положение объекта изменилось.
+    /// </summary>
     internal class SetPosition
     {
         private object target = null;
@@ -13,7 +16,12 @@ namespace SeaBattles.Messages
         private Vector3 position;
         private float angle;
         private float dt;
+        private Vector2 facing;
 
+        /// <summary>
+        /// Чьё положение изменилось. Это аспект-родитель, а не тот аспект, кто послал сообщение.
+        /// </summary>
+ 
         public object Target
         {
             get { return target; }
@@ -43,13 +51,19 @@ namespace SeaBattles.Messages
             get { return dt; }
         }
 
-        public SetPosition(object target, Vector2 velocity, Vector3 position, float angle, float dt)
+        public Vector2 Facing
+        {
+            get { return facing; }
+        }
+
+        public SetPosition(object target, Vector2 velocity, Vector3 position, float angle, float dt, Vector2 facing)
         {
             this.target = target;
             this.velocity = velocity;
             this.position = position;
             this.angle = angle;
             this.dt = dt;
+            this.facing = facing;
         }
     }
 }

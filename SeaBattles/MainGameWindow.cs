@@ -286,17 +286,14 @@ namespace SeaBattles
                     holdingKeyNode = holdingKeyNode.Next;
                 }
 
-                foreach (PhysicsAspect p in AspectLists.GetAspects(typeof(PhysicsAspect)))
-                {
-                    p.Update(dt);
-                }
+                
 
                 foreach (DestroyByTimerAspect d in AspectLists.GetAspects(typeof(DestroyByTimerAspect)))
                 {
                     d.Update(dt);
                 }
 
-                PhysicsManager.Update();
+                PhysicsManager.Update(dt);
 
                 //foreach (BoundsAspect bound in AspectLists.GetDerivedAspects(typeof(BoundsAspect)))
                 //{
