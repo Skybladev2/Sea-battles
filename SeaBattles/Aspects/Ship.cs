@@ -150,7 +150,6 @@ namespace SeaBattles
             if (kill.Target == this)
             {
                 // убираем все аспекты, кроме графического, чтобы показать анимацию уничтожения
-                //MessageDispatcher.Post(new DestroySelf(mechanics));
                 MessageDispatcher.Post(new DestroySelf(thrusterController));
                 MessageDispatcher.Post(new DestroySelf(physics));
                 MessageDispatcher.Post(new DestroySelf(bounds));

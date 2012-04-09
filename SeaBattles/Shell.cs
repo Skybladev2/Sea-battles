@@ -86,6 +86,10 @@ namespace SeaBattles
             Kill kill = (Kill)message;
             if (kill.Target == this)
             {
+                MessageDispatcher.Post(new DestroySelf(physics));
+                MessageDispatcher.Post(new DestroySelf(bounds));
+                MessageDispatcher.Post(new DestroySelf(damage));
+
                 MessageDispatcher.Post(new DestroySelf(this));
             }
 

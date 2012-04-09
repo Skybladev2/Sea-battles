@@ -286,8 +286,6 @@ namespace SeaBattles
                     holdingKeyNode = holdingKeyNode.Next;
                 }
 
-                
-
                 foreach (DestroyByTimerAspect d in AspectLists.GetAspects(typeof(DestroyByTimerAspect)))
                 {
                     d.Update(dt);
@@ -295,23 +293,21 @@ namespace SeaBattles
 
                 PhysicsManager.Update(dt);
 
-                //foreach (BoundsAspect bound in AspectLists.GetDerivedAspects(typeof(BoundsAspect)))
-                //{
-                //    if (bound.GetType() == typeof(TriangleBoundsAspect))
-                //    {
-                //        if (bound.IntersectsWith((CircleBoundsAspect)box2.Bounds))
-                //            MessageDispatcher.Post(new Collision(bound, box2.Bounds));
-                //        else
-                //            MessageDispatcher.Post(new NotCollision(bound, box2.Bounds));
-                //    }
-                //}
+                CollisionManager.collisionPairs.Clear();
 
                 foreach (BoundSetAspect boundSet in AspectLists.GetAspects(typeof(BoundSetAspect)))
                 {
                     foreach (BoundSetAspect boundSet2 in AspectLists.GetAspects(typeof(BoundSetAspect)))
                     {
                         if (boundSet != boundSet2)
-                            CollisionManager.CheckIntersection(boundSet, boundSet2);
+                        {
+                            Pair<BoundSetAspect> possibleCollisionPair = new Pair<BoundSetAspect>(boundSet, boundSet2);
+                            if (!CollisionManager.collisionPairs.ContainsKey(possibleCollisionPair))
+                            {
+                                CollisionManager.collisionPairs.Add(possibleCollisionPair, 0);
+                                CollisionManager.CheckIntersection(boundSet, boundSet2);
+                            }
+                        }
                     }
                 }
             }

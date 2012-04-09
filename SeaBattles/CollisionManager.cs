@@ -9,6 +9,7 @@ namespace SeaBattles
     {
         //private static Dictionary<object, Dictionary<BoundSetAspect, byte>> collisions = new Dictionary<object, Dictionary<BoundSetAspect, byte>>();
         private static Dictionary<Pair<BoundSetAspect>, byte> collisions = new Dictionary<Pair<BoundSetAspect>, byte>();
+        public static Dictionary<Pair<BoundSetAspect>, byte> collisionPairs = new Dictionary<Pair<BoundSetAspect>, byte>();
 
         private static void SendCollision(BoundSetAspect boundSet1, BoundSetAspect boundSet2)
         {
@@ -18,7 +19,7 @@ namespace SeaBattles
                 if (shell.ShellOwner != boundSet2.GetOwner())
                 {
                     Ship target = (Ship)boundSet2.GetOwner();
-                    target.RearCannon.PerformShoot();
+                    //target.RearCannon.PerformShoot();
                     MessageDispatcher.Post(new BoundSetCollision(boundSet1, boundSet2));
                 }
             }
@@ -29,7 +30,7 @@ namespace SeaBattles
                     if (shell.ShellOwner != boundSet1.GetOwner())
                     {
                         Ship target = (Ship)boundSet1.GetOwner();
-                        target.RearCannon.PerformShoot();
+                        //target.RearCannon.PerformShoot();
                         MessageDispatcher.Post(new BoundSetCollision(boundSet1, boundSet2));
                     }
                 }
