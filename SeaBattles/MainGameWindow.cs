@@ -63,6 +63,8 @@ namespace SeaBattles
             ship2 = Ship.Create(new PointF(0, 0), 40, 1);
 
             ship.Name = "player";
+            ship.Graphics.Name = "player graphics";
+            ship2.Graphics.Name = "enemy graphics";
             //box = new TestBoundingObject(BoundShape.Ship, new PointF(0, 0), 10, 20, Color.Green, Color.Red, 0);
             //box2 = new TestBoundingObject(BoundShape.Circle, new PointF(0, 0), 20, 40, Color.White, Color.Black, -0.5f);
 

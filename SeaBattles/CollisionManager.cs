@@ -78,13 +78,19 @@ namespace SeaBattles
             {
                 if (pair.First == boundSetAspect)
                 {
+                    Pair<BoundSetAspect> newPair = new Pair<BoundSetAspect>(null, pair.Second);
                     collisions.Remove(pair);
+                    if (pair.Second != null)
+                        collisions.Add(pair, 0);
                     SendNotCollision(boundSetAspect, pair.Second);
                 }
                 else
                     if (pair.Second == boundSetAspect)
                     {
+                        Pair<BoundSetAspect> newPair = new Pair<BoundSetAspect>(pair.First, null);
                         collisions.Remove(pair);
+                        if (pair.First != null)
+                            collisions.Add(pair, 0);
                         SendNotCollision(boundSetAspect, pair.First);
                     }
             }

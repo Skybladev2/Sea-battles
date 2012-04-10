@@ -63,6 +63,7 @@ namespace SeaBattles
             timer = DestroyByTimerAspect.Create(this, new TimeSpan(0, 0, 0, 1, 0));
 
             this.shellOwner = shellOwner;
+            this.name = "shell";
 
             MessageDispatcher.RegisterHandler(typeof(SetPosition), bounds);
             MessageDispatcher.RegisterHandler(typeof(SetPosition), graphics);
