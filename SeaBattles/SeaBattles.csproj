@@ -60,6 +60,7 @@
     <Compile Include="CircularLinkedList.cs" />
     <Compile Include="CollisionManager.cs" />
     <Compile Include="DamageManager.cs" />
+    <Compile Include="EnvironmentSpace.cs" />
     <Compile Include="IDamageable.cs" />
     <Compile Include="IniProcessor.cs" />
     <Compile Include="IReflectionAttributes.cs" />

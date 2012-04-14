@@ -61,11 +61,14 @@ namespace SeaBattles
             {
                 thruster.ApplyForce();
             }
+            ICollection<Aspect> physicsAspects = AspectLists.GetAspects(typeof(PhysicsAspect));
+            // применяем силы сопротивления среды
+            EnvironmentSpace.ApplyForce(physicsAspects);
 
             // !тут нужна синхронизация!
             
             // в соответствии с силами двигаем физику
-            foreach (PhysicsAspect p in AspectLists.GetAspects(typeof(PhysicsAspect)))
+            foreach (PhysicsAspect p in physicsAspects)
             {
                 p.Update(dt);
             }
