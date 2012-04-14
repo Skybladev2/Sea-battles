@@ -49,6 +49,7 @@
     <Compile Include="Aspects\BoundsAspect.cs" />
     <Compile Include="Aspects\BoundSetAspect.cs" />
     <Compile Include="Aspects\CircleBoundsAspect.cs" />
+    <Compile Include="Aspects\SteeringWheel.cs" />
     <Compile Include="Aspects\ThrusterController.cs" />
     <Compile Include="Aspects\Thruster.cs" />
     <Compile Include="Aspects\MassAspect.cs" />

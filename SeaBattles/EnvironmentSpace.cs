@@ -14,7 +14,7 @@ namespace SeaBattles
         {
             foreach (PhysicsAspect physicsAspect in physicsAspects)
             {
-                // сопротивление воды направлено против движения корабля и прямо пропорциоально скорости
+                // сопротивление воды направлено против движения корабля и прямо пропорционально скорости
                 Vector2 velocityDirection = physicsAspect.Velocity;
                 velocityDirection.NormalizeFast();
                 MessageDispatcher.Post(new ApplyForce(physicsAspect.GetOwner(),
