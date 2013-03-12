@@ -122,8 +122,7 @@ namespace SeaBattles
             : base(owner)
         {
             messageHandler.Handlers.Add(typeof(SetSpeed), HandleSetSpeed);
-            messageHandler.Handlers.Add(typeof(AddForwardAcceleration), HandleAddForwardAcceleration);
-            messageHandler.Handlers.Add(typeof(SetTargetAcceleration), HandleSetTargetAcceleration);
+            messageHandler.Handlers.Add(typeof(AddForwardAcceleration), HandleAddForwardAcceleration);            
             messageHandler.Handlers.Add(typeof(GetOwnerPosition), HandleGetPosition);
             messageHandler.Handlers.Add(typeof(ButtonHold), HandleButtonHold);
         }
@@ -147,20 +146,6 @@ namespace SeaBattles
             SetSpeed setSpeed = (SetSpeed)message;
             if (setSpeed.Owner == this.owner)
                 this.speed = setSpeed.Speed;
-
-            //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
-            return true;
-        }
-
-        private bool HandleSetTargetAcceleration(object message)
-        {
-            SetTargetAcceleration setAcceleration = (SetTargetAcceleration)message;
-            if (setAcceleration.Owner == this.owner)
-            {
-                //this.acceleration = setAcceleration.Acceleration;
-                if (setAcceleration.TargetSpeed != null)
-                    PhysicsManager.AddTargetSpeedAspect(this, setAcceleration.TargetSpeed.Value, setAcceleration.TargetAcceleration);
-            }
 
             //MessageDispatcher.Post(new TraceText("Velocity: " + this.Velocity.ToString() + ", Angle: " + angle));
             return true;

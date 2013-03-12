@@ -30,12 +30,6 @@ namespace SeaBattles
             get { return this.thrusterController; }
         }
 
-        //internal VehicleWithGearboxAspect Mechanics
-        //{
-        //    get { return mechanics; }
-        //    //set { mechanics = value; }
-        //}
-
         internal GraphicsAspect Graphics
         {
             get { return graphics; }
@@ -65,8 +59,7 @@ namespace SeaBattles
             MessageDispatcher.RegisterHandler(typeof(SetPosition), aspect);
             MessageDispatcher.RegisterHandler(typeof(SetSpeed), aspect);
             MessageDispatcher.RegisterHandler(typeof(SetAcceleration), aspect);
-            MessageDispatcher.RegisterHandler(typeof(AddForwardAcceleration), aspect);
-            MessageDispatcher.RegisterHandler(typeof(SetTargetAcceleration), aspect);
+            MessageDispatcher.RegisterHandler(typeof(AddForwardAcceleration), aspect);            
             MessageDispatcher.RegisterHandler(typeof(ApplyForce), aspect);
             // нужно для определения координат и скорости корабля в момент выстрела
             // в данном случае owner-ом является ship

@@ -72,7 +72,6 @@
     <Compile Include="Messages\ApplyForces.cs" />
     <Compile Include="Messages\ApplyForce.cs" />
     <Compile Include="Messages\AddForwardAcceleration.cs" />
-    <Compile Include="Messages\SetTargetAcceleration.cs" />
     <Compile Include="Messages\SetAcceleration.cs" />
     <Compile Include="Messages\Kill.cs" />
     <Compile Include="Messages\NotCollision.cs" />
@@ -97,7 +96,6 @@
     <Compile Include="ReflectionAttributes.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="Side.cs" />
-    <Compile Include="Aspects\VehicleWithGearboxAspect.cs" />
     <Compile Include="Strings.cs" />
     <Compile Include="Tests\TestBoundingObject.cs" />
     <Compile Include="Triangle.cs" />

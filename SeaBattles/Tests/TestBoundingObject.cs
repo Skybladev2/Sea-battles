@@ -9,7 +9,7 @@ namespace SeaBattles.Tests
     internal class TestBoundingObject : Aspect
     {
         private PhysicsAspect physics;
-        private VehicleWithGearboxAspect mechanics;
+        //private VehicleWithGearboxAspect mechanics;
         private GraphicsAspect graphics;
         //private BoundsAspect bounds;
         private BoundSetAspect bounds;
@@ -90,7 +90,6 @@ namespace SeaBattles.Tests
                     break;
             }
 
-            mechanics = VehicleWithGearboxAspect.Create(this);
             physics = PhysicsAspect.Create(this);
             graphics = GraphicsAspect.Create(this, verts, 1, notColisionColor, collisionColor);
 
